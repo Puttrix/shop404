@@ -8,8 +8,7 @@ services:
     environment:
       - PORT=3000
       # Tag/Experiment configuration (set as needed)
-      - GTM_ID=GTM-WXM4KGJV
-      - GA4_ID=
+      - GTM_ID=
       - MATOMO_TAG_MANAGER_CONTAINER_URL=
       - OPTIMIZELY_WEB_SNIPPET_URL=
       - ODP_SDK_URL=

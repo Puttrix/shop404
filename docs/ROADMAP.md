@@ -21,18 +21,6 @@ Purpose: A lightweight, living document to capture ideas, plans, and progress.
 - M3 — Catalog & Checkout Polish: Variants, coupons, empty states, accessibility
 
 ## In Progress
-- [ ] GTM-first implementation (GA4 only via GTM)
-  - Load only the GTM base snippet; remove direct GA4 loader.
-  - Provide GTM container ID via env/config; document placement.
-  - Update README to clarify “GTM-first” pattern and how to configure GA4 inside GTM.
-- [ ] Google Consent Mode v2 integration with site banner
-  - Initialize Consent Mode with defaults (denied) before GTM loads.
-  - On `consent:updated`, update `analytics_storage`, `ad_storage`, `ad_user_data`, `ad_personalization` based on banner categories.
-  - Verify GTM receives consent signals and GA4 fires accordingly.
-- [ ] Matomo Tag Manager adoption
-  - Switch from direct Matomo tracker to MTM container loading.
-  - Add env/config for Matomo container (e.g., `MATOMO_TAG_MANAGER_CONTAINER`); update server/config docs.
-  - Ensure events are consumable by MTM (either via `_mtm` data layer or via GTM-style `dataLayer` bridges).
 - [ ] Analytics parity: event mapping matrix and QA checklist
   - Map emitted events to GA4, GTM, and Matomo equivalents with parameters.
   - Create a checklist for manual tag QA in dev/preview.
@@ -67,6 +55,9 @@ Purpose: A lightweight, living document to capture ideas, plans, and progress.
 ## Done
 - [x] Create persistent memory file for assistant context — 2025‑09‑03
 - [x] Roadmap adoption in repo and README link — 2025‑09‑03
+- [x] GTM-first implementation (GA4 inside GTM; no direct GA4) — 2025‑09‑03
+- [x] Google Consent Mode v2 integration with banner — 2025‑09‑03
+- [x] Matomo Tag Manager adoption (MTM-only) — 2025‑09‑03
 
 ## Parking Lot
 - [ ] ODP web SDK example usage (identify/track) contingent on account access
@@ -74,6 +65,6 @@ Purpose: A lightweight, living document to capture ideas, plans, and progress.
 
 ## Decisions
 - 2025‑09‑03: Store assistant memory at `.codex/memory.json` for cross‑session context.
- - 2025‑09‑03: Adopt GTM-first strategy — GA4 implemented inside GTM; app loads only GTM base.
- - 2025‑09‑03: Use Matomo Tag Manager (not direct tracker) for Matomo; plan container-based implementation.
+ - 2025‑09‑03: Adopt GTM-first strategy — GA4 implemented inside GTM; GTM always loads.
+ - 2025‑09‑03: Use Matomo Tag Manager only (no direct tracker fallback).
  - 2025‑09‑03: Implement Google Consent Mode v2 and map banner categories to consent signals.
