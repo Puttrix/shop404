@@ -23,7 +23,12 @@ export default function Home() {
               </div>
             </div>
             <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-lg">
-              <img src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1600&auto=format&fit=crop" alt="Hero" className="w-full h-full object-cover"/>
+              <img
+                src="/images/hero.svg"
+                alt="Hero"
+                className="w-full h-full object-cover"
+                onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src='/images/placeholder.svg'; }}
+              />
             </div>
           </div>
         </div>
@@ -40,4 +45,3 @@ export default function Home() {
     </div>
   );
 }
-

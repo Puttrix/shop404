@@ -16,6 +16,16 @@ export default function ConsentBanner() {
     // open banner if not yet set
     if (localStorage.getItem('consent') == null) setOpen(true);
     window.__consent = saved;
+    // Apply saved consent to Google Consent Mode on load
+    try {
+      const map = {
+        ad_storage: saved.marketing ? 'granted' : 'denied',
+        analytics_storage: saved.analytics ? 'granted' : 'denied',
+        ad_user_data: saved.marketing ? 'granted' : 'denied',
+        ad_personalization: saved.marketing ? 'granted' : 'denied'
+      };
+      window.gtag && window.gtag('consent', 'update', map);
+    } catch {}
   }, []);
 
   function persist(next) {
@@ -25,6 +35,16 @@ export default function ConsentBanner() {
     setOpen(false);
     // Let tag loaders know consent changed
     document.dispatchEvent(new CustomEvent('consent:updated', { detail: next }));
+    // Update Google Consent Mode v2
+    try {
+      const map = {
+        ad_storage: next.marketing ? 'granted' : 'denied',
+        analytics_storage: next.analytics ? 'granted' : 'denied',
+        ad_user_data: next.marketing ? 'granted' : 'denied',
+        ad_personalization: next.marketing ? 'granted' : 'denied'
+      };
+      window.gtag && window.gtag('consent', 'update', map);
+    } catch {}
   }
 
   if (!open) return null;
@@ -52,4 +72,3 @@ export default function ConsentBanner() {
     </div>
   );
 }
-

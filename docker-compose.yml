@@ -10,8 +10,6 @@ services:
       # Tag/Experiment configuration (set as needed)
       - GTM_ID=
       - GA4_ID=
-      - MATOMO_URL=
-      - MATOMO_SITE_ID=
+      - MATOMO_TAG_MANAGER_CONTAINER_URL=
       - OPTIMIZELY_WEB_SNIPPET_URL=
       - ODP_SDK_URL=
-

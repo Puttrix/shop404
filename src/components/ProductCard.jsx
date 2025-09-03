@@ -11,7 +11,12 @@ export default function ProductCard({ product }) {
   return (
     <div className="card">
       <Link to={`/products/${product.id}`} className="block aspect-[4/3] bg-gray-100 overflow-hidden">
-        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover"
+          onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src='/images/placeholder.svg'; }}
+        />
       </Link>
       <div className="card-body">
         <div className="flex items-start justify-between gap-2">

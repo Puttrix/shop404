@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MockShop — Demo Ecommerce</title>
     <meta name="description" content="Mock ecommerce & donation site for testing tags and experiments." />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>
+      // Google Consent Mode v2: default-denied before any tags load
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      window.gtag = window.gtag || gtag;
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied'
+      });
+    </script>
     <script>
       // Simple runtime config loader. The server serves /config.json from env.
       window.__CONFIG__ = {};
@@ -20,4 +32,3 @@
     </noscript>
   </body>
   </html>
-

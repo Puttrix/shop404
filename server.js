@@ -11,8 +11,7 @@ const distDir = path.join(__dirname, 'dist');
 const runtimeConfig = {
   GTM_ID: process.env.GTM_ID || '',
   GA4_ID: process.env.GA4_ID || '',
-  MATOMO_URL: process.env.MATOMO_URL || '',
-  MATOMO_SITE_ID: process.env.MATOMO_SITE_ID || '',
+  MATOMO_TAG_MANAGER_CONTAINER_URL: process.env.MATOMO_TAG_MANAGER_CONTAINER_URL || '',
   OPTIMIZELY_WEB_SNIPPET_URL: process.env.OPTIMIZELY_WEB_SNIPPET_URL || '',
   ODP_SDK_URL: process.env.ODP_SDK_URL || ''
 };
@@ -30,4 +29,3 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`MockShop running on http://0.0.0.0:${port}`);
 });
-

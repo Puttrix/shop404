@@ -19,8 +19,8 @@ function ensureTagsLoaded() {
     // On consent change, we could reload tags or update tracking frameworks as needed.
   });
 
-  // GTM
-  if (cfg.GTM_ID && consentAllows('analytics')) {
+  // GTM (GTM-first): load regardless of consent; Consent Mode governs behavior
+  if (cfg.GTM_ID) {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
     const s = document.createElement('script');
@@ -33,31 +33,14 @@ function ensureTagsLoaded() {
     document.body.appendChild(ns);
   }
 
-  // GA4 direct (if provided and GTM not used)
-  if (cfg.GA4_ID && consentAllows('analytics')) {
-    const gtagScript = document.createElement('script');
-    gtagScript.async = true;
-    gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${cfg.GA4_ID}`;
-    document.head.appendChild(gtagScript);
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){window.dataLayer.push(arguments)}
-    window.gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', cfg.GA4_ID);
-  }
+  // GA4 direct removed for GTM-first approach
 
-  // Matomo (Tag Manager or tracker)
-  if ((cfg.MATOMO_URL && cfg.MATOMO_SITE_ID) && consentAllows('analytics')) {
-    window._paq = window._paq || [];
-    window._paq.push(['trackPageView']);
-    window._paq.push(['enableLinkTracking']);
-    (function() {
-      const u = cfg.MATOMO_URL.endsWith('/') ? cfg.MATOMO_URL : cfg.MATOMO_URL + '/';
-      window._paq.push(['setTrackerUrl', u + 'matomo.php']);
-      window._paq.push(['setSiteId', cfg.MATOMO_SITE_ID]);
-      const d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
+  // Matomo Tag Manager preferred; fallback to direct tracker if no MTM config
+  if (cfg.MATOMO_TAG_MANAGER_CONTAINER_URL && consentAllows('analytics')) {
+    window._mtm = window._mtm || [];
+    window._mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
+    const d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+    g.async = true; g.src = cfg.MATOMO_TAG_MANAGER_CONTAINER_URL; s.parentNode.insertBefore(g, s);
   }
 
   // Optimizely Web snippet URL (if provided) — experimentation
@@ -84,11 +67,11 @@ export function trackPage(name, extra = {}) {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ event: 'page_view', page_name: name, ...extra });
   }
-  // Matomo
-  if (window._paq && consentAllows('analytics')) {
-    window._paq.push(['setCustomUrl', window.location.href]);
-    window._paq.push(['setDocumentTitle', name]);
-    window._paq.push(['trackPageView']);
+  // Matomo: if using Tag Manager, push an event into _mtm
+  if (consentAllows('analytics')) {
+    if (window._mtm) {
+      window._mtm.push({ event: 'page_view', page_name: name, ...extra });
+    }
   }
 }
 
@@ -105,8 +88,8 @@ export function trackViewItem(product) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: 'view_item', ecommerce: { items: [{ item_id: product.id, item_name: product.name, price: product.price }] } });
-  if (window._paq) {
-    window._paq.push(['addEcommerceItem', product.id, product.name, product.category, product.price, 1]);
+  if (window._mtm) {
+    window._mtm.push({ event: 'view_item', ecommerce: { items: [{ item_id: product.id, item_name: product.name, price: product.price }] } });
   }
 }
 
@@ -114,8 +97,8 @@ export function trackAddToCart(product, qty) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: 'add_to_cart', ecommerce: { items: [{ item_id: product.id, item_name: product.name, price: product.price, quantity: qty }] } });
-  if (window._paq) {
-    window._paq.push(['addEcommerceItem', product.id, product.name, product.category, product.price, qty]);
+  if (window._mtm) {
+    window._mtm.push({ event: 'add_to_cart', ecommerce: { items: [{ item_id: product.id, item_name: product.name, price: product.price, quantity: qty }] } });
   }
 }
 
@@ -123,14 +106,17 @@ export function trackBeginCheckout(items) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: 'begin_checkout', ecommerce: { items } });
+  if (window._mtm) {
+    window._mtm.push({ event: 'begin_checkout', ecommerce: { items } });
+  }
 }
 
 export function trackPurchase(orderId, revenue, items) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: 'purchase', ecommerce: { transaction_id: orderId, value: revenue, currency: 'USD', items } });
-  if (window._paq) {
-    window._paq.push(['trackEcommerceOrder', orderId, revenue]);
+  if (window._mtm) {
+    window._mtm.push({ event: 'purchase', ecommerce: { transaction_id: orderId, value: revenue, currency: 'USD', items } });
   }
 }
 
@@ -138,5 +124,7 @@ export function trackDonationStep(step, data = {}) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: 'donation_step', step, ...data });
+  if (window._mtm) {
+    window._mtm.push({ event: 'donation_step', step, ...data });
+  }
 }
-
