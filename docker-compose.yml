@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  mockshop:
+    build: .
+    image: mockshop:latest
+    ports:
+      - "8080:3000"
+    environment:
+      - PORT=3000
+      # Tag/Experiment configuration (set as needed)
+      - GTM_ID=
+      - GA4_ID=
+      - MATOMO_URL=
+      - MATOMO_SITE_ID=
+      - OPTIMIZELY_WEB_SNIPPET_URL=
+      - ODP_SDK_URL=
+

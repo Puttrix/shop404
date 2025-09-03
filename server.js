@@ -1,0 +1,33 @@
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const app = express();
+const distDir = path.join(__dirname, 'dist');
+
+// Runtime config from env (used by tag loaders)
+const runtimeConfig = {
+  GTM_ID: process.env.GTM_ID || '',
+  GA4_ID: process.env.GA4_ID || '',
+  MATOMO_URL: process.env.MATOMO_URL || '',
+  MATOMO_SITE_ID: process.env.MATOMO_SITE_ID || '',
+  OPTIMIZELY_WEB_SNIPPET_URL: process.env.OPTIMIZELY_WEB_SNIPPET_URL || '',
+  ODP_SDK_URL: process.env.ODP_SDK_URL || ''
+};
+
+app.get('/config.json', (_req, res) => res.json(runtimeConfig));
+
+app.use(express.static(distDir, { index: false }));
+
+// SPA fallback
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(distDir, 'index.html'));
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`MockShop running on http://0.0.0.0:${port}`);
+});
+

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MockShop — Demo Ecommerce</title>
+    <meta name="description" content="Mock ecommerce & donation site for testing tags and experiments." />
+    <link rel="icon" href="/favicon.ico" />
+    <script>
+      // Simple runtime config loader. The server serves /config.json from env.
+      window.__CONFIG__ = {};
+      fetch('/config.json').then(r => r.ok ? r.json() : {}).then(cfg => { window.__CONFIG__ = cfg || {}; });
+    </script>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <noscript>
+      <div style="padding:8px;text-align:center;background:#fee2e2;color:#991b1b">This site works best with JavaScript enabled.</div>
+    </noscript>
+  </body>
+  </html>
+
