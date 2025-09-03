@@ -19,19 +19,7 @@ function ensureTagsLoaded() {
     // On consent change, we could reload tags or update tracking frameworks as needed.
   });
 
-  // GTM (GTM-first): load regardless of consent; Consent Mode governs behavior
-  if (cfg.GTM_ID) {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = `https://www.googletagmanager.com/gtm.js?id=${cfg.GTM_ID}`;
-    document.head.appendChild(s);
-    // Add noscript iframe
-    const ns = document.createElement('noscript');
-    ns.innerHTML = `<iframe src="https://www.googletagmanager.com/ns.html?id=${cfg.GTM_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`;
-    document.body.appendChild(ns);
-  }
+  // GTM is initialized in index.html after config loads (GTM-first)
 
   // GA4 direct removed for GTM-first approach
 

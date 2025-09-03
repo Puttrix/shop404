@@ -6,6 +6,8 @@
     <title>MockShop — Demo Ecommerce</title>
     <meta name="description" content="Mock ecommerce & donation site for testing tags and experiments." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Optional: set a GTM ID via meta for earliest load in dev or static hosting
+         <meta name="gtm-id" content="GTM-XXXXXXX" /> -->
     <script>
       // Google Consent Mode v2: default-denied before any tags load
       window.dataLayer = window.dataLayer || [];
@@ -17,11 +19,47 @@
         ad_user_data: 'denied',
         ad_personalization: 'denied'
       });
+      // Enable lightweight console markers locally
+      if (typeof window.__DEBUG_ANALYTICS__ === 'undefined') {
+        window.__DEBUG_ANALYTICS__ = (location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+      }
+      // Reusable GTM loader (idempotent)
+      window.__loadGTM = function(id){
+        try {
+          if (!id || window.__gtmLoaded) return;
+          window.__gtmLoaded = true;
+          if (window.__DEBUG_ANALYTICS__) console.info('[GTM] init start', { id, at: new Date().toISOString() });
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          if (window.__DEBUG_ANALYTICS__) console.info('[GTM] gtm.js event pushed', { id, at: new Date().toISOString() });
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtm.js?id=' + id;
+          document.head.appendChild(s);
+          if (window.__DEBUG_ANALYTICS__) console.info('[GTM] script tag appended', { id, src: s.src });
+          var ns = document.createElement('noscript');
+          ns.innerHTML = '<iframe src="https://www.googletagmanager.com/ns.html?id=' + id + '" height="0" width="0" style="display:none;visibility:hidden"></iframe>';
+          (document.body || document.documentElement).appendChild(ns);
+        } catch (e) {}
+      }
+      // If a meta tag is present, load GTM immediately (earliest path)
+      try {
+        var meta = document.querySelector('meta[name="gtm-id"]');
+        if (meta && meta.content) {
+          window.__loadGTM(meta.content);
+        }
+      } catch (e) {}
     </script>
     <script>
       // Simple runtime config loader. The server serves /config.json from env.
+      // After load, initialize GTM as early as possible (GTM-first) from runtime config.
       window.__CONFIG__ = {};
-      fetch('/config.json').then(r => r.ok ? r.json() : {}).then(cfg => { window.__CONFIG__ = cfg || {}; });
+      fetch('/config.json').then(r => r.ok ? r.json() : {}).then(cfg => {
+        window.__CONFIG__ = cfg || {};
+        if (cfg && cfg.GTM_ID) {
+          window.__loadGTM(cfg.GTM_ID);
+        }
+      });
     </script>
   </head>
   <body class="bg-gray-50 text-gray-900">
