@@ -81,6 +81,25 @@ Quick outline:
 - ODP: if you have a web SDK snippet, set `ODP_SDK_URL` and configure inside your tag manager.
  - Donation defaults: if the user opts in, the app stores `donation_default_interval=monthly` in `localStorage` to preselect monthly in future sessions.
 
+## Matomo Tag Manager (Quick Setup)
+- Prereq: Create an MTM container for your Matomo site and add a “Matomo Configuration” tag (Site ID + Tracker URL).
+- Variables (DLV): `ecommerce`, `ecommerce.items`, `ecommerce.transaction_id`, `ecommerce.value`, `ecommerce.currency`, `ecommerce.tax`, `ecommerce.shipping`.
+- Trigger: Custom Event `evt.purchase` (Event name equals `purchase`).
+- Tag (Ecommerce Order):
+  - Order ID → `{{ecommerce.transaction_id}}`
+  - Grand Total → `{{ecommerce.value}}`
+  - Currency → `{{ecommerce.currency}}` (if supported)
+  - Items → `{{ecommerce.items}}` (if template supports array); otherwise use Custom HTML with `_paq`:
+    ```html
+    <script>
+      var e={{ecommerce}}||{}, items=e.items||[];
+      items.forEach(function(i){ _paq.push(['addEcommerceItem', i.item_id, i.item_name, i.item_category, i.price, i.quantity||1]); });
+      _paq.push(['trackEcommerceOrder', e.transaction_id, e.value, e.subtotal||e.value, e.tax||0, e.shipping||0]);
+    </script>
+    ```
+- Notes: The app includes `currency` (USD), and adds `tax`/`shipping` on purchases. MTM loads only when analytics consent is granted.
+- Full guide: `docs/MATOMO_ECOMMERCE_MAPPING.md`
+
 ## Structure
 - `src/pages`: pages and donation wizard steps
 - `src/components`: shared UI and consent banner
@@ -100,6 +119,94 @@ Quick outline:
 ## Testing
 - Run analytics payload checks: `npm run test:analytics`
   - Verifies GA4 payload structure (list context, category hierarchy, currency on cart/checkout, purchase tax/shipping) and donation error tracking.
+
+## For Developers: dataLayer and _mtm pushes
+You can emit analytics events either via the helper functions in `src/utils/analytics.js` or by pushing directly to `window.dataLayer` (GTM/GA4) and `window._mtm` (Matomo Tag Manager). The helpers automatically respect consent and load tags when needed.
+
+Quick start with helpers:
+
+```js
+import { trackPage, trackProductImpression, trackViewItem, trackAddToCart, trackBeginCheckout, trackPurchase, trackDonationStep } from './src/utils/analytics.js';
+
+trackPage('Home');
+trackProductImpression(product, { item_list_name: 'Home Featured', item_list_id: 'home_grid', index: 1 });
+trackViewItem(product);
+trackAddToCart(product, 2);
+trackBeginCheckout(itemsArray);
+trackPurchase('ORD-123', 121.80, itemsArray, { tax: 9.80, shipping: 5.00, coupon: 'SUMMER10' });
+trackDonationStep('details', { error: 'validation', fields: ['email'] });
+```
+
+Direct push reference (GA4-style payloads):
+
+```js
+// Always use consistent schemas and include currency where applicable
+window.dataLayer = window.dataLayer || [];
+window.dataLayer.push({ event: 'page_view', page_name: 'Home' });
+
+window.dataLayer.push({
+  event: 'view_item_list',
+  ecommerce: {
+    item_list_name: 'All Products',
+    item_list_id: 'products_all',
+    items: [{
+      item_id: 'p-1',
+      item_name: 'Aurora Hoodie',
+      price: 59.0,
+      // Category hierarchy (helpers also add item_category_path for Matomo)
+      item_category: 'Apparel',
+      item_category2: 'Hoodies',
+      index: 1
+    }]
+  }
+});
+
+window.dataLayer.push({
+  event: 'view_item',
+  ecommerce: { items: [{ item_id: 'p-1', item_name: 'Aurora Hoodie', price: 59.0, item_category: 'Apparel' }] }
+});
+
+window.dataLayer.push({
+  event: 'add_to_cart',
+  ecommerce: { currency: 'USD', items: [{ item_id: 'p-1', item_name: 'Aurora Hoodie', price: 59.0, quantity: 2 }] }
+});
+
+window.dataLayer.push({
+  event: 'begin_checkout',
+  ecommerce: { currency: 'USD', items: itemsArray }
+});
+
+window.dataLayer.push({
+  event: 'purchase',
+  ecommerce: {
+    transaction_id: 'ORD-123',
+    value: 121.80,
+    currency: 'USD',
+    tax: 9.80,
+    shipping: 5.00,
+    items: itemsArray
+  }
+});
+
+// Donation custom step
+window.dataLayer.push({ event: 'donation_step', step: 'payment', amount: 25, interval: 'monthly' });
+```
+
+Mirroring to Matomo Tag Manager:
+
+```js
+if (window._mtm) {
+  window._mtm.push({ event: 'add_to_cart', ecommerce: { currency: 'USD', items: [{ item_id: 'p-1', item_name: 'Aurora Hoodie', price: 59.0, quantity: 2 }] } });
+}
+```
+
+Best practices:
+- Push events after user interactions or route changes. The consent banner gates tag behavior; early pushes are buffered in `dataLayer`.
+- Include `currency` on cart/checkout/purchase; keep a unique `transaction_id` for each order.
+- Use GA4 item fields exactly (`item_id`, `item_name`, `price`, `quantity`, `item_category...item_category5`).
+- For list impressions, include `item_list_name`, `item_list_id`, and per‑item `index`.
+- For category hierarchies, prefer `product.categoryPath = ['Level1','Level2']` to have helpers emit the right GA4 fields.
+- Verify with GTM Preview (and Matomo preview) and see `/docs/*` guides for mappings and QA.
 
 ## Debugging
 - Console markers show GTM lifecycle when running locally (init start, event push, script append). Toggle with `window.__DEBUG_ANALYTICS__ = true|false`.
