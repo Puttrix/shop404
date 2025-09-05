@@ -20,7 +20,7 @@ function applyTheme(theme) {
   } catch {}
 }
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ variant = 'button' }) {
   const [theme, setTheme] = useState(getInitialTheme);
 
   useEffect(() => {
@@ -42,6 +42,18 @@ export default function ThemeToggle() {
     return THEMES[(i + 1) % THEMES.length];
   }, [theme]);
 
+  if (variant === 'icon') {
+    return (
+      <button
+        className="icon-btn"
+        onClick={() => setTheme(next)}
+        aria-label={`Theme: ${label} (click to switch)`}
+        title={`Theme: ${label} (click to switch)`}
+      >
+        <span role="img" aria-hidden="true">{icon}</span>
+      </button>
+    );
+  }
   return (
     <button
       className="btn-secondary"
