@@ -47,7 +47,7 @@ Notes:
 
 ## Verifying Analytics
 - With `GTM_ID` set, check Network tab for `gtm.js` and GTM Preview mode
-- With `MATOMO_TAG_MANAGER_CONTAINER_URL`, confirm the MTM container script loads after analytics consent
+- With `MATOMO_TAG_MANAGER_CONTAINER_URL`, confirm the MTM container script loads on page start; tag firing is governed by Matomo consent (`requireConsent`) and app-emitted `cookies_*` events
 - Use docs:
   - `docs/ANALYTICS_PARITY.md` for event mapping + QA checklist
   - `docs/MATOMO_ECOMMERCE_MAPPING.md` for MTM variables/tags
@@ -57,7 +57,7 @@ Notes:
 - Port blocked: Ensure host port `8080` is open in firewall/security groups
 - Private repo: Provide Git credentials (or deploy from a mirrored public repo)
 - Build fails on ARM: The Node `alpine` images support ARM64/AMD64; ensure the agent node architecture matches
-- No tags firing: Check `/config.json` shows the expected envs and confirm Consent Mode is granted in the app banner
+- No tags firing: Check `/config.json` shows the expected envs and confirm Consent Mode is granted in the app banner (GA4) and that `cookies_*` events have fired / Matomo consent is remembered
 - Matomo not loading: Ensure `MATOMO_TAG_MANAGER_CONTAINER_URL` points to a valid container script URL
 - GTM not loading: Ensure `GTM_ID` is set and DNS allows `googletagmanager.com`
 - Env changes not reflected: You might be viewing a cached SPA; hard-refresh or clear cache, and confirm stack updated successfully
@@ -68,3 +68,23 @@ Notes:
 - Stack details — ports and logs: `docs/images/portainer_stack_details.png`
 
 Add screenshots to the paths above if you want them rendered in the repo.
+
+## Auto-Update From Git (Recommended)
+Two options: polling or webhook.
+
+Polling
+- In the Stack form, enable “Auto update” and choose a schedule. Portainer will pull the repo and redeploy on changes.
+
+Webhook
+- In Portainer: Stacks → your stack → Webhooks → Create.
+- Copy the webhook URL.
+- In GitHub: Settings → Webhooks → Add webhook:
+  - Payload URL: the Portainer webhook URL
+  - Content type: `application/json`
+  - Secret: set a random token (optional)
+  - Which events: Just the push event
+- On push to the selected branch, Portainer redeploys the stack.
+
+Notes
+- If build cache issues arise, toggle “Re-pull image” or add a cache-busting arg.
+- For private repos over SSH, add a Portainer Git credential or deploy from a mirror.
