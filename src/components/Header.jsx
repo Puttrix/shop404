@@ -1,13 +1,26 @@
 import { Link, NavLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCart } from '../state/cartState.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 
 export default function Header() {
   const { state } = useCart();
   const count = state.items.reduce((s,i)=>s+i.qty,0);
-  const [open, setOpen] = useState(false);
-  function close(){ setOpen(false); }
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); // for animation
+  function openMenu(){
+    if (menuVisible) return;
+    setMenuVisible(true);
+    // allow render, then animate in
+    requestAnimationFrame(() => setMenuOpen(true));
+  }
+  function closeMenu(){
+    if (!menuVisible) return;
+    setMenuOpen(false);
+    setTimeout(() => setMenuVisible(false), 300); // match transition duration
+  }
+  function toggleMenu(){ menuVisible ? closeMenu() : openMenu(); }
+  function close(){ closeMenu(); }
   return (
     <header className="bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 sticky top-0 z-40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -38,9 +51,9 @@ export default function Header() {
           <button
             className="icon-btn"
             aria-label="Open menu"
-            aria-expanded={open}
+            aria-expanded={menuVisible && menuOpen}
             aria-controls="mobile-menu"
-            onClick={()=>setOpen(v=>!v)}
+            onClick={toggleMenu}
           >
             {/* Hamburger icon */}
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,9 +63,9 @@ export default function Header() {
         </div>
       </div>
       {/* Mobile menu panel */}
-      {open && (
+      {menuVisible && (
         <div>
-          <div className="md:hidden absolute inset-x-0 top-16 z-40 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow">
+          <div className={`md:hidden absolute inset-x-0 top-16 z-40 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow transform transition-all duration-300 ease-out motion-reduce:transition-none ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`}>
             <nav id="mobile-menu" className="px-4 py-3 space-y-2">
               <NavLink to="/" onClick={close} className={({isActive})=>`block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Home</NavLink>
               <NavLink to="/products" onClick={close} className={({isActive})=>`block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Products</NavLink>
@@ -61,7 +74,7 @@ export default function Header() {
             </nav>
           </div>
           {/* Backdrop */}
-          <div className="md:hidden fixed inset-0 z-30 bg-black/30" onClick={close} />
+          <div className={`md:hidden fixed inset-0 z-30 bg-black/30 transition-opacity duration-300 motion-reduce:transition-none ${menuOpen ? 'opacity-100' : 'opacity-0'}`} onClick={close} />
         </div>
       )}
     </header>
