@@ -89,6 +89,8 @@ Option B — Pull from GHCR (recommended for CI/CD)
 Notes
 - If your GHCR namespace is private, configure Portainer’s registry credentials for `ghcr.io` with a PAT that has `read:packages`.
 - You can pin to a specific tag or digest to control rollouts.
+
+Important: GHCR repository names must be lowercase. This repo publishes to `ghcr.io/puttrix/mocksite`. The provided `docker-compose.registry.yml` already uses the lowercase path.
 - Matomo not loading: Ensure `MATOMO_TAG_MANAGER_CONTAINER_URL` points to a valid container script URL
 - GTM not loading: Ensure `GTM_ID` is set and DNS allows `googletagmanager.com`
 - Env changes not reflected: You might be viewing a cached SPA; hard-refresh or clear cache, and confirm stack updated successfully

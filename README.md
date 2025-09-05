@@ -72,7 +72,7 @@ Run from GHCR image
 docker run -p 8080:3000 \
   -e GTM_ID=GTM-XXXXXXX \
   -e MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js \
-  ghcr.io/Puttrix/MockSite:latest
+  ghcr.io/puttrix/mocksite:latest
 ```
 
 ## Portainer (Deploy from Git)
