@@ -17,3 +17,13 @@ html, body, #root { height: 100%; }
 /* Icon button for compact actions on mobile */
 .icon-btn { @apply inline-flex items-center justify-center rounded-md p-2 bg-white text-gray-900 ring-1 ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:hover:bg-gray-700; }
 .badge-count { @apply absolute -top-1 -right-1 min-w-4 h-4 px-1 text-[10px] leading-4 rounded-full bg-brand-600 text-white text-center; }
+
+/* Style variant: Neo (surprising, modern) */
+.style-neo .btn-primary { @apply rounded-full bg-gradient-to-r from-brand-500 to-fuchsia-500 text-white shadow-md hover:opacity-90; }
+.style-neo .btn-secondary { @apply rounded-full bg-white/70 dark:bg-gray-800/70 backdrop-blur ring-1 ring-gray-300/60 dark:ring-gray-700/60 hover:bg-white/80 dark:hover:bg-gray-800/80; }
+.style-neo .badge { @apply rounded-full bg-white/50 dark:bg-gray-700/60 backdrop-blur; }
+.style-neo .card { @apply bg-white/70 dark:bg-gray-800/60 backdrop-blur-md border-white/60 dark:border-gray-700/60 shadow-xl transition-transform duration-200; }
+.style-neo .card:hover { @apply -translate-y-0.5; }
+.style-neo header { @apply bg-white/70 dark:bg-gray-800/60 backdrop-blur; }
+.style-neo footer { @apply bg-white/70 dark:bg-gray-800/60 backdrop-blur; }
+.style-neo .hero-section { @apply bg-gradient-to-br from-indigo-50 via-white to-fuchsia-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-900; }

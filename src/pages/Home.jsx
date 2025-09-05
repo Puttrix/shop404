@@ -11,7 +11,7 @@ export default function Home() {
   }, []);
   return (
     <div>
-      <section className="bg-gradient-to-br from-brand-50 to-white dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <section className="hero-section bg-gradient-to-br from-brand-50 to-white dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>

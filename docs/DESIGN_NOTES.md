@@ -30,3 +30,12 @@ Key files:
 
 ## Notes
 - These UI details are separate from analytics behavior and can be changed without impacting GTM/GA4/MTM integrations.
+
+## Style Variants
+- Two interchangeable style shells: `classic` (default) and `neo` (modern/glass/gradient).
+- Toggle component: `src/components/StyleToggle.jsx` (button or icon variants).
+- Early apply: `index.html` reads `localStorage.style` and adds `style-neo` to `<html>` before paint.
+- CSS overrides live in `src/index.css` under `.style-neo` selectors:
+  - Pills and gradients for buttons, glass cards with backdrop-blur, subtle hover lift, blurred header/footer.
+  - Hero background adjusts when `.hero-section` wrapper is present.
+- Persisted in `localStorage.style` so you can switch back easily without code changes.

@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useCart } from '../state/cartState.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
+import StyleToggle from './StyleToggle.jsx';
 
 export default function Header() {
   const { state } = useCart();
@@ -37,11 +38,13 @@ export default function Header() {
         </div>
         {/* Desktop actions */}
         <div className="hidden md:flex items-center gap-3">
+          <StyleToggle />
           <ThemeToggle />
           <Link to="/cart" className="btn-secondary" onClick={close}><span className="mr-2">🛒</span> Cart ({count})</Link>
         </div>
         {/* Mobile actions */}
         <div className="flex md:hidden items-center gap-2">
+          <StyleToggle variant="icon" />
           <ThemeToggle variant="icon" />
           <Link to="/cart" className="relative icon-btn" onClick={close} aria-label="Cart">
             <span role="img" aria-hidden="true">🛒</span>

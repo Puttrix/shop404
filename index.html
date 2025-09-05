@@ -94,6 +94,16 @@
       } catch (e) {}
     </script>
     <script>
+      // Style variant: apply earliest (classic|neo). Defaults to classic.
+      (function(){
+        try {
+          var style = localStorage.getItem('style');
+          var root = document.documentElement;
+          if (style === 'neo') root.classList.add('style-neo');
+        } catch (e) {}
+      })();
+    </script>
+    <script>
       // Simple runtime config loader. The server serves /config.json from env.
       // After load, initialize GTM as early as possible (GTM-first) from runtime config.
       window.__CONFIG__ = {};
