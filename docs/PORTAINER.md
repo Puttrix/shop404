@@ -16,13 +16,14 @@ This guide shows how to deploy MockShop on Portainer using “Stacks → Add sta
 
 2) Environment variables (in the Stack form)
 - `PORT=3000` (internal app port)
+- `PUBLISH_PORT=8080` (host port; change if 8080 is taken, e.g., `8443` or `8081`)
 - `GTM_ID=GTM-XXXXXXX` (optional but recommended)
 - `MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js` (optional)
 - `OPTIMIZELY_WEB_SNIPPET_URL=https://cdn.optimizely.com/js/PROJECT_ID.js` (optional)
 - `ODP_SDK_URL=https://cdn.foqt.com/v1/odp.js` (optional)
 
 3) Deploy the stack
-- Published port: `8080` (host) → `3000` (container) as defined in `docker-compose.yml`
+- Published port: `${PUBLISH_PORT}` (host, defaults to `8080`) → `3000` (container)
 - Open `http://YOUR-HOST:8080`
 - Verify `http://YOUR-HOST:8080/config.json` reflects your env vars
 
@@ -55,6 +56,7 @@ Notes:
 
 ## Common Pitfalls
 - Port blocked: Ensure host port `8080` is open in firewall/security groups
+ - 8080 already in use: Set `PUBLISH_PORT` to a free port (e.g., `8081`) in the Stack env vars. Access the app at `http://YOUR-HOST:${PUBLISH_PORT}`.
 - Private repo: Provide Git credentials (or deploy from a mirrored public repo)
 - Build fails on ARM: The Node `alpine` images support ARM64/AMD64; ensure the agent node architecture matches
 - No tags firing: Check `/config.json` shows the expected envs and confirm Consent Mode is granted in the app banner (GA4) and that `cookies_*` events have fired / Matomo consent is remembered
