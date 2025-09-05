@@ -49,7 +49,36 @@ Key events emitted:
 Matomo via Tag Manager can consume the same ecommerce events from `_mtm`/`dataLayer`.
 
 ## Docker
-Build and run locally:
+
+Compose (build locally)
+
+```bash
+# In the repo root, create a .env with your settings (example):
+cat > .env << 'EOF'
+PORT=3000
+PUBLISH_PORT=8080
+GTM_ID=GTM-XXXXXXX
+MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js
+OPTIMIZELY_WEB_SNIPPET_URL=
+ODP_SDK_URL=
+EOF
+
+# Bring up the app (builds the image locally)
+docker compose up -d
+
+# App is at http://localhost:${PUBLISH_PORT:-8080}
+```
+
+Compose (pull from GHCR)
+
+```bash
+# Same .env as above (PORT, PUBLISH_PORT, GTM_ID, etc.)
+docker compose -f docker-compose.registry.yml up -d
+
+# App is at http://localhost:${PUBLISH_PORT:-8080}
+```
+
+docker run (build locally)
 
 ```bash
 docker build -t mockshop .
@@ -67,7 +96,7 @@ Publish image to GHCR (CI)
 - This repo includes a GitHub Actions workflow (`.github/workflows/publish.yml`) that builds and pushes `ghcr.io/OWNER/REPO` on pushes to `main` and tags.
 - Run via Actions or manually with `workflow_dispatch`.
 
-Run from GHCR image
+docker run (from GHCR image)
 ```bash
 docker run -p 8080:3000 \
   -e GTM_ID=GTM-XXXXXXX \
