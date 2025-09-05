@@ -127,6 +127,7 @@ Quick outline:
    - `index.html` sets `<meta name="robots" content="noindex, nofollow">`.
    - `server.js` sets the `X-Robots-Tag: noindex, nofollow` header.
    Remove or adjust these if you want the site indexed.
+ - Design shell: The Neo style is enabled by default (`style-neo` on `<html>`). The Classic toggle is hidden; re-enable by adding `StyleToggle` back into `Header.jsx` and adjusting the loader in `index.html`.
 
 ## Google Tag Manager / GA4 (Quick Setup)
 - Import variables + triggers (optional): `docs/gtm/container_mockshop.json` (Workspace import)
@@ -307,6 +308,9 @@ window.dataLayer.push({ event: 'donation_step', step: 'payment', amount: 25, int
   - Run: `npm run images:webp` to create `.webp` next to `.jpg/.png` files.
 - Style toggle:
   - Photos are used regardless of theme; switching `Classic`/`Neo` changes the chrome, not the photo mapping.
+ - Hero images:
+   - Place `public/images/hero_l.png` (light) and `public/images/hero_d.png` (dark); run `npm run images:webp` to generate `*.webp`.
+   - The hero switches live with the theme toggle; prefers WebP with PNG fallback.
 
 Mirroring to Matomo Tag Manager (use `update_cart`):
 

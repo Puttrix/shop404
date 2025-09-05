@@ -41,6 +41,9 @@ Purpose: A lightweight, living document to capture ideas, plans, and progress.
    - Add `add_payment_info`, `add_shipping_info`, promotions impressions/clicks, and refunds examples.
  - [ ] Matomo ecommerce — extensions (cart updates, item/category enrichment)
    - Add `trackEcommerceCartUpdate`, category hierarchies, and product dimension enrichment.
+ - [ ] Image pipeline polish
+   - Add lazy-loading thresholds and skeletons; optional blur-up placeholders.
+   - Optional CDN path config for photos.
   - [ ] Server‑side GTM (sGTM) option
      - Add optional first‑party endpoint config (e.g., `GTM_SERVER_CONTAINER_URL`) and route measurement via sGTM.
      - Forward consent to sGTM; document Consent Mode + sGTM interplay and client hints.
@@ -62,7 +65,11 @@ Purpose: A lightweight, living document to capture ideas, plans, and progress.
  - [x] Matomo Tag Manager adoption (MTM-only) — 2025‑09‑03
  - [x] GA4 ecommerce item schema examples per event — 2025‑09‑05
  - [x] Sample GTM container mapping guide — 2025‑09‑05
- - [x] Donation: support monthly vs one‑time UX nudge and defaulting — 2025‑09‑05
+- [x] Donation: support monthly vs one‑time UX nudge and defaulting — 2025‑09‑05
+ - [x] Block indexing in prod (robots meta/header/robots.txt) — 2025‑09‑05
+ - [x] Responsive header with mobile menu + animation — 2025‑09‑05
+ - [x] Neo design shell (classic toggle hidden by default) — 2025‑09‑05
+ - [x] Product photos + WebP script (`npm run images:webp`); hero light/dark switching — 2025‑09‑05
 
 ## Parking Lot
 - [ ] ODP web SDK example usage (identify/track) contingent on account access

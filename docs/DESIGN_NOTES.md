@@ -17,6 +17,7 @@ Key files:
 - `tailwind.config.js` (dark mode config)
 - `src/components/ThemeToggle.jsx`
 - `src/index.css` (utility classes)
+ - `src/components/HeroImage.jsx` (switches hero between hero_l/hero_d as theme changes)
 
 ## Responsive Header
 - Desktop (`md+`): full nav (Home/Products/Donate), theme button, and cart button with count.
@@ -41,6 +42,6 @@ Key files:
 - Persisted in `localStorage.style` so you can switch back easily without code changes.
 
 ### Photos in Neo Style
-- When `style-neo` is active, product images switch to curated stock photos (Unsplash) via URLs in `src/utils/images.js`.
-- To use your own photos, replace the `PHOTOS` array with your URLs (or host locally and point to `/images/your-photo.jpg`).
-- Licensing: current URLs reference Unsplash images; attribution is recommended if you publish. Replace with your licensed assets for production.
+- Product images are served from `public/images/product_photos` using `ProductImage.jsx` which tries multiple filename patterns and extensions (webp → jpg → jpeg → png) based on product name.
+- Preferred format is WebP; use `npm run images:webp` to create `*.webp` alongside JPG/PNG.
+- You can still enable curated remote photos by customizing `src/utils/images.js`, but local assets are recommended for stability and licensing.
