@@ -1,14 +1,10 @@
 services:
   mockshop:
-    build: .
-    image: mockshop:latest
-    pull_policy: build
+    image: ghcr.io/Puttrix/MockSite:latest
     ports:
-      # Change the host port by setting PUBLISH_PORT (defaults to 8080)
       - "${PUBLISH_PORT:-8080}:3000"
     environment:
       - PORT=3000
-      # Tag/Experiment configuration (set as needed)
       - GTM_ID=
       - MATOMO_TAG_MANAGER_CONTAINER_URL=
       - OPTIMIZELY_WEB_SNIPPET_URL=

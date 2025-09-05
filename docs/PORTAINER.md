@@ -35,6 +35,8 @@ This guide shows how to deploy MockShop on Portainer using “Stacks → Add sta
 - `OPTIMIZELY_WEB_SNIPPET_URL`: Full snippet URL (if testing experiments)
 - `ODP_SDK_URL`: ODP web SDK URL (if applicable)
 - `PORT`: Internal app port; defaults to `3000`
+- `PUBLISH_PORT`: Host port published; defaults to `8080`
+- `REGISTRY_IMAGE` (optional): Only if you override the default image. The provided `docker-compose.registry.yml` uses `ghcr.io/Puttrix/MockSite:latest` by default.
 
 Notes:
 - The server exposes these at `/config.json` for the SPA to initialize tag loaders.
@@ -60,6 +62,33 @@ Notes:
 - Private repo: Provide Git credentials (or deploy from a mirrored public repo)
 - Build fails on ARM: The Node `alpine` images support ARM64/AMD64; ensure the agent node architecture matches
 - No tags firing: Check `/config.json` shows the expected envs and confirm Consent Mode is granted in the app banner (GA4) and that `cookies_*` events have fired / Matomo consent is remembered
+
+### Pull vs Build (stack updates)
+- Error: `pull access denied for mockshop ... requested access to the resource is denied`
+  - Cause: The stack defines `image: mockshop:latest` but it’s built locally (not published). Using “Pull and redeploy” runs `docker compose pull`, which tries to pull from a registry and fails.
+  - Fix options:
+    - Preferred: Use “Update the stack” or let GitOps auto‑update redeploy the stack, which will build from source (this repo’s compose includes `pull_policy: build`).
+    - Or publish to a registry (e.g., `ghcr.io/you/mockshop:TAG`), update `image:` accordingly, and then “Pull and redeploy” will work.
+    - Avoid “Pull and redeploy” for stacks that build images from source and aren’t using a registry.
+
+## Deploying From GitHub Container Registry (GHCR)
+Option A — Build on Portainer (no registry)
+- Use `docker-compose.yml` as Compose path (includes `build: .`).
+- Set env vars as needed; click “Deploy the stack” or rely on GitOps polling/webhook.
+- Use “Update the stack” to rebuild on changes (not “Pull and redeploy”).
+
+Option B — Pull from GHCR (recommended for CI/CD)
+1) Enable GitHub Actions in your repo and publish images to GHCR:
+   - The repo includes `.github/workflows/publish.yml` which builds multi‑arch images and pushes to `ghcr.io/OWNER/REPO` on pushes to `main` and tags.
+   - Ensure Actions has permission to write packages (default for `GITHUB_TOKEN`).
+2) In Portainer, set Compose path to `docker-compose.registry.yml` and add env vars:
+   - `PUBLISH_PORT=8081` (if 8080 is used)
+   - Other analytics envs as needed
+3) Deploy the stack. Use “Pull and redeploy” for updates (images are pulled from GHCR).
+
+Notes
+- If your GHCR namespace is private, configure Portainer’s registry credentials for `ghcr.io` with a PAT that has `read:packages`.
+- You can pin to a specific tag or digest to control rollouts.
 - Matomo not loading: Ensure `MATOMO_TAG_MANAGER_CONTAINER_URL` points to a valid container script URL
 - GTM not loading: Ensure `GTM_ID` is set and DNS allows `googletagmanager.com`
 - Env changes not reflected: You might be viewing a cached SPA; hard-refresh or clear cache, and confirm stack updated successfully

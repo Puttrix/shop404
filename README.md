@@ -63,6 +63,18 @@ docker run -p 8080:3000 \
 
 App serves at http://localhost:8080. `/config.json` reflects env settings.
 
+Publish image to GHCR (CI)
+- This repo includes a GitHub Actions workflow (`.github/workflows/publish.yml`) that builds and pushes `ghcr.io/OWNER/REPO` on pushes to `main` and tags.
+- Run via Actions or manually with `workflow_dispatch`.
+
+Run from GHCR image
+```bash
+docker run -p 8080:3000 \
+  -e GTM_ID=GTM-XXXXXXX \
+  -e MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js \
+  ghcr.io/Puttrix/MockSite:latest
+```
+
 ## Portainer (Deploy from Git)
 See `docs/PORTAINER.md` for full steps, env matrix, and troubleshooting.
 Quick outline:
