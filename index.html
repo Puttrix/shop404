@@ -42,6 +42,25 @@
           (document.body || document.documentElement).appendChild(ns);
         } catch (e) {}
       }
+      // Reusable Matomo Tag Manager loader (idempotent)
+      window.__loadMTM = function(containerUrl){
+        try {
+          if (!containerUrl || window.__mtmLoaded) return;
+          window.__mtmLoaded = true;
+          if (window.__DEBUG_ANALYTICS__) console.info('[MTM] init start', { containerUrl, at: new Date().toISOString() });
+          window._mtm = window._mtm || [];
+          window._mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
+          var s = document.getElementsByTagName('script')[0];
+          var g = document.createElement('script');
+          g.async = true; g.src = containerUrl; s.parentNode.insertBefore(g, s);
+          if (window.__DEBUG_ANALYTICS__) console.info('[MTM] script tag appended', { src: g.src });
+        } catch (e) {}
+      }
+      // Matomo tracker consent: require consent before MTM loads so tracker reads it from the queue
+      try {
+        window._paq = window._paq || [];
+        window._paq.push(['requireConsent']);
+      } catch (e) {}
       // If a meta tag is present, load GTM immediately (earliest path)
       try {
         var meta = document.querySelector('meta[name="gtm-id"]');
@@ -58,6 +77,9 @@
         window.__CONFIG__ = cfg || {};
         if (cfg && cfg.GTM_ID) {
           window.__loadGTM(cfg.GTM_ID);
+        }
+        if (cfg && cfg.MATOMO_TAG_MANAGER_CONTAINER_URL) {
+          window.__loadMTM(cfg.MATOMO_TAG_MANAGER_CONTAINER_URL);
         }
       });
     </script>

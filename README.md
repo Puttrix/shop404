@@ -100,9 +100,9 @@ Quick outline:
 - Guide: `docs/GTM_CONTAINER.md`
 
 ## Matomo Tag Manager (Quick Setup)
-- Prereq: Create an MTM container for your Matomo site and add a “Matomo Configuration” tag (Site ID + Tracker URL).
-- Variables (DLV): `ecommerce`, `ecommerce.items`, `ecommerce.transaction_id`, `ecommerce.value`, `ecommerce.currency`, `ecommerce.tax`, `ecommerce.shipping`.
-- Trigger: Custom Event `evt.purchase` (Event name equals `purchase`).
+- Prereq: Create an MTM container for your Matomo site and add a “Matomo Configuration” tag (Site ID + Tracker URL). The app loads MTM early; consent is enforced via `_paq.requireConsent` + consent events.
+- Variables (DLV): `ecommerce`, `ecommerce.items`, `ecommerce.transaction_id`, `ecommerce.value`, `ecommerce.currency`, `ecommerce.tax`, `ecommerce.shipping`, plus `consent.*` from `cookies_update`.
+- Triggers: `evt.update_cart`, `evt.begin_checkout`, `evt.purchase`, `evt.donation_step`, and consent events `cookies_*` as needed.
 - Tag (Ecommerce Order):
   - Order ID → `{{ecommerce.transaction_id}}`
   - Grand Total → `{{ecommerce.value}}`
@@ -115,8 +115,12 @@ Quick outline:
       _paq.push(['trackEcommerceOrder', e.transaction_id, e.value, e.subtotal||e.value, e.tax||0, e.shipping||0]);
     </script>
     ```
-- Notes: The app includes `currency` (USD), and adds `tax`/`shipping` on purchases. MTM loads only when analytics consent is granted.
-- Full guide: `docs/MATOMO_ECOMMERCE_MAPPING.md`
+- Notes: The app includes `currency` (USD); purchases include `tax`/`shipping` when available. Full guide: `docs/MATOMO_ECOMMERCE_MAPPING.md`.
+
+Cart updates (`update_cart`):
+- Matomo uses `update_cart` and expects FULL CART state, not just the added item.
+- The app emits `_mtm` `update_cart` on add/remove/quantity changes and at `begin_checkout` for parity.
+- See “Cart Update with FULL CART” snippet and `syncMatomoCart` helper in `docs/MATOMO_ECOMMERCE_MAPPING.md`.
 
 ## Structure
 - `src/pages`: pages and donation wizard steps
@@ -137,6 +141,8 @@ Quick outline:
 ## Testing
 - Run analytics payload checks: `npm run test:analytics`
   - Verifies GA4 payload structure (list context, category hierarchy, currency on cart/checkout, purchase tax/shipping) and donation error tracking.
+- Run Matomo cart sync checks: `npm run test:matomo`
+  - Verifies `_mtm` `update_cart` emits FULL CART on add/remove/quantity change and at `begin_checkout`, plus mapping of item quantities.
 
 ## For Developers: dataLayer and _mtm pushes
 You can emit analytics events either via the helper functions in `src/utils/analytics.js` or by pushing directly to `window.dataLayer` (GTM/GA4) and `window._mtm` (Matomo Tag Manager). The helpers automatically respect consent and load tags when needed.
@@ -144,7 +150,7 @@ You can emit analytics events either via the helper functions in `src/utils/anal
 Quick start with helpers:
 
 ```js
-import { trackPage, trackProductImpression, trackViewItem, trackAddToCart, trackBeginCheckout, trackPurchase, trackDonationStep } from './src/utils/analytics.js';
+import { trackPage, trackProductImpression, trackViewItem, trackAddToCart, trackBeginCheckout, trackPurchase, trackDonationStep, syncMatomoCart } from './src/utils/analytics.js';
 
 trackPage('Home');
 trackProductImpression(product, { item_list_name: 'Home Featured', item_list_id: 'home_grid', index: 1 });
@@ -153,6 +159,38 @@ trackAddToCart(product, 2);
 trackBeginCheckout(itemsArray);
 trackPurchase('ORD-123', 121.80, itemsArray, { tax: 9.80, shipping: 5.00, coupon: 'SUMMER10' });
 trackDonationStep('details', { error: 'validation', fields: ['email'] });
+// Optional: keep Matomo cart parity in custom UIs
+syncMatomoCart(itemsArray);
+
+## Consent Events (Matomo)
+- The banner emits `_mtm` consent events to help gate MTM tags:
+  - `cookies_necessary`, `cookies_functional`, `cookies_statistical` (analytics), `cookies_marketing`
+- It also queues `_paq.requireConsent` early, then calls `_paq.rememberConsentGiven()` / `_paq.forgetConsentGiven()` on user choice.
+- See `docs/MATOMO_ECOMMERCE_MAPPING.md` for MTM triggers, consent DLVs, and examples.
+
+Consent events table (quick reference):
+
+| Event | Purpose | Fires when |
+|---|---|---|
+| `cookies_necessary` | Baseline consent category | Always true (non-optional) |
+| `cookies_functional` | Functional/site personalization | Functional toggle is enabled |
+| `cookies_statistical` | Analytics/measurement | Analytics toggle is enabled |
+| `cookies_marketing` | Marketing/ads | Marketing toggle is enabled |
+| `cookies_update` | Snapshot payload for conditions | Always on change; includes `consent.{necessary,functional,analytics,marketing,experimentation}` |
+
+Functional-only tags (MTM): trigger on `cookies_functional` or on `cookies_update` with condition `{{dlv.consent_functional}} equals true` to run personalization scripts only when functional cookies are allowed.
+
+## Parity Cheatsheet (GA4 vs Matomo)
+- GA4 add_to_cart vs Matomo update_cart: GA4 tracks single add events; Matomo expects FULL CART via `update_cart` (also emitted at `begin_checkout`).
+- Early load: Both GTM and MTM load early; GTM behavior is governed by Consent Mode v2, MTM by `_paq.requireConsent` + `cookies_*` events.
+- Purchase mapping: Both use `transaction_id`, `value`, `currency` (plus `tax`/`shipping` when available). Ensure unique IDs.
+- Category hierarchy: Helpers emit GA4 `item_category..item_category5` and a Matomo-friendly `item_category_path` array.
+
+## Troubleshooting (Matomo)
+- Tags not firing: Confirm `_paq.requireConsent` is queued and that `cookies_*` consent events arrive; verify triggers listen to `update_cart` (not `add_to_cart`).
+- Stale cart totals: Ensure an `update_cart` fires after quantity/remove actions and again at `begin_checkout` before `purchase`.
+- Order missing: Check `transaction_id` uniqueness and that `grandTotal` equals expected sum (subtotal ± tax/shipping).
+- Preview: Use MTM Preview to inspect Data Layer Variables and event payloads (`_mtm` queue) in real time.
 ```
 
 Direct push reference (GA4-style payloads):

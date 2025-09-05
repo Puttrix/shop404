@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useCart, totals } from '../state/cartState.jsx';
 import { useEffect } from 'react';
-import { trackPage } from '../utils/analytics.js';
+import { trackPage, syncMatomoCart } from '../utils/analytics.js';
 
 export default function Cart() {
   const { state, dispatch } = useCart();
@@ -24,9 +24,27 @@ export default function Cart() {
                   <div className="text-sm text-gray-600">Variant: {item.variant}</div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <input type="number" min={1} value={item.qty} onChange={e=>dispatch({type:'SET_QTY', id:item.id, variant:item.variant, qty: +e.target.value})} className="input w-20" />
+                  <input
+                    type="number"
+                    min={1}
+                    value={item.qty}
+                    onChange={e=>{
+                      const qty = +e.target.value;
+                      dispatch({type:'SET_QTY', id:item.id, variant:item.variant, qty});
+                      const nextItems = state.items.map(i => i.id === item.id && i.variant === item.variant ? { ...i, qty } : i);
+                      syncMatomoCart(nextItems);
+                    }}
+                    className="input w-20"
+                  />
                   <div className="w-24 text-right font-semibold">${(item.price*item.qty).toFixed(2)}</div>
-                  <button className="text-red-600" onClick={()=>dispatch({type:'REMOVE', id:item.id, variant:item.variant})}>Remove</button>
+                  <button
+                    className="text-red-600"
+                    onClick={()=>{
+                      dispatch({type:'REMOVE', id:item.id, variant:item.variant});
+                      const nextItems = state.items.filter(i => !(i.id === item.id && i.variant === item.variant));
+                      syncMatomoCart(nextItems);
+                    }}
+                  >Remove</button>
                 </div>
               </div>
             ))}

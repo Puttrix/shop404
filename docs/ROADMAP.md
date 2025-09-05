@@ -35,12 +35,18 @@ Purpose: A lightweight, living document to capture ideas, plans, and progress.
 - [ ] Basic accessibility sweep (focus order, landmarks, color contrast)
 - [ ] Add `config.json` schema validation and helpful 404 fallback
 - [ ] CLI script to generate fake orders for analytics testing
- // moved to In Progress → Portainer deploy docs
+// moved to In Progress → Portainer deploy docs
  
  - [ ] GA4 ecommerce — extensions (promotions, refunds, more steps)
    - Add `add_payment_info`, `add_shipping_info`, promotions impressions/clicks, and refunds examples.
  - [ ] Matomo ecommerce — extensions (cart updates, item/category enrichment)
    - Add `trackEcommerceCartUpdate`, category hierarchies, and product dimension enrichment.
+  - [ ] Server‑side GTM (sGTM) option
+     - Add optional first‑party endpoint config (e.g., `GTM_SERVER_CONTAINER_URL`) and route measurement via sGTM.
+     - Forward consent to sGTM; document Consent Mode + sGTM interplay and client hints.
+     - Provide setup notes: DNS (CNAME), custom domain, preview, and verification.
+     - Add docs/examples for GA4 via Measurement Protocol with sGTM fallback when JS blocked.
+       - Note: GDPR grey area — often not acceptable in the EU without strict safeguards and a valid legal basis.
 
 ## Done
 - [x] Analytics parity: event mapping matrix and QA checklist — 2025‑09‑05

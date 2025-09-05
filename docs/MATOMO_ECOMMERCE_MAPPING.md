@@ -4,10 +4,14 @@ This guide shows how to configure Matomo Tag Manager (MTM) to consume the app’
 
 The app pushes events to both `window.dataLayer` and `window._mtm` with GA4-style ecommerce payloads. MTM can read either; we’ll refer to the event name and the `ecommerce` object throughout.
 
+Event naming note:
+- GA4: uses `add_to_cart`.
+- Matomo: uses `update_cart` for cart state synchronization. The app emits `update_cart` to `_mtm` on add‑to‑cart, quantity changes, item removal, and at `begin_checkout` to ensure full‑cart parity. It does not push `_mtm` `add_to_cart`.
+
 ## Prerequisites
 - A Matomo site (Site ID) and a Matomo Tag Manager container for that site.
 - In the MTM container, add a “Matomo Configuration” tag with your Site ID and Tracker URL.
-- Ensure consent integration in MTM matches your policy. The app only loads MTM when `analytics` consent is allowed.
+- Ensure consent integration in MTM matches your policy. MTM loads early (like GTM) via `index.html` when `MATOMO_TAG_MANAGER_CONTAINER_URL` is configured; use MTM’s consent controls to govern tag behavior.
 
 ## Data Layer Variables (DLV)
 Create these Variables in MTM to map from the pushed event payloads. Use Data Layer Variable type.
@@ -18,6 +22,18 @@ Create these Variables in MTM to map from the pushed event payloads. Use Data La
 - `dlv.transaction_id` → Path: `ecommerce.transaction_id`
 - `dlv.value` → Path: `ecommerce.value`
 - `dlv.currency` → Path: `ecommerce.currency`
+
+Consent helper variables (for `cookies_update` payload):
+- `dlv.consent` → Path: `consent`
+- `dlv.consent_necessary` → Path: `consent.necessary`
+- `dlv.consent_functional` → Path: `consent.functional`
+- `dlv.consent_analytics` → Path: `consent.analytics`
+- `dlv.consent_marketing` → Path: `consent.marketing`
+- `dlv.consent_experimentation` → Path: `consent.experimentation`
+
+Usage examples:
+- Trigger condition on `cookies_update`: `{{dlv.consent_functional}} equals true` to gate functional-only tags.
+- Combined condition: Fire tag if `{{dlv.consent_analytics}}` OR `{{dlv.consent_marketing}}` is true.
 
 Optionally, create item-first helpers (use a Custom JavaScript Variable if your DLV doesn’t support array indexing):
 
@@ -44,13 +60,61 @@ Create a Custom Event trigger per app event name:
 - `evt.page_view` → Event name equals `page_view`
 - `evt.view_item_list` → `view_item_list`
 - `evt.view_item` → `view_item`
-- `evt.add_to_cart` → `add_to_cart`
+- `evt.update_cart` → `update_cart`
 - `evt.begin_checkout` → `begin_checkout`
 - `evt.purchase` → `purchase`
 - `evt.donation_step` → `donation_step`
 
+Consent events (emitted by the app to `_mtm`):
+- `evt.cookies_necessary` → `cookies_necessary`
+- `evt.cookies_functional` → `cookies_functional`
+- `evt.cookies_statistical` → `cookies_statistical` (maps to app’s `analytics` consent)
+- `evt.cookies_marketing` → `cookies_marketing` (maps to app’s `marketing` consent)
+- Optional consolidated: `cookies_update` (contains `{ consent: { necessary, functional, analytics, marketing, experimentation } }`)
+
+Tip: The app does not push `_mtm` `add_to_cart`. Use `update_cart` for Matomo cart sync; GA4 still receives `add_to_cart`.
+
 ## Tags — Two Approaches
 Prefer the MTM Ecommerce tag templates if available. If not, use Custom HTML with `_paq` commands.
+
+### Consent Handling in MTM (Recommended)
+- Add a small Custom HTML tag that runs early to enforce consent at the tracker level:
+  ```html
+  <script>
+    window._paq = window._paq || [];
+    _paq.push(['requireConsent']);
+  </script>
+  ```
+- Create Custom Event triggers for the consent events above. Use them to call:
+  ```html
+  <!-- Triggered by cookies_statistical / cookies_marketing etc. when granted -->
+  <script>
+    window._paq = window._paq || [];
+    _paq.push(['rememberConsentGiven']);
+  </script>
+  ```
+- When consent is revoked (no optional categories), fire a Custom HTML tag on a dedicated trigger to call `forgetConsentGiven`:
+  ```html
+  <script>
+    window._paq = window._paq || [];
+    _paq.push(['forgetConsentGiven']);
+  </script>
+  ```
+
+### Functional-Only Tagging Example
+- Create a Custom Event Trigger: `evt.cookies_functional` (Event equals `cookies_functional`).
+- Add a Custom HTML tag for a personalization script and attach the trigger:
+  ```html
+  <script>
+    // Example: run site personalization init only when functional cookies are allowed
+    (function(){
+      var s = document.createElement('script');
+      s.async = true; s.src = 'https://cdn.example.com/personalize.js';
+      document.head.appendChild(s);
+    })();
+  </script>
+  ```
+  Optionally add a second trigger for `cookies_update` with a condition that `{{dlv.consent.functional}}` is true (if you parse the consent object), to re-evaluate on every update.
 
 ### A) Using MTM Ecommerce Tag Templates (Recommended)
 Create the following tags and map variables accordingly.
@@ -63,13 +127,14 @@ Create the following tags and map variables accordingly.
 - Price: `{{cjs.item_price}}`
 - Trigger: `evt.view_item`
 
-2) Add to Cart (for `add_to_cart`)
-- Tag: Ecommerce Add To Cart
-- Items: If template supports an items array, map `{{dlv.items}}`. Otherwise, add a Product sub‑mapping using `{{cjs.*}}` and Quantity `{{cjs.item_quantity}}`.
-- Trigger: `evt.add_to_cart`
-
-3) Checkout Start (optional, for `begin_checkout`)
+2) Cart Update (for `update_cart` and at Checkout)
+- Important: Matomo expects cart updates to reflect the FULL CART, not just a single item.
 - Tag: Ecommerce Cart Update
+- Items Source: Full cart (see below). The app emits `_mtm` `update_cart` automatically when the cart changes and again at `begin_checkout`.
+- Trigger: `evt.update_cart` (you may also OR with `evt.begin_checkout` if you prefer template-driven totals at checkout)
+
+3) Checkout Start (additional sync, for `begin_checkout`)
+- Tag: Ecommerce Cart Update (optional if you already handle `update_cart`)
 - Total: sum of items (see “Totals” below) or map a variable if precomputed.
 - Trigger: `evt.begin_checkout`
 
@@ -117,17 +182,30 @@ Tags:
 </script>
 ```
 
-2) `add_to_cart` → Cart Update with Items
+2) `update_cart` → Cart Update with FULL CART
 ```
 <script>
-  var items={{dlv.items}}||[];
+  // Read FULL CART from localStorage (app stores it at key 'cart')
+  function __readCart(){
+    try {
+      var raw = localStorage.getItem('cart');
+      var cart = raw ? JSON.parse(raw) : { items: [] };
+      // cart.items[] has: { id, name, price, qty }
+      return (cart.items || []).map(function(i){
+        return { item_id: i.id, item_name: i.name, price: Number(i.price||0), quantity: Number(i.qty||1) };
+      });
+    } catch(e){ return []; }
+  }
+  var items = __readCart();
   window.__addItems(items);
-  var total=window.__sumItems(items);
+  var total = window.__sumItems(items);
   _paq.push(['trackEcommerceCartUpdate', total]);
 </script>
 ```
+Notes:
+- If you prefer not to read from localStorage, use the `_mtm` `update_cart` event that contains the full cart, then use `{{dlv.items}}` from that event for updates.
 
-3) `begin_checkout` → Cart Update
+3) `begin_checkout` → Cart Update (parity)
 ```
 <script>
   var items={{dlv.items}}||[];
@@ -163,16 +241,31 @@ function(){
 
 Use `{{cjs.cartTotal}}` in Cart Update tags when `ecommerce.value` is not provided.
 
+Alternative (from localStorage):
+```
+function(){
+  try{
+    var raw = localStorage.getItem('cart');
+    var cart = raw ? JSON.parse(raw) : { items: [] };
+    return (cart.items||[]).reduce(function(t,i){return t+Number(i.price||0)*(Number(i.qty||1));},0);
+  }catch(e){ return 0; }
+}
+```
+
 ## QA in Matomo
 - Enable Preview/Debug in MTM; trigger each action in the app and confirm tags fire.
 - In the Matomo UI, check Ecommerce > Sales for orders and revenue totals.
 - Validate one test order end-to-end: product view → add to cart → checkout → purchase.
+- Validate cart parity: quantity changes and removals update Matomo cart via `update_cart` before purchase.
 - Ensure order IDs are unique and `grandTotal` matches the expected sum.
 
 ## Troubleshooting
 - No tags firing: Confirm the Custom Event name matches the app event and that analytics consent is granted (app only loads MTM on consent).
 - Missing items: Verify `ecommerce.items` exists in the event payload and that your DLV paths are correct.
 - Totals off: Make sure you’re summing `price * quantity` and including tax/shipping consistently.
+
+## App Helper (optional)
+- `syncMatomoCart(items)`: A helper provided by the app to push `_mtm` `update_cart` with the full cart. It accepts GA4‑style items or app cart items (`{id,name,price,qty}`) and maps to Matomo item fields (`{item_id,item_name,price,quantity}`). Useful if you implement custom cart UX and want immediate Matomo parity on changes.
 
 ## Additional Notes for Specialists
 - Template mapping: If your MTM Ecommerce Order tag supports `Tax` and `Shipping` fields, map `{{dlv.tax}}` and `{{dlv.shipping}}` directly; otherwise use the Custom HTML `_paq` approach with `trackEcommerceOrder` arguments.

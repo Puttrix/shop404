@@ -14,7 +14,7 @@ Purpose: Ensure emitted events from the app align across GTM/GA4 and Matomo Tag 
 | `page_view` | `page_view` | `page_title`/`page_location` (derive), custom `page_name` | Custom Event trigger: event equals `page_view`; Fire a Matomo “Page View” Tag (auto URL); optionally set Custom Dimension for `page_name` |
 | `view_item_list` | `view_item_list` | `item_list_name?`, `item_list_id?`, `items[]` (id, name, category, price, `index?`) | Custom Event trigger: `view_item_list`; use Matomo “Custom Event” or Data Layer to populate a Matomo Ecommerce “Product View/List” tag (if using plugin) |
 | `view_item` | `view_item` | `items[]` (id, name, price, category optional) | Trigger: `view_item`; Matomo Ecommerce “Product Detail View” (Product SKU/Name/Category from item[0]) |
-| `add_to_cart` | `add_to_cart` | `currency`, `items[]` (id, name, price, quantity) | Trigger: `add_to_cart`; Matomo Ecommerce “Add to Cart” with item fields mapped from Data Layer |
+| `add_to_cart` | `add_to_cart` | `currency`, `items[]` (id, name, price, quantity) | Matomo: use `update_cart` with FULL CART; trigger on `update_cart` and also at `begin_checkout` for parity |
 | `begin_checkout` | `begin_checkout` | `currency`, `items[]` | Trigger: `begin_checkout`; Matomo Ecommerce “Cart Update/Checkout Start” (Cart value from sum of items) |
 | `purchase` | `purchase` | `transaction_id`, `value`, `currency`, `tax` (opt), `shipping` (opt), `coupon` (opt), `items[]` | Trigger: `purchase`; Matomo Ecommerce “Order” tag mapping Order ID, Revenue, Tax, Shipping, Items |
 | `donation_step` | `donation_step` (custom GA4) | `step` plus any metadata (e.g., `amount`, `interval`, `error`) | Trigger: `donation_step`; Matomo “Custom Event” or “Event” with Category `donation`, Action `step:{step}`, and Labels/Dimensions from metadata |
@@ -75,27 +75,28 @@ Notes:
 - Consent: Verify analytics_storage is granted before events dispatch (GTM Preview → Consent).
 
 ## MTM Configuration Hints
+- MTM loads early; set tracker consent requirement (`requireConsent`) and gate tags with consent events.
 - Define Data Layer Variables (DLV) to map fields:
   - `ecommerce.items` (Array)
   - `ecommerce.items[0].item_id`, `item_name`, `price`, `quantity`
   - `ecommerce.transaction_id`, `value`, `currency`
-  - `step`, `amount`, `interval` for donation
+  - Consent (`cookies_update`): `consent.*` booleans (functional, analytics, marketing, experimentation)
 - Create Tags:
-  - Ecommerce: “Order” (for `purchase`), “Add to Cart”, “Product View/List” as needed
+  - Ecommerce: “Order” (for `purchase`), “Cart Update” (for `update_cart`), “Product View/List”
   - Custom Event: for `donation_step` and `page_view` enrichment
-- Triggers: Custom Event equals the app event name.
-- Consent: Ensure container honors your consent model; load MTM only when analytics consent is true (the app already does this).
+- Triggers: Custom Event equals the app event name (`update_cart`, `begin_checkout`, `purchase`, etc.).
+- Consent: Use `cookies_*` events and/or `consent.*` DLVs to control firing. The app also calls `_paq.rememberConsentGiven/forgetConsentGiven`.
 
 ## QA Checklist
 Run in Dev (Vite preview) and in built/Container environments.
 
 - Consent Defaults: On first load, confirm Consent Mode set to `denied` (GTM Preview → Consent Overview).
 - Analytics On: Accept analytics; verify GTM `gtm.js` loads and events start pushing.
-- MTM Load: After consent, confirm MTM container script loads.
+- MTM Load: Confirm MTM container script loads at start; tags should remain blocked until consent is granted.
 - Page View: Navigate between routes; see `page_view` pushes with `page_name`.
 - List Impression: Visit product grid; verify one `view_item_list` with items populated.
 - View Item: Open a product; verify `view_item` with correct `item_id`/`item_name`.
-- Add to Cart: Add item; verify `add_to_cart` with quantity and price.
+- Add to Cart: Add item; verify GA4 `add_to_cart` and Matomo `update_cart` with FULL CART.
 - Begin Checkout: Start checkout; verify `begin_checkout` with cart items.
 - Purchase: Complete checkout; verify `purchase` with `transaction_id`, `value`, `currency`, and items.
 - Donation Steps: Walk through donation wizard; verify `donation_step` events per step, including validation errors if emitted.
@@ -103,7 +104,7 @@ Run in Dev (Vite preview) and in built/Container environments.
 - Currency: Confirm `currency` present (USD default in app) and matches GA4 property settings.
 - GTM Preview: All above events should appear with GA4 tags firing; no consent violations.
 - Matomo Debug: In MTM/Matomo debug, confirm tags fire and orders/events appear.
-- Edge: Decline analytics; verify no analytics events fire and MTM doesn’t load.
+- Edge: Decline analytics; verify GA4 doesn’t fire and Matomo tags remain blocked (container may still be loaded).
 
 ## Troubleshooting
 - No events in GTM: Check Consent Overview; ensure analytics_storage is granted after banner.

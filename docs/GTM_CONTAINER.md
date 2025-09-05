@@ -4,6 +4,10 @@ This guide helps you configure a Google Tag Manager container for MockShop. It m
 
 Note: MockShop follows a GTM‑first strategy. GA4 is configured inside GTM; the app only pushes events to `dataLayer` and loads GTM. Consent Mode v2 is set before tags load.
 
+Matomo parity note:
+- GA4 uses `add_to_cart`. Matomo uses `update_cart` and expects FULL CART updates (also at `begin_checkout`).
+- This guide focuses on GTM/GA4. For Matomo mapping, consent events, and `update_cart`, see `docs/MATOMO_ECOMMERCE_MAPPING.md`.
+
 ## 1) Create GA4 Configuration
 - Tag: Google Analytics: GA4 Configuration
 - Measurement ID: your GA4 property’s ID
@@ -40,6 +44,8 @@ Create a Custom Event trigger for each app event name:
 - `evt.begin_checkout` → `begin_checkout`
 - `evt.purchase` → `purchase`
 - `evt.donation_step` → `donation_step`
+
+Note: Matomo Tag Manager should trigger on `update_cart` instead of `add_to_cart`. This difference is intentional.
 
 ## 4) GA4 Event Tags
 One GA4 Event Tag per event, using the GA4 Configuration Tag you created.

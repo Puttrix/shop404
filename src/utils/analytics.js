@@ -54,13 +54,7 @@ function ensureTagsLoaded() {
 
   // GA4 direct removed for GTM-first approach
 
-  // Matomo Tag Manager preferred; fallback to direct tracker if no MTM config
-  if (cfg.MATOMO_TAG_MANAGER_CONTAINER_URL && consentAllows('analytics')) {
-    window._mtm = window._mtm || [];
-    window._mtm.push({ 'mtm.startTime': new Date().getTime(), event: 'mtm.Start' });
-    const d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-    g.async = true; g.src = cfg.MATOMO_TAG_MANAGER_CONTAINER_URL; s.parentNode.insertBefore(g, s);
-  }
+  // Matomo Tag Manager now loads early from index.html when configured; no loader here
 
   // Optimizely Web snippet URL (if provided) — experimentation
   if (cfg.OPTIMIZELY_WEB_SNIPPET_URL && consentAllows('experimentation')) {
@@ -119,7 +113,35 @@ export function trackAddToCart(product, qty) {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: 'add_to_cart', ecommerce: { currency: 'USD', items: [itemFromProduct(product, qty)] } });
   if (window._mtm) {
-    window._mtm.push({ event: 'add_to_cart', ecommerce: { currency: 'USD', items: [itemFromProduct(product, qty)] } });
+    // Matomo expects cart updates to reflect the FULL CART state.
+    // Read current cart from localStorage and merge the just-added item to ensure accuracy
+    try {
+      const raw = localStorage.getItem('cart');
+      const cart = raw ? JSON.parse(raw) : { items: [] };
+      const map = new Map();
+      // Seed from stored cart
+      (cart.items || []).forEach(i => {
+        const id = i.id;
+        const prev = map.get(id) || { item_id: id, item_name: i.name, price: Number(i.price || 0), quantity: 0 };
+        prev.quantity += Number(i.qty || 1);
+        map.set(id, prev);
+      });
+      // Merge the currently added item in case localStorage isn't updated yet
+      if (product && qty != null) {
+        const id = product.id;
+        const prev = map.get(id) || { item_id: id, item_name: product.name, price: Number(product.price || 0), quantity: 0 };
+        prev.quantity += Number(qty || 1);
+        // If name/price missing from stored cart, prefer product values
+        if (!prev.item_name && product.name) prev.item_name = product.name;
+        if (!prev.price && product.price != null) prev.price = Number(product.price);
+        map.set(id, prev);
+      }
+      const fullItems = Array.from(map.values());
+      window._mtm.push({ event: 'update_cart', ecommerce: { currency: 'USD', items: fullItems } });
+    } catch (e) {
+      // Fallback: still emit update_cart with the added item only
+      window._mtm.push({ event: 'update_cart', ecommerce: { currency: 'USD', items: [itemFromProduct(product, qty)] } });
+    }
   }
 }
 
@@ -128,6 +150,8 @@ export function trackBeginCheckout(items) {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: 'begin_checkout', ecommerce: { currency: 'USD', items } });
   if (window._mtm) {
+    // Ensure Matomo has full cart state at checkout
+    window._mtm.push({ event: 'update_cart', ecommerce: { currency: 'USD', items } });
     window._mtm.push({ event: 'begin_checkout', ecommerce: { currency: 'USD', items } });
   }
 }
@@ -157,4 +181,17 @@ export function trackDonationStep(step, data = {}) {
   if (window._mtm) {
     window._mtm.push({ event: 'donation_step', step, ...data });
   }
+}
+
+// Matomo-only convenience: push a full cart update based on current app cart state
+export function syncMatomoCart(items) {
+  if (!consentAllows('analytics')) return;
+  if (!window._mtm) return;
+  const mapped = (items || []).map(i => ({
+    item_id: i.item_id || i.id,
+    item_name: i.item_name || i.name,
+    price: Number(i.price || 0),
+    quantity: Number((i.quantity != null ? i.quantity : i.qty) || 1),
+  }));
+  window._mtm.push({ event: 'update_cart', ecommerce: { currency: 'USD', items: mapped } });
 }
