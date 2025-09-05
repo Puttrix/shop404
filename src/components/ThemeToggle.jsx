@@ -25,6 +25,9 @@ export default function ThemeToggle({ variant = 'button' }) {
 
   useEffect(() => {
     applyTheme(theme);
+    try {
+      document.dispatchEvent(new CustomEvent('theme:updated', { detail: { theme } }));
+    } catch {}
     // If following system, attach a listener
     const mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
     function onChange(e) {

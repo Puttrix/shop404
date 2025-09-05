@@ -1,15 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function HeroImage({ className = '' }) {
-  // Prefer WebP; fall back to PNG. Respect dark/light via media queries.
-  // Files expected in public/images: hero_d.webp/png and hero_l.webp/png
+  const [isDark, setIsDark] = useState(() =>
+    typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  );
+
+  useEffect(() => {
+    function sync() {
+      try { setIsDark(document.documentElement.classList.contains('dark')); } catch {}
+    }
+    // Listen to our custom theme event
+    document.addEventListener('theme:updated', sync);
+    // Observe class changes as a fallback
+    const mo = new MutationObserver(sync);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => {
+      document.removeEventListener('theme:updated', sync);
+      mo.disconnect();
+    };
+  }, []);
+
+  const base = isDark ? 'hero_d' : 'hero_l';
+  const webp = `/images/${base}.webp`;
+  const png = `/images/${base}.png`;
+
   return (
     <picture>
-      <source srcSet="/images/hero_d.webp" type="image/webp" media="(prefers-color-scheme: dark)" />
-      <source srcSet="/images/hero_l.webp" type="image/webp" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)" />
-      <source srcSet="/images/hero_d.png" media="(prefers-color-scheme: dark)" />
+      <source srcSet={webp} type="image/webp" />
       <img
-        src="/images/hero_l.png"
+        src={png}
         alt="Hero"
         className={className}
         onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src='/images/hero.svg'; }}
@@ -17,4 +36,3 @@ export default function HeroImage({ className = '' }) {
     </picture>
   );
 }
-
