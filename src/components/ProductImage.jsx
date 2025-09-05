@@ -10,9 +10,12 @@ function slugify(name) {
 
 export default function ProductImage({ product, className = '' }) {
   const name = String(product?.name || '').trim();
-  const slug = slugify(name);
+  const slug = slugify(name); // hyphenated
   const rawLower = name.toLowerCase();
-  const candidates = [slug, rawLower, name];
+  const underscore = rawLower.replace(/[^a-z0-9]+/g, '_');
+  const hyphen = rawLower.replace(/[^a-z0-9]+/g, '-');
+  const tight = rawLower.replace(/[^a-z0-9]+/g, '');
+  const candidates = [slug, underscore, hyphen, rawLower, tight, name];
   const exts = ['webp', 'jpg', 'jpeg', 'png'];
   const fallback = product?.image || '/images/placeholder.svg';
 
@@ -45,21 +48,16 @@ export default function ProductImage({ product, className = '' }) {
     img.src = fallback;
   }
 
-  // We still offer the preferred WebP via <source> for the primary slug
-  const preferredBase = `/images/product_photos/${slug}`;
-
+  // Try webp first for the most likely (slug) pattern, then iterate
   return (
-    <picture>
-      <source srcSet={`${preferredBase}.webp`} type="image/webp" />
-      <img
-        src={srcFor(0, 1)}
-        data-i="0"
-        data-j="1" /* start at jpg, source tag already tried webp */
-        alt={product?.name || 'Product image'}
-        className={className}
-        onError={onError}
-        loading="lazy"
-      />
-    </picture>
+    <img
+      src={srcFor(0, 0)}
+      data-i="0"
+      data-j="0"
+      alt={product?.name || 'Product image'}
+      className={className}
+      onError={onError}
+      loading="lazy"
+    />
   );
 }
