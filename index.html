@@ -9,6 +9,27 @@
     <!-- Optional: set a GTM ID via meta for earliest load in dev or static hosting
          <meta name="gtm-id" content="GTM-XXXXXXX" /> -->
     <script>
+      // Dark mode: apply earliest to avoid FOUC (supports 'system'|'dark'|'light')
+      (function(){
+        try {
+          var root = document.documentElement;
+          var pref = localStorage.getItem('theme');
+          var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+          var useSystem = (pref !== 'dark' && pref !== 'light');
+          var wantDark = pref === 'dark' || (useSystem && mq && mq.matches);
+          if (wantDark) root.classList.add('dark'); else root.classList.remove('dark');
+          // If following system, respond to system changes
+          if (useSystem && mq && mq.addEventListener) {
+            mq.addEventListener('change', function(e){
+              var p = localStorage.getItem('theme');
+              if (p === 'dark' || p === 'light') return; // user override
+              if (e.matches) root.classList.add('dark'); else root.classList.remove('dark');
+            });
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <script>
       // Google Consent Mode v2: default-denied before any tags load
       window.dataLayer = window.dataLayer || [];
       function gtag(){ dataLayer.push(arguments); }
@@ -84,7 +105,7 @@
       });
     </script>
   </head>
-  <body class="bg-gray-50 text-gray-900">
+  <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <noscript>

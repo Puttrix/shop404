@@ -70,7 +70,7 @@ export default function Checkout() {
         <button className="btn-primary">Pay ${t.total.toFixed(2)}</button>
       </form>
       <aside>
-        <div className="border rounded-lg bg-white p-4">
+        <div className="border rounded-lg bg-white dark:bg-gray-800 dark:border-gray-700 p-4">
           <div className="font-medium mb-2">Order summary</div>
           <ul className="divide-y">
             {state.items.map(i => (

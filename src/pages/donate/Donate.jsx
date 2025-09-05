@@ -22,8 +22,8 @@ export default function Donate() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-4 text-sm text-gray-600"><Link to="/">Home</Link> / Donate</div>
-      <div className="border rounded-xl bg-white p-6">
+      <div className="mb-4 text-sm text-gray-600 dark:text-gray-300"><Link to="/">Home</Link> / Donate</div>
+      <div className="border rounded-xl bg-white dark:bg-gray-800 dark:border-gray-700 p-6">
         <h1 className="text-2xl font-semibold mb-4">Support our mission</h1>
         <Routes>
           <Route index element={<Amount data={data} onNext={(d)=>next(d, '/donate/details')} />} />
@@ -36,4 +36,3 @@ export default function Donate() {
     </div>
   );
 }
-

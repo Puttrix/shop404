@@ -25,7 +25,7 @@ export default function ProductDetails() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 grid md:grid-cols-2 gap-8">
-      <div className="rounded-xl overflow-hidden border bg-white">
+      <div className="rounded-xl overflow-hidden border bg-white dark:bg-gray-800 dark:border-gray-700">
         <img
           src={product.image}
           alt={product.name}
@@ -35,9 +35,9 @@ export default function ProductDetails() {
       </div>
       <div>
         <h1 className="text-3xl font-semibold">{product.name}</h1>
-        <p className="text-gray-600 mt-2">{product.category}</p>
+        <p className="text-gray-600 dark:text-gray-300 mt-2">{product.category}</p>
         <div className="text-2xl font-bold mt-4">${product.price.toFixed(2)}</div>
-        <p className="mt-4 text-gray-700">A stylish {product.category.toLowerCase()} designed for this demo store. Perfect for testing analytics and experimentation tools.</p>
+        <p className="mt-4 text-gray-700 dark:text-gray-300">A stylish {product.category.toLowerCase()} designed for this demo store. Perfect for testing analytics and experimentation tools.</p>
         <div className="mt-6 flex gap-3">
           <button className="btn-primary" onClick={add}>Add to cart</button>
         </div>

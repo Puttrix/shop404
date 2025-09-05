@@ -23,7 +23,7 @@ export default function ProductCard({ product }) {
         <div className="flex items-start justify-between gap-2">
           <div>
             <h3 className="font-medium"><Link to={`/products/${product.id}`}>{product.name}</Link></h3>
-            <p className="text-sm text-gray-600">{product.category}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">{product.category}</p>
           </div>
           <div className="font-semibold">${product.price.toFixed(2)}</div>
         </div>

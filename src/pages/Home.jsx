@@ -16,13 +16,13 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h1 className="text-4xl font-bold tracking-tight">Modern mock ecommerce + donation site</h1>
-              <p className="mt-3 text-lg text-gray-700">Built for testing Matomo, GTM/GA4, Optimizely Web, and ODP implementations.</p>
+              <p className="mt-3 text-lg text-gray-700 dark:text-gray-300">Built for testing Matomo, GTM/GA4, Optimizely Web, and ODP implementations.</p>
               <div className="mt-6 flex gap-3">
                 <Link to="/products" className="btn-primary">Shop products</Link>
                 <Link to="/donate" className="btn-secondary">Make a donation</Link>
               </div>
             </div>
-            <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-lg">
+            <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800">
               <img
                 src="/images/hero.svg"
                 alt="Hero"

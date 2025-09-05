@@ -83,11 +83,11 @@ export default function ConsentBanner() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50">
-      <div className="mx-auto max-w-3xl m-4 rounded-xl border border-gray-200 bg-white p-4 shadow-lg">
+      <div className="mx-auto max-w-3xl m-4 rounded-xl border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
         <div className="flex items-start gap-4">
           <div className="flex-1">
             <h2 className="font-semibold mb-1">Cookie & Tracking Preferences</h2>
-            <p className="text-sm text-gray-600 mb-3">We use cookies for analytics, marketing, and experimentation. Choose your preferences.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">We use cookies for analytics, marketing, and experimentation. Choose your preferences.</p>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <label className="flex items-center gap-2"><input type="checkbox" checked readOnly /> Necessary</label>
               <label className="flex items-center gap-2"><input type="checkbox" checked={!!consent.functional} onChange={e=>setConsent({...consent, functional:e.target.checked})}/> Functional</label>

@@ -23,7 +23,7 @@ export default function Payment({ data, onNext }) {
       </div>
       {error && <div className="text-sm text-red-600">{error}</div>}
       <div className="flex justify-between items-center">
-        <div className="text-gray-600">Donating <span className="font-medium">${data.amount}</span> ({data.interval})</div>
+        <div className="text-gray-600 dark:text-gray-300">Donating <span className="font-medium">${data.amount}</span> ({data.interval})</div>
         <button className="btn-primary">Continue</button>
       </div>
     </form>

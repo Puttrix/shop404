@@ -1,11 +1,12 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useCart } from '../state/cartState.jsx';
+import ThemeToggle from './ThemeToggle.jsx';
 
 export default function Header() {
   const { state } = useCart();
   const count = state.items.reduce((s,i)=>s+i.qty,0);
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <header className="bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 sticky top-0 z-40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2">
@@ -19,6 +20,7 @@ export default function Header() {
           </nav>
         </div>
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <Link to="/cart" className="btn-secondary"><span className="mr-2">🛒</span> Cart ({count})</Link>
         </div>
       </div>

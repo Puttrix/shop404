@@ -17,9 +17,9 @@ export default function OrderConfirmation() {
   }
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="border rounded-xl bg-white p-6">
+      <div className="border rounded-xl bg-white dark:bg-gray-800 dark:border-gray-700 p-6">
         <h1 className="text-2xl font-semibold">Thank you for your order!</h1>
-        <p className="text-gray-700 mt-2">Your order <span className="font-mono">{order.orderId}</span> is confirmed.</p>
+        <p className="text-gray-700 dark:text-gray-300 mt-2">Your order <span className="font-mono">{order.orderId}</span> is confirmed.</p>
         <Link to="/products" className="btn-primary mt-4 inline-flex">Continue shopping</Link>
       </div>
     </div>
