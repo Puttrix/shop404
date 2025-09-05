@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getProduct } from '../data/products.js';
 import { useCart } from '../state/cartState.jsx';
 import { trackPage, trackViewItem, trackAddToCart } from '../utils/analytics.js';
+import { productImage } from '../utils/images.js';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -27,7 +28,7 @@ export default function ProductDetails() {
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 grid md:grid-cols-2 gap-8">
       <div className="rounded-xl overflow-hidden border bg-white dark:bg-gray-800 dark:border-gray-700">
         <img
-          src={product.image}
+          src={productImage(product)}
           alt={product.name}
           className="w-full h-full object-cover"
           onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src='/images/placeholder.svg'; }}

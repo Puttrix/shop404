@@ -3,6 +3,7 @@ import { products } from '../data/products.js';
 import ProductCard from '../components/ProductCard.jsx';
 import { useEffect } from 'react';
 import { trackPage, trackProductImpression } from '../utils/analytics.js';
+import { heroImage } from '../utils/images.js';
 
 export default function Home() {
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function Home() {
             </div>
             <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800">
               <img
-                src="/images/hero.svg"
+                src={heroImage()}
                 alt="Hero"
                 className="w-full h-full object-cover"
                 onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src='/images/placeholder.svg'; }}

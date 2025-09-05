@@ -39,3 +39,8 @@ Key files:
   - Pills and gradients for buttons, glass cards with backdrop-blur, subtle hover lift, blurred header/footer.
   - Hero background adjusts when `.hero-section` wrapper is present.
 - Persisted in `localStorage.style` so you can switch back easily without code changes.
+
+### Photos in Neo Style
+- When `style-neo` is active, product images switch to curated stock photos (Unsplash) via URLs in `src/utils/images.js`.
+- To use your own photos, replace the `PHOTOS` array with your URLs (or host locally and point to `/images/your-photo.jpg`).
+- Licensing: current URLs reference Unsplash images; attribution is recommended if you publish. Replace with your licensed assets for production.

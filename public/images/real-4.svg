@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bottle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="#451a03" opacity="0.06"/>
+  <g transform="translate(320,80)">
+    <rect x="40" y="60" width="120" height="360" rx="24" fill="url(#bottle)"/>
+    <rect x="68" y="40" width="64" height="30" rx="8" fill="#fff8"/>
+    <rect x="48" y="200" width="104" height="80" rx="12" fill="#ffffff20"/>
+  </g>
+</svg>
+

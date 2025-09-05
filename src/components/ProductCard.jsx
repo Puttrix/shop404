@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../state/cartState.jsx';
+import { productImage } from '../utils/images.js';
 import { trackAddToCart, trackProductImpression } from '../utils/analytics.js';
 
 export default function ProductCard({ product }) {
@@ -11,9 +12,9 @@ export default function ProductCard({ product }) {
   }
   return (
     <div className="card">
-      <Link to={`/products/${product.id}`} className="block aspect-[4/3] bg-gray-100 overflow-hidden">
+      <Link to={`/products/${product.id}`} className="block aspect-[4/3] bg-gray-100 dark:bg-gray-900 overflow-hidden">
         <img
-          src={product.image}
+          src={productImage(product)}
           alt={product.name}
           className="w-full h-full object-cover"
           onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src='/images/placeholder.svg'; }}
