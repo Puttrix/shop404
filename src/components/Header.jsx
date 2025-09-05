@@ -14,9 +14,9 @@ export default function Header() {
             <span className="font-semibold">MockShop</span>
           </Link>
           <nav className="hidden md:flex items-center gap-4 text-sm">
-            <NavLink to="/" className={({isActive})=>`hover:text-brand-700 ${isActive?'text-brand-700':''}`}>Home</NavLink>
-            <NavLink to="/products" className={({isActive})=>`hover:text-brand-700 ${isActive?'text-brand-700':''}`}>Products</NavLink>
-            <NavLink to="/donate" className={({isActive})=>`hover:text-brand-700 ${isActive?'text-brand-700':''}`}>Donate</NavLink>
+            <NavLink to="/" className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Home</NavLink>
+            <NavLink to="/products" className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Products</NavLink>
+            <NavLink to="/donate" className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Donate</NavLink>
           </nav>
         </div>
         <div className="flex items-center gap-3">

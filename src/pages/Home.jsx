@@ -11,7 +11,7 @@ export default function Home() {
   }, []);
   return (
     <div>
-      <section className="bg-gradient-to-br from-brand-50 to-white">
+      <section className="bg-gradient-to-br from-brand-50 to-white dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
@@ -36,7 +36,7 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Featured products</h2>
-          <Link to="/products" className="text-brand-700 hover:underline">View all</Link>
+          <Link to="/products" className="text-brand-700 dark:text-brand-300 hover:underline">View all</Link>
         </div>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
           {products.slice(0,3).map(p => <ProductCard key={p.id} product={p} />)}
