@@ -1,5 +1,36 @@
 // Unified analytics helpers for GTM/GA4, Matomo, ODP, Optimizely Web
 
+function mapCategories(product) {
+  // Supports:
+  // - product.category (string)
+  // - product.categoryPath (array of strings, hierarchical)
+  // - product.category as array (fallback)
+  const path = Array.isArray(product?.categoryPath)
+    ? product.categoryPath
+    : (Array.isArray(product?.category) ? product.category : (product?.category ? [product.category] : []));
+  const out = {};
+  if (path.length > 0) {
+    out.item_category = path[0];
+  }
+  if (path.length > 1) out.item_category2 = path[1];
+  if (path.length > 2) out.item_category3 = path[2];
+  if (path.length > 3) out.item_category4 = path[3];
+  if (path.length > 4) out.item_category5 = path[4];
+  // Provide a hierarchy array for Matomo mapping convenience
+  if (path.length) out.item_category_path = path;
+  return out;
+}
+
+function itemFromProduct(product, quantity) {
+  const base = {
+    item_id: product.id,
+    item_name: product.name,
+    price: product.price
+  };
+  if (quantity != null) base.quantity = quantity;
+  return { ...base, ...mapCategories(product) };
+}
+
 function consentAllows(key) {
   const c = (typeof window !== 'undefined' && window.__consent) || { analytics: true, marketing: true, experimentation: true };
   if (key === 'analytics') return !!c.analytics;
@@ -63,48 +94,59 @@ export function trackPage(name, extra = {}) {
   }
 }
 
-export function trackProductImpression(product) {
+export function trackProductImpression(product, listCtx = {}) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: 'view_item_list',
-    ecommerce: { items: [{ item_id: product.id, item_name: product.name, item_category: product.category, price: product.price }] }
-  });
+  const payload = { event: 'view_item_list', ecommerce: { items: [itemFromProduct(product)] } };
+  // Optional GA4 list context: item_list_name, item_list_id, index
+  if (listCtx.item_list_name) payload.ecommerce.item_list_name = listCtx.item_list_name;
+  if (listCtx.item_list_id) payload.ecommerce.item_list_id = listCtx.item_list_id;
+  if (typeof listCtx.index === 'number') payload.ecommerce.items[0].index = listCtx.index;
+  window.dataLayer.push(payload);
 }
 
 export function trackViewItem(product) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: 'view_item', ecommerce: { items: [{ item_id: product.id, item_name: product.name, price: product.price }] } });
+  window.dataLayer.push({ event: 'view_item', ecommerce: { items: [itemFromProduct(product)] } });
   if (window._mtm) {
-    window._mtm.push({ event: 'view_item', ecommerce: { items: [{ item_id: product.id, item_name: product.name, price: product.price }] } });
+    window._mtm.push({ event: 'view_item', ecommerce: { items: [itemFromProduct(product)] } });
   }
 }
 
 export function trackAddToCart(product, qty) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: 'add_to_cart', ecommerce: { items: [{ item_id: product.id, item_name: product.name, price: product.price, quantity: qty }] } });
+  window.dataLayer.push({ event: 'add_to_cart', ecommerce: { currency: 'USD', items: [itemFromProduct(product, qty)] } });
   if (window._mtm) {
-    window._mtm.push({ event: 'add_to_cart', ecommerce: { items: [{ item_id: product.id, item_name: product.name, price: product.price, quantity: qty }] } });
+    window._mtm.push({ event: 'add_to_cart', ecommerce: { currency: 'USD', items: [itemFromProduct(product, qty)] } });
   }
 }
 
 export function trackBeginCheckout(items) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: 'begin_checkout', ecommerce: { items } });
+  window.dataLayer.push({ event: 'begin_checkout', ecommerce: { currency: 'USD', items } });
   if (window._mtm) {
-    window._mtm.push({ event: 'begin_checkout', ecommerce: { items } });
+    window._mtm.push({ event: 'begin_checkout', ecommerce: { currency: 'USD', items } });
   }
 }
 
-export function trackPurchase(orderId, revenue, items) {
+export function trackPurchase(orderId, revenue, items, meta = {}) {
   if (!consentAllows('analytics')) return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: 'purchase', ecommerce: { transaction_id: orderId, value: revenue, currency: 'USD', items } });
+  const ecommerce = {
+    transaction_id: orderId,
+    value: revenue,
+    currency: meta.currency || 'USD',
+    items,
+  };
+  if (meta.tax != null) ecommerce.tax = meta.tax;
+  if (meta.shipping != null) ecommerce.shipping = meta.shipping;
+  if (meta.coupon) ecommerce.coupon = meta.coupon;
+  window.dataLayer.push({ event: 'purchase', ecommerce });
   if (window._mtm) {
-    window._mtm.push({ event: 'purchase', ecommerce: { transaction_id: orderId, value: revenue, currency: 'USD', items } });
+    window._mtm.push({ event: 'purchase', ecommerce });
   }
 }
 

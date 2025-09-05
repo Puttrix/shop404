@@ -7,7 +7,7 @@ import { trackPage, trackProductImpression } from '../utils/analytics.js';
 export default function Home() {
   useEffect(() => {
     trackPage('Home');
-    products.forEach(trackProductImpression);
+    products.forEach((p, idx) => trackProductImpression(p, { item_list_name: 'Home Featured', item_list_id: 'home_grid', index: idx + 1 }));
   }, []);
   return (
     <div>

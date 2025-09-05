@@ -21,43 +21,42 @@ Purpose: A lightweight, living document to capture ideas, plans, and progress.
 - M3 — Catalog & Checkout Polish: Variants, coupons, empty states, accessibility
 
 ## In Progress
-- [ ] Analytics parity: event mapping matrix and QA checklist
-  - Map emitted events to GA4, GTM, and Matomo equivalents with parameters.
-  - Create a checklist for manual tag QA in dev/preview.
- - [ ] GA4 ecommerce — basic measures
-   - Ensure `view_item_list`, `view_item`, `add_to_cart`, `begin_checkout`, `purchase` emit GA4-compliant ecommerce params via `dataLayer` (for GTM).
-   - Document expected item schema and sample payloads per event.
- - [ ] Matomo ecommerce — basic measures
-   - Ensure `addEcommerceItem` accumulation and `trackEcommerceOrder` with revenue, tax, shipping where available.
-   - Confirm MTM can consume ecommerce events and map to tracker.
-- [ ] Donation wizard polish: monthly vs one‑time UX, validation, error tracking
-  - Add interval UX nudge, validate inputs per step, emit `donation_step` errors.
-- [ ] Portainer deploy docs: env matrix, screenshots, common pitfalls
-  - Document stack config, required env vars, and troubleshooting.
+ 
+ 
+ 
 
 ## Backlog (Ideas)
-- [ ] Add sample GTM container export and mapping guide
-- [ ] Add GA4 ecommerce item schema examples per event
+ 
+ 
 - [ ] Matomo ecommerce: product/category details alignment and totals
 - [ ] Add simple experiment example with Optimizely (text/image swap)
-- [ ] Donation: support monthly vs one‑time UX nudge and defaulting
+ 
 - [ ] Add price filters/sort on product list; push `view_item_list` params
 - [ ] Basic accessibility sweep (focus order, landmarks, color contrast)
 - [ ] Add `config.json` schema validation and helpful 404 fallback
 - [ ] CLI script to generate fake orders for analytics testing
  // moved to In Progress → Portainer deploy docs
- - [ ] Add Matomo Tag Manager container setup notes and trigger mapping examples
+ 
  - [ ] GA4 ecommerce — extensions (promotions, refunds, more steps)
    - Add `add_payment_info`, `add_shipping_info`, promotions impressions/clicks, and refunds examples.
  - [ ] Matomo ecommerce — extensions (cart updates, item/category enrichment)
    - Add `trackEcommerceCartUpdate`, category hierarchies, and product dimension enrichment.
 
 ## Done
+- [x] Analytics parity: event mapping matrix and QA checklist — 2025‑09‑05
+ - [x] GA4 ecommerce — basic measures — 2025‑09‑05
+ - [x] Matomo Tag Manager container setup notes and trigger mapping examples — 2025‑09‑05
+ - [x] Matomo ecommerce — basic measures — 2025‑09‑05
+ - [x] Donation wizard polish: monthly vs one‑time UX, validation, error tracking — 2025‑09‑05
+ - [x] Portainer deploy docs: env matrix, screenshots, common pitfalls — 2025‑09‑05
 - [x] Create persistent memory file for assistant context — 2025‑09‑03
 - [x] Roadmap adoption in repo and README link — 2025‑09‑03
 - [x] GTM-first implementation (GA4 inside GTM; no direct GA4) — 2025‑09‑03
 - [x] Google Consent Mode v2 integration with banner — 2025‑09‑03
-- [x] Matomo Tag Manager adoption (MTM-only) — 2025‑09‑03
+ - [x] Matomo Tag Manager adoption (MTM-only) — 2025‑09‑03
+ - [x] GA4 ecommerce item schema examples per event — 2025‑09‑05
+ - [x] Sample GTM container mapping guide — 2025‑09‑05
+ - [x] Donation: support monthly vs one‑time UX nudge and defaulting — 2025‑09‑05
 
 ## Parking Lot
 - [ ] ODP web SDK example usage (identify/track) contingent on account access

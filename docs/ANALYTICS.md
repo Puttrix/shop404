@@ -16,11 +16,11 @@ On first load, defaults are denied. On user choice, the banner calls `gtag('cons
 ## Events
 Emitted to `dataLayer` and, when available, mirrored to `_mtm`:
 - page_view: `{ event: 'page_view', page_name }`
-- view_item_list: `{ event: 'view_item_list', ecommerce: { items: [{ item_id, item_name, item_category, price }] } }`
-- view_item: `{ event: 'view_item', ecommerce: { items: [{ item_id, item_name, price }] } }`
-- add_to_cart: `{ event: 'add_to_cart', ecommerce: { items: [{ item_id, item_name, price, quantity }] } }`
-- begin_checkout: `{ event: 'begin_checkout', ecommerce: { items } }`
-- purchase: `{ event: 'purchase', ecommerce: { transaction_id, value, currency, items } }`
+- view_item_list: `{ event: 'view_item_list', ecommerce: { item_list_name?, item_list_id?, items: [{ item_id, item_name, item_category..., index?, price }] } }`
+- view_item: `{ event: 'view_item', ecommerce: { items: [{ item_id, item_name, item_category..., price }] } }`
+- add_to_cart: `{ event: 'add_to_cart', ecommerce: { currency: 'USD', items: [{ item_id, item_name, item_category..., price, quantity }] } }`
+- begin_checkout: `{ event: 'begin_checkout', ecommerce: { currency: 'USD', items } }`
+- purchase: `{ event: 'purchase', ecommerce: { transaction_id, value, currency: 'USD', tax?, shipping?, coupon?, items } }`
 - donation_step: `{ event: 'donation_step', step, ...metadata }`
 
 Example GA4 item schema (used in all ecommerce events):
@@ -33,6 +33,14 @@ Example GA4 item schema (used in all ecommerce events):
   quantity: 1
 }
 ```
+
+Notes:
+- Category hierarchy is provided via GA4 fields `item_category` … `item_category5` and a helper `item_category_path` array for Matomo mapping.
+- List impressions can include `item_list_name`, `item_list_id`, and per-item `index`.
+
+See also:
+- `docs/GA4_ECOMMERCE_EXAMPLES.md` for per-event payload examples
+- `docs/MATOMO_ECOMMERCE_MAPPING.md` for MTM variable and tag setup
 
 ## Configuration
 - Dev: edit `public/config.json`
@@ -50,4 +58,3 @@ Example GA4 item schema (used in all ecommerce events):
 ## Notes
 - GA4 is configured inside GTM (no direct GA4 snippet in the app).
 - Matomo is MTM‑only (no direct tracker fallback). Configure your MTM container to consume `dataLayer`/`_mtm` events and map them to Matomo tags.
-

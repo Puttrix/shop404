@@ -9,7 +9,7 @@ export default function OrderConfirmation() {
 
   useEffect(() => {
     trackPage('Order confirmation');
-    if (order) trackPurchase(order.orderId, order.total, order.items);
+    if (order) trackPurchase(order.orderId, order.total, order.items, { tax: order.tax, shipping: order.shipping });
   }, [order]);
 
   if (!order) {
@@ -25,4 +25,3 @@ export default function OrderConfirmation() {
     </div>
   );
 }
-

@@ -6,7 +6,7 @@ import { trackPage, trackProductImpression } from '../utils/analytics.js';
 export default function Products() {
   useEffect(() => {
     trackPage('Products');
-    products.forEach(trackProductImpression);
+    products.forEach((p, idx) => trackProductImpression(p, { item_list_name: 'All Products', item_list_id: 'products_all', index: idx + 1 }));
   }, []);
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
@@ -17,4 +17,3 @@ export default function Products() {
     </div>
   );
 }
-

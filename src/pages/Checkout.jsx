@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart, totals } from '../state/cartState.jsx';
+import { getProduct } from '../data/products.js';
 import { trackBeginCheckout } from '../utils/analytics.js';
 
 export default function Checkout() {
@@ -9,7 +10,19 @@ export default function Checkout() {
   const t = totals(state.items);
   const [form, setForm] = useState({ name:'', email:'', address:'', method:'card' });
 
-  const items = useMemo(() => state.items.map(i => ({ item_id: i.id, item_name: i.name, price: i.price, quantity: i.qty })), [state.items]);
+  const items = useMemo(() => state.items.map(i => {
+    const p = getProduct(i.id) || {};
+    const currency = i.currency || 'USD';
+    const out = { item_id: i.id, item_name: i.name, price: i.price, quantity: i.qty, currency };
+    const path = Array.isArray(p.categoryPath) ? p.categoryPath : (p.category ? [p.category] : []);
+    if (path[0]) out.item_category = path[0];
+    if (path[1]) out.item_category2 = path[1];
+    if (path[2]) out.item_category3 = path[2];
+    if (path[3]) out.item_category4 = path[3];
+    if (path[4]) out.item_category5 = path[4];
+    if (path.length) out.item_category_path = path;
+    return out;
+  }), [state.items]);
 
   useEffect(() => {
     trackBeginCheckout(items);
@@ -18,7 +31,7 @@ export default function Checkout() {
   function placeOrder(e) {
     e.preventDefault();
     const orderId = 'ORD-' + Math.random().toString(36).slice(2,8).toUpperCase();
-    const payload = { orderId, total: t.total, items };
+    const payload = { orderId, total: t.total, tax: t.tax, shipping: t.shipping, items };
     sessionStorage.setItem('lastOrder', JSON.stringify(payload));
     dispatch({ type: 'CLEAR' });
     navigate('/order-confirmation');

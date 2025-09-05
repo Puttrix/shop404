@@ -11,7 +11,12 @@ Built with Vite + React + Tailwind. Includes a full ecommerce flow (listings, pr
 ## Features
 - Products grid, product details, cart, checkout, and order confirmation
 - Donation flow with steps: amount → details → payment → review → success
-- Analytics helpers that push to `dataLayer` (GTM/GA4) and Matomo `_mtm`, plus hooks for ODP/Optimizely
+  - Monthly vs one‑time UX nudge; optional persistent monthly default (per device)
+  - Client-side validation and `donation_step` error tracking
+- Analytics helpers push to `dataLayer` (GTM/GA4) and Matomo `_mtm`
+  - GA4 ecommerce basics with category hierarchy (`item_category...item_category5`)
+  - List context on impressions (`item_list_name`, `item_list_id`, `index`)
+  - Currency on cart/checkout; purchase includes optional tax/shipping
 - Consent banner with categories (analytics, marketing, experimentation) controlling tag behavior via Consent Mode (GTM always loads)
 - Runtime config via `/config.json` generated from container env vars
 
@@ -33,11 +38,11 @@ Environment variables for runtime config are read by the server only when runnin
 ## Events & Data Layer
 Key events emitted:
 - `page_view`: on route changes/pages
-- `view_item_list`: product list impressions
+- `view_item_list`: product list impressions, includes `item_list_name`, `item_list_id`, `items[].index`
 - `view_item`: product detail
-- `add_to_cart`: add to cart
-- `begin_checkout`: checkout start
-- `purchase`: order confirmation
+- `add_to_cart`: add to cart (with `ecommerce.currency`)
+- `begin_checkout`: checkout start (with `ecommerce.currency`)
+- `purchase`: order confirmation (includes `transaction_id`, `value`, `currency`, optional `tax`/`shipping`)
 - `donation_step`: donation wizard step with metadata
 
 Matomo via Tag Manager can consume the same ecommerce events from `_mtm`/`dataLayer`.
@@ -58,15 +63,15 @@ docker run -p 8080:3000 \
 App serves at http://localhost:8080. `/config.json` reflects env settings.
 
 ## Portainer (Deploy from Git)
-1. Push this repo to GitHub.
-2. In Portainer → Stacks → Add stack → Repository, set:
+See `docs/PORTAINER.md` for full steps, env matrix, and troubleshooting.
+Quick outline:
+1. Push this repo (or your fork) to Git.
+2. Portainer → Stacks → Add stack → Repository:
    - Repository URL: your Git URL
    - Compose path: `docker-compose.yml`
    - Auto-update: optional
-3. Set environment variables in the stack (GTM_ID, MATOMO_TAG_MANAGER_CONTAINER_URL, OPTIMIZELY_WEB_SNIPPET_URL, ODP_SDK_URL).
-4. Deploy the stack. Port 8080 maps to the service.
-
-You can later update env vars and redeploy to change tag configs.
+3. Set env vars in the stack: `GTM_ID`, `MATOMO_TAG_MANAGER_CONTAINER_URL`, `OPTIMIZELY_WEB_SNIPPET_URL`, `ODP_SDK_URL`.
+4. Deploy. Access at `http://YOUR-HOST:8080`. Check `/config.json` for your settings.
 
 ## Configuration Notes
 - Consent Mode: The banner sets Google Consent Mode v2. Defaults are denied; updates occur on user choice. GTM always loads but respects consent.
@@ -74,6 +79,7 @@ You can later update env vars and redeploy to change tag configs.
 - Matomo: Use Matomo Tag Manager (MTM). Set `MATOMO_TAG_MANAGER_CONTAINER_URL` to your container script URL, e.g. `https://matomo.example.com/js/container_ABC123.js`.
 - Optimizely Web: provide the snippet URL to test activation and variations.
 - ODP: if you have a web SDK snippet, set `ODP_SDK_URL` and configure inside your tag manager.
+ - Donation defaults: if the user opts in, the app stores `donation_default_interval=monthly` in `localStorage` to preselect monthly in future sessions.
 
 ## Structure
 - `src/pages`: pages and donation wizard steps
@@ -84,7 +90,16 @@ You can later update env vars and redeploy to change tag configs.
 
 ## Roadmap & Ideas
 - See `docs/ROADMAP.md` for themes, milestones, backlog, and decisions. Add ideas there as short bullets; move items across sections as work progresses.
- - For analytics specifics, see `docs/ANALYTICS.md` (Consent Mode, GTM-first, MTM-only, events).
+  - For analytics specifics, see `docs/ANALYTICS.md` (Consent Mode, GTM-first, MTM-only, events).
+  - For event mappings and QA steps, see `docs/ANALYTICS_PARITY.md`.
+  - For GA4 ecommerce item payload examples per event, see `docs/GA4_ECOMMERCE_EXAMPLES.md`.
+  - For Matomo Tag Manager ecommerce mapping (variables, triggers, tags), see `docs/MATOMO_ECOMMERCE_MAPPING.md`.
+  - For Google Tag Manager setup (GA4 config, DLVs, triggers, tags), see `docs/GTM_CONTAINER.md`.
+  - Importable GTM container (variables + triggers): `docs/gtm/container_mockshop.json`.
+
+## Testing
+- Run analytics payload checks: `npm run test:analytics`
+  - Verifies GA4 payload structure (list context, category hierarchy, currency on cart/checkout, purchase tax/shipping) and donation error tracking.
 
 ## Debugging
 - Console markers show GTM lifecycle when running locally (init start, event push, script append). Toggle with `window.__DEBUG_ANALYTICS__ = true|false`.

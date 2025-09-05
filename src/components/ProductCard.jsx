@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../state/cartState.jsx';
-import { trackAddToCart } from '../utils/analytics.js';
+import { trackAddToCart, trackProductImpression } from '../utils/analytics.js';
 
 export default function ProductCard({ product }) {
   const { dispatch } = useCart();
+  // Optional: track impression when card mounts within a list wrapper should pass listCtx
   function add() {
     dispatch({ type: 'ADD', item: { id: product.id, name: product.name, price: product.price, qty: 1, variant: 'default', currency: 'USD' } });
     trackAddToCart(product, 1);
