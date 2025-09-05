@@ -1,0 +1,32 @@
+# Design Notes (UI/Theme)
+
+This document preserves UI/UX details removed from the README. It is not required for analytics setup, but can help when tweaking the look-and-feel.
+
+## Dark Mode
+- Mode: three states — `system`, `dark`, `light`.
+- Persistence: `localStorage.theme` stores the chosen state; defaults to `system`.
+- Early apply: a small script in `index.html` adds/removes the `dark` class on `<html>` before paint to avoid flashes.
+- React toggle: `src/components/ThemeToggle.jsx` cycles System → Dark → Light and supports `variant="button"|"icon"`.
+- Tailwind: `tailwind.config.js` uses `darkMode: 'class'`.
+- Common components/styles updated with `dark:` variants:
+  - Cards, inputs, badges, secondary buttons, header/footer, consent banner.
+  - See `src/index.css` and components/pages for `dark:` classes.
+
+Key files:
+- `index.html` (early apply script)
+- `tailwind.config.js` (dark mode config)
+- `src/components/ThemeToggle.jsx`
+- `src/index.css` (utility classes)
+
+## Responsive Header
+- Desktop (`md+`): full nav (Home/Products/Donate), theme button, and cart button with count.
+- Mobile: theme icon, cart icon with count badge, and a hamburger button.
+- Mobile menu: slide-down panel with links; backdrop tap or link click closes the menu.
+- Animation: 300ms ease-out with transform/opacity, disabled for users preferring reduced motion.
+
+Key files:
+- `src/components/Header.jsx` (menu state + animation)
+- `src/index.css` (`.icon-btn`, `.badge-count`)
+
+## Notes
+- These UI details are separate from analytics behavior and can be changed without impacting GTM/GA4/MTM integrations.

@@ -19,8 +19,7 @@ Built with Vite + React + Tailwind. Includes a full ecommerce flow (listings, pr
   - Currency on cart/checkout; purchase includes optional tax/shipping
 - Consent banner with categories (analytics, marketing, experimentation) controlling tag behavior via Consent Mode (GTM always loads)
 - Runtime config via `/config.json` generated from container env vars
- - Dark mode with three-state toggle (System/Dark/Light)
- - Responsive header with mobile menu and cart badge
+
 
 ## Local Development
 
@@ -176,18 +175,7 @@ trackDonationStep('details', { error: 'validation', fields: ['email'] });
 // Optional: keep Matomo cart parity in custom UIs
 syncMatomoCart(itemsArray);
 
-## Theming
-- Defaults to the visitor’s system preference (`prefers-color-scheme`).
-- Header toggle (left of Cart) cycles: System → Dark → Light.
-- Preference stored as `localStorage.theme` (`system`|`dark`|`light`); applied early in `index.html` to avoid flashes.
 
-## Responsive UI
-- Mobile (under `md`):
-  - Compact theme icon, cart icon with a live count badge, and a hamburger button.
-  - Tapping the hamburger opens a slide-down menu (Home, Products, Donate, Cart).
-  - Tap a link or the backdrop to close the menu.
-- Desktop (`md` and up):
-  - Full nav (Home, Products, Donate), full theme button, and a Cart button with item count.
 
 ## Consent Events (Matomo)
 - The banner emits `_mtm` consent events to help gate MTM tags:
