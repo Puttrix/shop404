@@ -174,3 +174,9 @@ Use `{{cjs.cartTotal}}` in Cart Update tags when `ecommerce.value` is not provid
 - Missing items: Verify `ecommerce.items` exists in the event payload and that your DLV paths are correct.
 - Totals off: Make sure you’re summing `price * quantity` and including tax/shipping consistently.
 
+## Additional Notes for Specialists
+- Template mapping: If your MTM Ecommerce Order tag supports `Tax` and `Shipping` fields, map `{{dlv.tax}}` and `{{dlv.shipping}}` directly; otherwise use the Custom HTML `_paq` approach with `trackEcommerceOrder` arguments.
+- Category hierarchy: If you want hierarchical categories, split `item_category_path` (array provided by the app) into multiple dimensions or pass the array directly if your template supports it.
+- Consent: Align MTM consent settings with your governance; the app defers MTM loading until `analytics` consent is granted.
+- Dedupe purchases: Matomo dedupes by Order ID. Ensure a unique `transaction_id` per order and avoid re‑submitting the same ID.
+- Debugging tips: Use the browser console to inspect `window._mtm` queue and verify event payloads as they arrive.

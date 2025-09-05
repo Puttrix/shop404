@@ -81,6 +81,24 @@ Quick outline:
 - ODP: if you have a web SDK snippet, set `ODP_SDK_URL` and configure inside your tag manager.
  - Donation defaults: if the user opts in, the app stores `donation_default_interval=monthly` in `localStorage` to preselect monthly in future sessions.
 
+## Google Tag Manager / GA4 (Quick Setup)
+- Import variables + triggers (optional): `docs/gtm/container_mockshop.json` (Workspace import)
+- GA4 Configuration tag:
+  - Measurement ID: your GA4 property ID
+  - Send a page view event: disabled (app pushes `page_view`)
+  - Trigger: All Pages (consent-aware by default)
+- GA4 Event tags (one per event):
+  - `page_view`: params → `page_name`
+  - `view_item_list`: params → `item_list_name`, `item_list_id`, `items`
+  - `view_item`: params → `items`
+  - `add_to_cart`: params → `currency`, `items`
+  - `begin_checkout`: params → `currency`, `items`
+  - `purchase`: params → `transaction_id`, `value`, `currency`, `tax`, `shipping`, `items`
+  - `donation_step`: params → `step` (+ optional `amount`, `interval`, `error`)
+- Triggers: Custom Event equals the app event (`evt.*` if you imported, or create custom event per name)
+- Validate: GTM Preview (Consent Overview), GA4 DebugView (events, items, currency)
+- Guide: `docs/GTM_CONTAINER.md`
+
 ## Matomo Tag Manager (Quick Setup)
 - Prereq: Create an MTM container for your Matomo site and add a “Matomo Configuration” tag (Site ID + Tracker URL).
 - Variables (DLV): `ecommerce`, `ecommerce.items`, `ecommerce.transaction_id`, `ecommerce.value`, `ecommerce.currency`, `ecommerce.tax`, `ecommerce.shipping`.

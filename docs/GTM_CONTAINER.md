@@ -123,3 +123,21 @@ For Matomo Tag Manager setup, see `docs/MATOMO_ECOMMERCE_MAPPING.md`.
 
 Notes:
 - This export intentionally excludes tags to avoid linking to a hardcoded Measurement ID. Use your own GA4 ID via the “GA4 Measurement ID” Constant variable, then wire it into your GA4 Configuration tag.
+
+## Consent Mode in GTM
+- Ensure Consent Mode is enabled in Admin → Container Settings when available.
+- In Preview → Consent Overview, confirm `analytics_storage` becomes `granted` after banner acceptance.
+- GA4 tags will automatically respect consent; do not force-fire without consent.
+
+## DebugView & QA Checklist
+- Open GA4 DebugView and GTM Preview side-by-side.
+- Verify each event’s parameters and `items` array populate correctly.
+- Check `purchase` has `transaction_id`, `value`, `currency`, `tax`, `shipping`.
+- Confirm list impressions carry `item_list_name`, `item_list_id`, and `index`.
+- Ensure no duplicate `purchase` events per transaction when reloading confirmation page.
+
+## Common Pitfalls
+- Missing items: Map `items` from `ecommerce.items` exactly; avoid renaming fields.
+- Currency not set: Ensure `currency` is passed on cart/checkout and purchase.
+- Consent blocked: Events show but tags don’t fire; check Consent Overview.
+- Duplicate purchases: Use a unique `transaction_id` and avoid re-firing on page refresh (the app uses sessionStorage; you can add GTM guards if needed).
