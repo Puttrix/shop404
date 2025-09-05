@@ -7,6 +7,12 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const distDir = path.join(__dirname, 'dist');
 
+// Block indexing by search engines (defense-in-depth alongside robots.txt and meta tags)
+app.use((req, res, next) => {
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  next();
+});
+
 // Runtime config from env (used by tag loaders)
 const runtimeConfig = {
   GTM_ID: process.env.GTM_ID || '',

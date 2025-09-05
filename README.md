@@ -122,6 +122,11 @@ Quick outline:
 - Optimizely Web: provide the snippet URL to test activation and variations.
 - ODP: if you have a web SDK snippet, set `ODP_SDK_URL` and configure inside your tag manager.
  - Donation defaults: if the user opts in, the app stores `donation_default_interval=monthly` in `localStorage` to preselect monthly in future sessions.
+ - Crawling/Indexing: This demo ships with robots blocking enabled:
+   - `public/robots.txt` disallows all (`Disallow: /`).
+   - `index.html` sets `<meta name="robots" content="noindex, nofollow">`.
+   - `server.js` sets the `X-Robots-Tag: noindex, nofollow` header.
+   Remove or adjust these if you want the site indexed.
 
 ## Google Tag Manager / GA4 (Quick Setup)
 - Import variables + triggers (optional): `docs/gtm/container_mockshop.json` (Workspace import)
@@ -293,11 +298,12 @@ window.dataLayer.push({
 window.dataLayer.push({ event: 'donation_step', step: 'payment', amount: 25, interval: 'monthly' });
 ```
 
-Mirroring to Matomo Tag Manager:
+Mirroring to Matomo Tag Manager (use `update_cart`):
 
 ```js
 if (window._mtm) {
-  window._mtm.push({ event: 'add_to_cart', ecommerce: { currency: 'USD', items: [{ item_id: 'p-1', item_name: 'Aurora Hoodie', price: 59.0, quantity: 2 }] } });
+  // Matomo expects FULL CART on cart updates. Provide the full items array if possible.
+  window._mtm.push({ event: 'update_cart', ecommerce: { currency: 'USD', items: [{ item_id: 'p-1', item_name: 'Aurora Hoodie', price: 59.0, quantity: 2 }] } });
 }
 ```
 
