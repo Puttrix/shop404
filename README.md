@@ -298,6 +298,16 @@ window.dataLayer.push({
 window.dataLayer.push({ event: 'donation_step', step: 'payment', amount: 25, interval: 'monthly' });
 ```
 
+## Product Photos
+- Place your product photos in `public/images/product_photos/`.
+- File naming: use a slug of the product name, e.g. `Aurora Hoodie` → `aurora-hoodie.jpg`. Optional: add a `aurora-hoodie.webp` next to it for modern browsers.
+- The app prefers WebP when present via a `<picture>` element and falls back to JPG automatically.
+- Generate WebP versions:
+  - Optional toolchain: install `sharp` (`npm i -D sharp`) or ensure `cwebp` is in PATH.
+  - Run: `npm run images:webp` to create `.webp` next to `.jpg/.png` files.
+- Style toggle:
+  - Photos are used regardless of theme; switching `Classic`/`Neo` changes the chrome, not the photo mapping.
+
 Mirroring to Matomo Tag Manager (use `update_cart`):
 
 ```js

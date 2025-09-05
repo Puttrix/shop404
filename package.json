@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "start": "node server.js",
     "test:analytics": "node scripts/test-analytics.mjs",
-    "test:matomo": "node scripts/test-matomo.mjs"
+    "test:matomo": "node scripts/test-matomo.mjs",
+    "images:webp": "node scripts/make-webp.mjs"
   },
   "dependencies": {
     "express": "^4.19.2",

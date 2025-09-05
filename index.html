@@ -94,12 +94,12 @@
       } catch (e) {}
     </script>
     <script>
-      // Style variant: apply earliest (classic|neo). Defaults to classic.
+      // Style variant: force Neo on by default (toggle hidden)
       (function(){
         try {
-          var style = localStorage.getItem('style');
           var root = document.documentElement;
-          if (style === 'neo') root.classList.add('style-neo');
+          root.classList.add('style-neo');
+          localStorage.setItem('style','neo');
         } catch (e) {}
       })();
     </script>
