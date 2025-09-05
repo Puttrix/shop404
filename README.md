@@ -150,6 +150,7 @@ Cart updates (`update_cart`):
   - For Matomo Tag Manager ecommerce mapping (variables, triggers, tags), see `docs/MATOMO_ECOMMERCE_MAPPING.md`.
   - For Google Tag Manager setup (GA4 config, DLVs, triggers, tags), see `docs/GTM_CONTAINER.md`.
   - Importable GTM container (variables + triggers): `docs/gtm/container_mockshop.json`.
+  - UI/Theme notes (dark mode, mobile header) are kept in `docs/DESIGN_NOTES.md`.
 
 ## Testing
 - Run analytics payload checks: `npm run test:analytics`
