@@ -22,6 +22,8 @@ This guide shows how to deploy MockShop on Portainer using “Stacks → Add sta
 - `OPTIMIZELY_WEB_SNIPPET_URL=https://cdn.optimizely.com/js/PROJECT_ID.js` (optional)
 - `ODP_SDK_URL=https://cdn.foqt.com/v1/odp.js` (optional)
 
+Important: Stack env vars are used as substitutions. We reference them in the compose as `${VAR}` (e.g., `GTM_ID=${GTM_ID:-}`), so values you set in Portainer’s “Environment variables” will flow into the container and appear in `/config.json`.
+
 3) Deploy the stack
 - Published port: `${PUBLISH_PORT}` (host, defaults to `8080`) → `3000` (container)
 - Open `http://YOUR-HOST:8080`
