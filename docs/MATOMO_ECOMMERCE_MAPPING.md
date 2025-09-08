@@ -279,16 +279,53 @@ Notes:
 </script>
 ```
 
-4) `purchase` → Order
+4) `purchase` → Order (working recipe)
 ```
 <script>
-  var e={{dlv.ecommerce}}||{}; var items=e.items||[];
-  window.__addItems(items);
-  _paq.push(['trackEcommerceOrder', e.transaction_id, e.value, e.subtotal||e.value, e.tax||0, e.shipping||0, e.coupon?Number(e.coupon_value||0):0]);
+  var e = {{dlv.ecommerce}} || {};
+  var items = Array.isArray(e.items) ? e.items : [];
+  window._paq = window._paq || [];
+
+  // Items: prefer category path array when present
+  items.forEach(function(i){
+    var cat = (i.item_category_path && i.item_category_path.length)
+      ? i.item_category_path
+      : (i.item_category || null);
+    _paq.push(['addEcommerceItem',
+      String(i.item_id || ''),
+      String(i.item_name || ''),
+      cat,
+      Number(i.price || 0),
+      Number(i.quantity || 1)
+    ]);
+  });
+
+  // Totals
+  var tax        = Number(e.tax || 0);
+  var shipping   = Number(e.shipping || 0);
+  var discount   = Number(e.discount || 0);  // amount, not code
+  var subTotal   = (e.subtotal != null)
+      ? Number(e.subtotal)
+      : items.reduce(function(t,i){ return t + Number(i.price||0) * Number(i.quantity||1); }, 0);
+  var grandTotal = Number(e.value || (subTotal + tax + shipping - discount));
+
+  _paq.push(['trackEcommerceOrder',
+    String(e.transaction_id || ''),
+    grandTotal,
+    subTotal,
+    tax,
+    shipping,
+    discount
+  ]);
+
+  // Optional: coupon code → custom dimension or event
+  // if (e.coupon) _paq.push(['trackEvent','ecommerce','coupon', String(e.coupon)]);
 </script>
 ```
 
-Note: `trackEcommerceOrder` signature is `(orderId, grandTotal, subTotal, tax, shipping, discount)`. Provide as many values as available.
+Notes:
+- `trackEcommerceOrder(orderId, grandTotal, subTotal, tax, shipping, discount)` is the signature.
+- Currency: set in the Matomo Configuration tag (or once per visit), not here.
 
 ## Product/Category Details & Totals
 - Category: The app sends a single `item_category`. For Matomo hierarchies, pass an array instead, e.g. `['Apparel','Hoodies']` by transforming in a Custom JS Variable.
