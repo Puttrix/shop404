@@ -75,15 +75,18 @@ function ensureTagsLoaded() {
 
 export function trackPage(name, extra = {}) {
   ensureTagsLoaded();
+  const url = (extra.page_location || (typeof location !== 'undefined' ? location.href : '')) || '';
+  const title = (extra.page_title || (typeof document !== 'undefined' ? document.title : '') || name) || name;
   // GTM/GA4 via dataLayer
   if (consentAllows('analytics')) {
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'page_view', page_name: name, ...extra });
+    window.dataLayer.push({ event: 'page_view', page_name: name, page_title: title, page_location: url, ...extra });
   }
   // Matomo: if using Tag Manager, push an event into _mtm
   if (consentAllows('analytics')) {
     if (window._mtm) {
-      window._mtm.push({ event: 'page_view', page_name: name, ...extra });
+      // Provide both generic and Matomo-friendly keys so MTM tags can map them easily
+      window._mtm.push({ event: 'page_view', page_name: name, page_title: title, page_location: url, page_url: url, ...extra });
     }
   }
 }

@@ -23,6 +23,10 @@ Create these Variables in MTM to map from the pushed event payloads. Use Data La
 - `dlv.value` → Path: `ecommerce.value`
 - `dlv.currency` → Path: `ecommerce.currency`
 
+Page context helpers (SPA safe):
+- `dlv.page_title` → Path: `page_title`
+- `dlv.page_location` → Path: `page_location` (or use `page_url` if preferred)
+
 Consent helper variables (for `cookies_update` payload):
 - `dlv.consent` → Path: `consent`
 - `dlv.consent_necessary` → Path: `consent.necessary`
@@ -80,7 +84,8 @@ For single‑page app navigation, the app pushes `{ event: 'page_view' }` to `wi
 1) Ensure your MTM container includes a Matomo Configuration tag (Site ID + Tracker URL) that fires early on all pages.
 2) Create a Custom Event Trigger: `evt.page_view` (Event name equals `page_view`).
 3) Add a “Matomo Analytics → Track Page View” tag and attach the `evt.page_view` trigger.
-   - The tag will use the current `document.title` and `location.href`. The app updates `document.title` on route changes.
+   - Map Custom Page Title to `{{dlv.page_title}}` and Custom URL to `{{dlv.page_location}}` (or `{{dlv.page_url}}` if you created that path) so the PV reflects the routed URL.
+   - The app sets both `page_title` and `page_location` on every `page_view` event.
 4) (Optional) Add consent gating: only fire the tag when your consent conditions are met (e.g., `{{dlv.consent_analytics}}` equals true or use MTM’s consent features).
 
 Troubleshooting SPA PVs:
