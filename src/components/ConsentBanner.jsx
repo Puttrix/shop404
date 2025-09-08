@@ -25,6 +25,38 @@ export default function ConsentBanner() {
     } catch {}
   }
 
+  function pushGtmConsentEvents(c) {
+    try {
+      window.dataLayer = window.dataLayer || [];
+      const events = [];
+      if (c.necessary) events.push('cookies_necessary');
+      if (c.functional) events.push('cookies_functional');
+      if (c.analytics) events.push('cookies_statistical');
+      if (c.marketing) events.push('cookies_marketing');
+      events.forEach(ev => window.dataLayer.push({ event: ev }));
+      // Consolidated snapshot for GTM variables/conditions
+      window.dataLayer.push({ event: 'cookies_update', consent: c });
+    } catch {}
+  }
+
+  function pushRevokedMtm(prev, next) {
+    try {
+      if (!window._mtm) return;
+      if (prev.functional && !next.functional) window._mtm.push({ event: 'cookies_revoked_functional' });
+      if (prev.analytics && !next.analytics) window._mtm.push({ event: 'cookies_revoked_statistical' });
+      if (prev.marketing && !next.marketing) window._mtm.push({ event: 'cookies_revoked_marketing' });
+    } catch {}
+  }
+
+  function pushRevokedGtm(prev, next) {
+    try {
+      window.dataLayer = window.dataLayer || [];
+      if (prev.functional && !next.functional) window.dataLayer.push({ event: 'cookies_revoked_functional' });
+      if (prev.analytics && !next.analytics) window.dataLayer.push({ event: 'cookies_revoked_statistical' });
+      if (prev.marketing && !next.marketing) window.dataLayer.push({ event: 'cookies_revoked_marketing' });
+    } catch {}
+  }
+
   function updatePaqConsent(c) {
     try {
       if (!window._paq) return;
@@ -42,6 +74,8 @@ export default function ConsentBanner() {
     window.__consent = saved;
     // Emit Matomo consent events for the current state
     pushMtmConsentEvents(saved);
+    // Emit GTM consent events for the current state
+    pushGtmConsentEvents(saved);
     // Update Matomo tracker consent state
     updatePaqConsent(saved);
     // Apply saved consent to Google Consent Mode on load
@@ -57,12 +91,19 @@ export default function ConsentBanner() {
   }, []);
 
   function persist(next) {
+    const prev = consent || defaultConsent;
     localStorage.setItem('consent', JSON.stringify(next));
     window.__consent = next;
     setConsent(next);
     setOpen(false);
     // Emit Matomo consent events on change
     pushMtmConsentEvents(next);
+    // Emit revocation events if toggled off (MTM)
+    pushRevokedMtm(prev, next);
+    // Emit GTM consent events on change
+    pushGtmConsentEvents(next);
+    // Emit revocation events if toggled off (GTM)
+    pushRevokedGtm(prev, next);
     // Update Matomo tracker consent state
     updatePaqConsent(next);
     // Let tag loaders know consent changed

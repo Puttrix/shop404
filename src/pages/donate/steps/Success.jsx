@@ -1,13 +1,24 @@
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { trackPage } from '../../../utils/analytics.js';
+import { trackPage, trackPurchase } from '../../../utils/analytics.js';
 
 export default function Success({ data }) {
   const donation = useMemo(() => {
     try { return JSON.parse(sessionStorage.getItem('lastDonation')); } catch { return null; }
   }, []);
 
-  useEffect(() => { trackPage('Donation success'); }, []);
+  useEffect(() => {
+    trackPage('Donation success');
+    if (donation && donation.donationId && donation.amount != null) {
+      try {
+        const items = [
+          { item_id: 'donation', item_name: `Donation (${donation.interval || 'one-time'})`, price: Number(donation.amount || 0), quantity: 1 }
+        ];
+        // Use purchase to unify donation completion with ecommerce reporting
+        trackPurchase(donation.donationId, Number(donation.amount || 0), items, { currency: 'USD' });
+      } catch {}
+    }
+  }, [donation]);
 
   if (!donation) return <div className="p-4">No recent donation.</div>;
   return (
@@ -18,4 +29,3 @@ export default function Success({ data }) {
     </div>
   );
 }
-
