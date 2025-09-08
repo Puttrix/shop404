@@ -74,6 +74,20 @@ Consent events (emitted by the app to `_mtm`):
 
 Tip: The app does not push `_mtm` `add_to_cart`. Use `update_cart` for Matomo cart sync; GA4 still receives `add_to_cart`.
 
+## SPA Pageviews (MTM‑only)
+For single‑page app navigation, the app pushes `{ event: 'page_view' }` to `window._mtm` on every route change. To record pageviews in Matomo via Tag Manager (without direct `_paq` calls in app code):
+
+1) Ensure your MTM container includes a Matomo Configuration tag (Site ID + Tracker URL) that fires early on all pages.
+2) Create a Custom Event Trigger: `evt.page_view` (Event name equals `page_view`).
+3) Add a “Matomo Analytics → Track Page View” tag and attach the `evt.page_view` trigger.
+   - The tag will use the current `document.title` and `location.href`. The app updates `document.title` on route changes.
+4) (Optional) Add consent gating: only fire the tag when your consent conditions are met (e.g., `{{dlv.consent_analytics}}` equals true or use MTM’s consent features).
+
+Troubleshooting SPA PVs:
+- If pageviews only appear on hard reloads, verify the `page_view` trigger exists and the tag fires on the Custom Event, not only on page load.
+- Use Matomo Tag Manager preview to confirm that `page_view` events arrive and the “Track Page View” tag fires on navigation.
+- Confirm the container script URL (`MATOMO_TAG_MANAGER_CONTAINER_URL`) is correct and loads on every route.
+
 ## Tags — Two Approaches
 Prefer the MTM Ecommerce tag templates if available. If not, use Custom HTML with `_paq` commands.
 
