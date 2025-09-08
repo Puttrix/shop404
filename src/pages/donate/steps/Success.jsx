@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { trackPage, trackPurchase } from '../../../utils/analytics.js';
+import { setTitle } from '../../../utils/seo.js';
 
 export default function Success({ data }) {
   const donation = useMemo(() => {
@@ -8,6 +9,7 @@ export default function Success({ data }) {
   }, []);
 
   useEffect(() => {
+    setTitle('Donate · Success');
     trackPage('Donation success');
     if (donation && donation.donationId && donation.amount != null) {
       try {

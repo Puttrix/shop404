@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getProduct } from '../data/products.js';
 import { useCart } from '../state/cartState.jsx';
 import { trackPage, trackViewItem, trackAddToCart } from '../utils/analytics.js';
+import { setTitle } from '../utils/seo.js';
 import ProductImage from '../components/ProductImage.jsx';
 
 export default function ProductDetails() {
@@ -12,6 +13,7 @@ export default function ProductDetails() {
 
   useEffect(() => {
     if (product) {
+      setTitle(product.name);
       trackPage(`Product: ${product.name}`);
       trackViewItem(product);
     }

@@ -3,10 +3,12 @@ import { products } from '../data/products.js';
 import ProductCard from '../components/ProductCard.jsx';
 import { useEffect } from 'react';
 import { trackPage, trackProductImpression } from '../utils/analytics.js';
+import { setTitle } from '../utils/seo.js';
 import HeroImage from '../components/HeroImage.jsx';
 
 export default function Home() {
   useEffect(() => {
+    setTitle('Home');
     trackPage('Home');
     products.forEach((p, idx) => trackProductImpression(p, { item_list_name: 'Home Featured', item_list_id: 'home_grid', index: idx + 1 }));
   }, []);

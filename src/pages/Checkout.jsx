@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart, totals } from '../state/cartState.jsx';
 import { getProduct } from '../data/products.js';
 import { trackBeginCheckout } from '../utils/analytics.js';
+import { setTitle } from '../utils/seo.js';
 
 export default function Checkout() {
   const { state, dispatch } = useCart();
@@ -25,6 +26,7 @@ export default function Checkout() {
   }), [state.items]);
 
   useEffect(() => {
+    setTitle('Checkout');
     trackBeginCheckout(items);
   }, [items]);
 

@@ -6,12 +6,25 @@ import Payment from './steps/Payment.jsx';
 import Review from './steps/Review.jsx';
 import Success from './steps/Success.jsx';
 import { trackPage, trackDonationStep } from '../../utils/analytics.js';
+import { setTitle } from '../../utils/seo.js';
+import { useLocation } from 'react-router-dom';
 
 export default function Donate() {
   const [data, setData] = useState({ amount: 25, interval: 'one-time', name: '', email: '', method: 'card' });
   const navigate = useNavigate();
+  const location = useLocation();
 
-  useEffect(() => { trackPage('Donate'); }, []);
+  useEffect(() => { setTitle('Donate'); trackPage('Donate'); }, []);
+  // Optional: refine title by step
+  useEffect(() => {
+    const path = location.pathname || '';
+    if (path.endsWith('/donate')) { setTitle('Donate'); return; }
+    if (path.includes('/donate/details')) setTitle('Donate · Details');
+    else if (path.includes('/donate/payment')) setTitle('Donate · Payment');
+    else if (path.includes('/donate/review')) setTitle('Donate · Review');
+    else if (path.includes('/donate/success')) setTitle('Donate · Success');
+    else if (path.includes('/donate')) setTitle('Donate · Amount');
+  }, [location.pathname]);
 
   function next(stepData, nextPath) {
     const merged = { ...data, ...stepData };

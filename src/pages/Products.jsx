@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 import { products } from '../data/products.js';
 import ProductCard from '../components/ProductCard.jsx';
 import { trackPage, trackProductImpression } from '../utils/analytics.js';
+import { setTitle } from '../utils/seo.js';
 
 export default function Products() {
   useEffect(() => {
+    setTitle('Products');
     trackPage('Products');
     products.forEach((p, idx) => trackProductImpression(p, { item_list_name: 'All Products', item_list_id: 'products_all', index: idx + 1 }));
   }, []);

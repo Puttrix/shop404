@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { trackPage, trackPurchase } from '../utils/analytics.js';
+import { setTitle } from '../utils/seo.js';
 
 export default function OrderConfirmation() {
   const order = useMemo(() => {
@@ -8,6 +9,7 @@ export default function OrderConfirmation() {
   }, []);
 
   useEffect(() => {
+    setTitle('Order confirmation');
     trackPage('Order confirmation');
     if (order) trackPurchase(order.orderId, order.total, order.items, { tax: order.tax, shipping: order.shipping });
   }, [order]);
