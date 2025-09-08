@@ -78,6 +78,52 @@ Consent events (emitted by the app to `_mtm`):
 
 Tip: The app does not push `_mtm` `add_to_cart`. Use `update_cart` for Matomo cart sync; GA4 still receives `add_to_cart`.
 
+## Donation Flow (Steps + Success)
+The app emits a custom `donation_step` event at each wizard step and a `purchase` on success. Use these to report funnel steps, validation errors, and completion.
+
+Data Layer Variables (add in MTM):
+- `dlv.step` → Path: `step` (Data Layer Version 2)
+- Optional metadata depending on the step:
+  - `dlv.amount` → Path: `amount`
+  - `dlv.interval` → Path: `interval`
+  - `dlv.error` → Path: `error`
+  - `dlv.fields` → Path: `fields` (array of invalid fields when validation fails)
+
+Triggers:
+- `evt.donation_step` (Custom Event equals `donation_step`)
+- Optional filtered triggers for errors or specific steps:
+  - Errors: `donation_step` with condition `{{dlv.error}} is not undefined`
+  - Step Details: `donation_step` with condition `{{dlv.step}} equals details`
+  - Step Payment: `donation_step` with condition `{{dlv.step}} equals payment`
+  - Step Review: `donation_step` with condition `{{dlv.step}} equals review`
+
+Tags (examples):
+1) Track Donation Step as Event
+   - Tag: Matomo Analytics → Track Event
+   - Category: `donation`
+   - Action: `step:{{dlv.step}}`
+   - Name/Label (optional): `interval:{{dlv.interval}}`
+   - Value (optional): `{{dlv.amount}}`
+   - Trigger: `evt.donation_step`
+
+2) Track Validation Errors
+   - Tag: Matomo Analytics → Track Event
+   - Category: `donation`
+   - Action: `error:{{dlv.step}}`
+   - Name/Label: `{{dlv.error}}`
+   - Value: (blank)
+   - Trigger: `donation_step` with condition `{{dlv.error}} is not undefined`
+
+3) Donation Success (Order)
+   - Already handled by the `purchase` event from the app.
+   - Use your Ecommerce Order tag as documented above (Order ID → `{{dlv.transaction_id}}`, Total → `{{dlv.value}}`, Currency → `{{dlv.currency}}`, Items → `{{dlv.items}}`).
+
+Optional: Custom Dimensions
+- If you have Matomo Custom Dimensions (scope Visit or Action), map donation attributes:
+  - Example (Action scope): `dimension: step` → value `{{dlv.step}}`
+  - Example (Action scope): `dimension: interval` → value `{{dlv.interval}}`
+  - Attach to the Donation Step event tag (and/or Order tag if you want success context).
+
 ## SPA Pageviews (MTM‑only)
 For single‑page app navigation, the app pushes `{ event: 'page_view' }` to `window._mtm` on every route change. To record pageviews in Matomo via Tag Manager (without direct `_paq` calls in app code):
 
