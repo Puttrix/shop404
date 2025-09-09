@@ -27,3 +27,28 @@ html, body, #root { height: 100%; }
 .style-neo header { @apply bg-white/70 dark:bg-gray-800/60 backdrop-blur; }
 .style-neo footer { @apply bg-white/70 dark:bg-gray-800/60 backdrop-blur; }
 .style-neo .hero-section { @apply bg-gradient-to-br from-indigo-50 via-white to-fuchsia-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-900; }
+
+/* Cart add notification: brief bump + ping dot */
+.cart-bump { animation: cart-bump 300ms ease-out; }
+@keyframes cart-bump {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.cart-notify { position: relative; }
+.cart-notify::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgb(219 39 119); /* brand-ish pink */
+  box-shadow: 0 0 0 0 rgba(219,39,119,0.6);
+  animation: cart-pulse 900ms ease-out;
+}
+@keyframes cart-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(219,39,119,0.6); }
+  100% { box-shadow: 0 0 0 12px rgba(219,39,119,0); }
+}

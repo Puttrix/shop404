@@ -17,8 +17,11 @@ Built with Vite + React + Tailwind. Includes a full ecommerce flow (listings, pr
   - GA4 ecommerce basics with category hierarchy (`item_category...item_category5`)
   - List context on impressions (`item_list_name`, `item_list_id`, `index`)
   - Currency on cart/checkout; purchase includes optional tax/shipping
+- Learn/Resources section for content (KB, FAQ, Testimonials)
+  - Annotated with Matomo Content Tracking (impressions + interactions)
 - Consent banner with categories (analytics, marketing, experimentation) controlling tag behavior via Consent Mode (GTM always loads)
 - Runtime config via `/config.json` generated from container env vars
+- UX nicety: cart button shows a brief notification pulse when items are added
 
 
 ## Local Development
@@ -45,6 +48,12 @@ Key events emitted:
 - `begin_checkout`: checkout start (with `ecommerce.currency`)
 - `purchase`: order confirmation (includes `transaction_id`, `value`, `currency`, optional `tax`/`shipping`)
 - `donation_step`: donation wizard step with metadata
+
+Matomo Content Tracking (new):
+- Impressions: automatic via `_paq.push(['trackAllContentImpressions']);` and `['trackVisibleContentImpressions']` in `index.html`
+- Interactions: `_paq.push(['trackContentInteraction','click', name, piece, target])` on teaser/CTA clicks
+- Markup: blocks have `class="matomoTrackContent"` and `data-content-name|piece|target` (we also add `data-track-content="true"` for clarity)
+- SPA scans: pages also call `trackContentImpressionsWithinNode(document)` for SPA safety
 
 Matomo via Tag Manager can consume the same ecommerce events from `_mtm`/`dataLayer`.
 
@@ -172,6 +181,7 @@ Cart updates (`update_cart`):
 
 ## Structure
 - `src/pages`: pages and donation wizard steps
+- `src/pages/learn`: Learn landing, articles, FAQ, testimonials
 - `src/components`: shared UI and consent banner
 - `src/state`: simple cart state with localStorage persistence
 - `src/utils/analytics.js`: unified event helpers and tag loader
@@ -192,8 +202,13 @@ Cart updates (`update_cart`):
   - Verifies GA4 payload structure (list context, category hierarchy, currency on cart/checkout, purchase tax/shipping) and donation error tracking.
 - Run Matomo cart sync checks: `npm run test:matomo`
   - Verifies `_mtm` `update_cart` emits FULL CART on add/remove/quantity change and at `begin_checkout`, plus mapping of item quantities.
+ - Manual: verify Matomo content impressions/interactions in MTM Preview on `/learn` and `/learn/articles`
 
 ## For Developers: dataLayer and _mtm pushes
+See also: `docs/DEVELOPERS.md` for setup, helper API, data models, and debugging tips.
+
+## Contributing
+See `CONTRIBUTING.md` for branches, PR guidelines, testing, style, and docs expectations.
 You can emit analytics events either via the helper functions in `src/utils/analytics.js` or by pushing directly to `window.dataLayer` (GTM/GA4) and `window._mtm` (Matomo Tag Manager). The helpers automatically respect consent and load tags when needed.
 
 Quick start with helpers:
@@ -210,6 +225,13 @@ trackPurchase('ORD-123', 121.80, itemsArray, { tax: 9.80, shipping: 5.00, coupon
 trackDonationStep('details', { error: 'validation', fields: ['email'] });
 // Optional: keep Matomo cart parity in custom UIs
 syncMatomoCart(itemsArray);
+
+// Matomo Content Tracking (helpers)
+import { trackContentScan, trackContentClick } from './src/utils/analytics.js';
+// Trigger a scan after rendering a block/route
+trackContentScan(document);
+// On teaser/CTA click
+trackContentClick({ name: 'KB Teaser', piece: 'Hoodie Sizing Guide', target: '/learn/articles/hoodie-fit-and-sizing' });
 
 
 

@@ -8,6 +8,17 @@ export default function Header() {
   const count = state.items.reduce((s,i)=>s+i.qty,0);
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // for animation
+  const [cartNotify, setCartNotify] = useState(false);
+  const [prevCount, setPrevCount] = useState(count);
+  useEffect(() => {
+    if (count > prevCount) {
+      setCartNotify(true);
+      const t = setTimeout(() => setCartNotify(false), 900);
+      setPrevCount(count);
+      return () => clearTimeout(t);
+    }
+    setPrevCount(count);
+  }, [count]);
   function openMenu(){
     if (menuVisible) return;
     setMenuVisible(true);
@@ -39,12 +50,12 @@ export default function Header() {
         {/* Desktop actions */}
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle />
-          <Link to="/cart" className="btn-secondary" onClick={close}><span className="mr-2">🛒</span> Cart ({count})</Link>
+          <Link to="/cart" className={`btn-secondary ${cartNotify ? 'cart-bump cart-notify' : ''}`} onClick={close}><span className="mr-2">🛒</span> Cart ({count})</Link>
         </div>
         {/* Mobile actions */}
         <div className="flex md:hidden items-center gap-2">
           <ThemeToggle variant="icon" />
-          <Link to="/cart" className="relative icon-btn" onClick={close} aria-label="Cart">
+          <Link to="/cart" className={`relative icon-btn ${cartNotify ? 'cart-bump cart-notify' : ''}`} onClick={close} aria-label="Cart">
             <span role="img" aria-hidden="true">🛒</span>
             <span className="badge-count" aria-hidden="true">{count}</span>
             <span className="sr-only">Cart ({count})</span>

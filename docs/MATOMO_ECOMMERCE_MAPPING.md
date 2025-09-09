@@ -375,3 +375,27 @@ function(){
 - Consent: Align MTM consent settings with your governance; the app defers MTM loading until `analytics` consent is granted.
 - Dedupe purchases: Matomo dedupes by Order ID. Ensure a unique `transaction_id` per order and avoid re‑submitting the same ID.
 - Debugging tips: Use the browser console to inspect `window._mtm` queue and verify event payloads as they arrive.
+
+## Content Tracking (Impressions & Interactions)
+The app annotates content blocks (Learn tiles, KB teasers, FAQ questions, testimonials) and enables automatic content impressions.
+
+Markup in the app:
+- Each block includes `class="matomoTrackContent"` and attributes:
+  - `data-content-name`, `data-content-piece`, `data-content-target`
+  - Optional `data-track-content="true"` for clarity
+
+Tracker initialization (already in index.html):
+```
+_paq.push(['trackAllContentImpressions']);
+_paq.push(['trackVisibleContentImpressions']);
+```
+
+SPA safety:
+- The app also calls `_paq.push(['trackContentImpressionsWithinNode', document])` after route changes (via helper `trackContentScan`).
+
+Interactions:
+- CTA/teaser clicks call `_paq.push(['trackContentInteraction','click', name, piece, target])` (via helper `trackContentClick`).
+
+Validating in MTM:
+- Use Preview/Debug and navigate to `/learn`.
+- You should see content impressions arrive automatically as blocks enter the viewport and interaction events on clicks.

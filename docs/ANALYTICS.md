@@ -43,6 +43,23 @@ See also:
 - `docs/GA4_ECOMMERCE_EXAMPLES.md` for per-event payload examples
 - `docs/MATOMO_ECOMMERCE_MAPPING.md` for MTM variable/tag setup, consent events, and `update_cart` parity
 
+## Content Tracking (Matomo)
+This app includes Matomo Content Tracking for the Learn/Resources section and any annotated content blocks.
+
+How it works:
+- Markup: blocks have `class="matomoTrackContent"` and attributes:
+  - `data-content-name` (e.g., `KB Teaser`, `Learn Tile`, `Testimonial`)
+  - `data-content-piece` (content title/author)
+  - `data-content-target` (target URL or anchor)
+- Automatic impressions: index.html pushes `_paq.push(['trackAllContentImpressions']);` and `_paq.push(['trackVisibleContentImpressions']);` at startup.
+- SPA safety: pages call `_paq.push(['trackContentImpressionsWithinNode', document])` via helper `trackContentScan(document)` after route changes.
+- Interactions: on teaser/CTA click, the app calls `trackContentClick({ name, piece, target })` which pushes `_paq.push(['trackContentInteraction','click', name, piece, target])`.
+
+Setup checklist:
+- Ensure `MATOMO_TAG_MANAGER_CONTAINER_URL` is configured so MTM loads early.
+- In MTM, keep your Matomo Configuration tag firing on all pages; content tracking uses the tracker API and will be recorded automatically.
+- In Preview, navigate to `/learn` and verify impressions and interactions for annotated blocks.
+
 ## Configuration
 - Dev: edit `public/config.json`
   - `GTM_ID`: your GTM container ID
