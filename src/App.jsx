@@ -8,6 +8,10 @@ import Cart from './pages/Cart.jsx';
 import Checkout from './pages/Checkout.jsx';
 import OrderConfirmation from './pages/OrderConfirmation.jsx';
 import Donate from './pages/donate/Donate.jsx';
+import LearnLayout from './pages/learn/Learn.jsx';
+import FAQPage from './pages/learn/FAQ.jsx';
+import TestimonialsPage from './pages/learn/Testimonials.jsx';
+import { ArticlesList, ArticleDetail } from './pages/learn/Articles.jsx';
 import ConsentBanner from './components/ConsentBanner.jsx';
 import { CartProvider } from './state/cartState.jsx';
 
@@ -26,6 +30,11 @@ export default function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
             <Route path="/donate/*" element={<Donate />} />
+            <Route path="/learn" element={<LearnLayout />} />
+            <Route path="/learn/articles" element={<ArticlesList />} />
+            <Route path="/learn/articles/:slug" element={<ArticleDetail />} />
+            <Route path="/learn/faq" element={<FAQPage />} />
+            <Route path="/learn/testimonials" element={<TestimonialsPage />} />
             <Route path="*" element={<div className='p-8'>Not Found</div>} />
           </Routes>
         </main>

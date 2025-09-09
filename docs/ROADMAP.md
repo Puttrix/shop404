@@ -26,8 +26,19 @@ Purpose: A lightweight, living document to capture ideas, plans, and progress.
  
 
 ## Backlog (Ideas)
- 
- 
+  
+  
+- [ ] Learn/Resources section (KB, FAQs, Reviews)
+  - New top-level section next to Products/Donate: `/learn` landing with categories, `/learn/articles/:slug`, `/learn/faq`, `/learn/testimonials`.
+  - Seed 2 KB articles (Sizing, Care), 1 FAQ set, and 4–6 testimonials.
+  - Annotate cards/CTAs with Matomo Content Tracking (impressions/interactions) and trigger SPA scans.
+  - GA4: `select_content`, `search`, `article_read` events (optional follow-up).
+- [ ] Matomo Content Tracking — richer content blocks
+  - Add 2–3 annotated content pieces on Home (e.g., PromoBanner, TeaserCards, USP/Trust bar) to demo content impressions/interactions.
+  - Markup: use `matomoTrackContent` + `data-content-name`, `data-content-piece`, `data-content-target`.
+  - SPA: trigger `_paq.push(['trackContentImpressionsWithinNode', document])` on route changes; add IntersectionObserver to track visible impressions only.
+  - Interactions: `_paq.push(['trackContentInteraction', 'click', name, piece, target])` on CTA clicks.
+  - Consent-aware: gate behind analytics consent; validate in MTM preview.
 - [ ] Matomo ecommerce: product/category details alignment and totals
 - [ ] Add simple experiment example with Optimizely (text/image swap)
  

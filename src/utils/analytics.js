@@ -198,3 +198,20 @@ export function syncMatomoCart(items) {
   }));
   window._mtm.push({ event: 'update_cart', ecommerce: { currency: 'USD', items: mapped } });
 }
+
+// Matomo Content Tracking helpers
+export function trackContentScan(node) {
+  if (!consentAllows('analytics')) return;
+  try {
+    window._paq = window._paq || [];
+    window._paq.push(['trackContentImpressionsWithinNode', node || document]);
+  } catch {}
+}
+
+export function trackContentClick({ name, piece, target }) {
+  if (!consentAllows('analytics')) return;
+  try {
+    window._paq = window._paq || [];
+    window._paq.push(['trackContentInteraction', 'click', name, piece, target]);
+  } catch {}
+}
