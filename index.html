@@ -84,6 +84,9 @@
       try {
         window._paq = window._paq || [];
         window._paq.push(['requireConsent']);
+        // Enable automatic content impressions; manual scans still supported
+        window._paq.push(['trackAllContentImpressions']);
+        window._paq.push(['trackVisibleContentImpressions']);
       } catch (e) {}
       // If a meta tag is present, load GTM immediately (earliest path)
       try {

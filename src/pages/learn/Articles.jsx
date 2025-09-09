@@ -14,6 +14,7 @@ export function ArticlesList() {
           <Link key={a.slug}
             to={`/learn/articles/${a.slug}`}
             className="matomoTrackContent block rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-800"
+            data-track-content="true"
             data-content-name="KB Teaser"
             data-content-piece={a.title}
             data-content-target={`/learn/articles/${a.slug}`}

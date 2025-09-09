@@ -12,6 +12,7 @@ export default function TestimonialsPage() {
         {testimonials.map(t => (
           <div key={t.id}
             className="matomoTrackContent card"
+            data-track-content="true"
             data-content-name="Testimonial"
             data-content-piece={t.author}
             data-content-target={`/products/${t.productId}`}

@@ -14,6 +14,7 @@ export default function FAQPage() {
           <div key={idx} className="py-4">
             <button
               className="matomoTrackContent w-full text-left"
+              data-track-content="true"
               data-content-name="FAQ Question"
               data-content-piece={f.q}
               data-content-target="#faq-answer"

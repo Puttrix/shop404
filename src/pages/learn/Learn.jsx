@@ -18,6 +18,7 @@ export default function LearnLayout() {
         <Link
           to="articles"
           className="matomoTrackContent card"
+          data-track-content="true"
           data-content-name="Learn Tile"
           data-content-piece="Articles"
           data-content-target="/learn/articles"
@@ -31,6 +32,7 @@ export default function LearnLayout() {
         <Link
           to="faq"
           className="matomoTrackContent card"
+          data-track-content="true"
           data-content-name="Learn Tile"
           data-content-piece="FAQ"
           data-content-target="/learn/faq"
@@ -44,6 +46,7 @@ export default function LearnLayout() {
         <Link
           to="testimonials"
           className="matomoTrackContent card"
+          data-track-content="true"
           data-content-name="Learn Tile"
           data-content-piece="Testimonials"
           data-content-target="/learn/testimonials"
@@ -63,6 +66,7 @@ export default function LearnLayout() {
             <Link key={a.slug}
               to={`articles/${a.slug}`}
               className="matomoTrackContent card"
+              data-track-content="true"
               data-content-name="KB Teaser"
               data-content-piece={a.title}
               data-content-target={`/learn/articles/${a.slug}`}
@@ -83,6 +87,7 @@ export default function LearnLayout() {
           {testimonials.slice(0,3).map(t => (
             <div key={t.id}
               className="matomoTrackContent card"
+              data-track-content="true"
               data-content-name="Testimonial"
               data-content-piece={t.author}
               data-content-target={`/products/${t.productId}`}
