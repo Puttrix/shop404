@@ -122,6 +122,28 @@ One GA4 Event Tag per event, using the GA4 Configuration Tag you created.
 
 For Matomo Tag Manager setup, see `docs/MATOMO_ECOMMERCE_MAPPING.md`.
 
+## Server-side GTM (Optional)
+If you use a GTM Server container (sGTM) with a custom domain (e.g., `https://gtm.example.com`), you can direct GA4 hits through it.
+
+App support:
+- The server can expose `GTM_SERVER_CONTAINER_URL` at `/config.json`.
+- On startup, the app pushes `{ transport_url: '<your-sgtm-url>' }` into `dataLayer` before GTM loads.
+
+GTM configuration steps:
+1) Create a Data Layer Variable:
+   - Name: `DLV - transport_url`
+   - Data Layer Variable Name: `transport_url`
+2) Edit your GA4 Configuration tag:
+   - Field: Transport URL
+   - Value: `{{DLV - transport_url}}`
+3) Preview and verify:
+   - In GTM Preview, confirm `transport_url` appears on page load and GA4 hits go to your sGTM domain.
+
+Notes:
+- Consent: Consent Mode v2 is set before GTM. The GA4 client in sGTM will receive consent signals (via `gcs` parameter) automatically when using GTM/GA4.
+- DNS: Point a first‑party subdomain (e.g., `gtm.example.com`) to your sGTM endpoint (per Google’s setup guide). Ensure HTTPS.
+- No change to the GTM web snippet is required; only GA4 traffic routing changes via Transport URL.
+
 ## Importable Container (Variables + Triggers)
 - File: `docs/gtm/container_shop404.json`
 - Contains: Data Layer Variables and Custom Event triggers for all app events

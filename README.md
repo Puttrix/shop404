@@ -67,6 +67,7 @@ cat > .env << 'EOF'
 PORT=3000
 PUBLISH_PORT=8080
 GTM_ID=GTM-XXXXXXX
+GTM_SERVER_CONTAINER_URL=https://gtm.example.com
 MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js
 OPTIMIZELY_WEB_SNIPPET_URL=
 ODP_SDK_URL=
@@ -93,6 +94,7 @@ docker run (build locally)
 docker build -t shop404 .
 docker run -p 8080:3000 \
   -e GTM_ID=GTM-XXXXXXX \
+  -e GTM_SERVER_CONTAINER_URL=https://gtm.example.com \
   -e MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js \
   -e OPTIMIZELY_WEB_SNIPPET_URL=https://cdn.optimizely.com/js/PROJECT_ID.js \
   -e ODP_SDK_URL=https://cdn.foqt.com/v1/odp.js \
@@ -109,6 +111,7 @@ docker run (from GHCR image)
 ```bash
 docker run -p 8080:3000 \
   -e GTM_ID=GTM-XXXXXXX \
+  -e GTM_SERVER_CONTAINER_URL=https://gtm.example.com \
   -e MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js \
   ghcr.io/puttrix/shop404:latest
 ```
@@ -127,6 +130,7 @@ Quick outline:
 ## Configuration Notes
 - Consent Mode: The banner sets Google Consent Mode v2. Defaults are denied; updates occur on user choice. GTM always loads but respects consent.
 - GTM-first: Configure GA4 (and other tags) inside GTM. No direct GA4 snippet is used in the app.
+- sGTM (optional): If you have a GTM Server container, set `GTM_SERVER_CONTAINER_URL` to your custom domain. The app pushes it as `transport_url` into `dataLayer` before GTM loads; bind GA4 Configuration → Transport URL to `{{DLV - transport_url}}` in GTM to route GA4 hits via sGTM.
 - Matomo: Use Matomo Tag Manager (MTM). Set `MATOMO_TAG_MANAGER_CONTAINER_URL` to your container script URL, e.g. `https://matomo.example.com/js/container_ABC123.js`.
 - Optimizely Web: provide the snippet URL to test activation and variations.
 - ODP: if you have a web SDK snippet, set `ODP_SDK_URL` and configure inside your tag manager.

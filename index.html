@@ -112,6 +112,13 @@
       window.__CONFIG__ = {};
       fetch('/config.json').then(r => r.ok ? r.json() : {}).then(cfg => {
         window.__CONFIG__ = cfg || {};
+        // If an sGTM custom domain is configured, surface it to GTM via dataLayer
+        // so GA4 Config tags can bind the "Transport URL" to {{DLV - transport_url}}.
+        if (cfg && cfg.GTM_SERVER_CONTAINER_URL) {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ transport_url: cfg.GTM_SERVER_CONTAINER_URL });
+          try { if (window.__DEBUG_ANALYTICS__) console.info('[GTM] transport_url set', cfg.GTM_SERVER_CONTAINER_URL); } catch (e) {}
+        }
         if (cfg && cfg.GTM_ID) {
           window.__loadGTM(cfg.GTM_ID);
         }

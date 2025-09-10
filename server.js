@@ -17,6 +17,8 @@ app.use((req, res, next) => {
 const runtimeConfig = {
   GTM_ID: process.env.GTM_ID || '',
   GA4_ID: process.env.GA4_ID || '',
+  // Optional Server-side GTM custom domain, e.g., https://gtm.example.com
+  GTM_SERVER_CONTAINER_URL: process.env.GTM_SERVER_CONTAINER_URL || '',
   MATOMO_TAG_MANAGER_CONTAINER_URL: process.env.MATOMO_TAG_MANAGER_CONTAINER_URL || '',
   OPTIMIZELY_WEB_SNIPPET_URL: process.env.OPTIMIZELY_WEB_SNIPPET_URL || '',
   ODP_SDK_URL: process.env.ODP_SDK_URL || ''

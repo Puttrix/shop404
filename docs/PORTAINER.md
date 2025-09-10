@@ -18,6 +18,7 @@ This guide shows how to deploy Shop404 on Portainer using “Stacks → Add stac
 - `PORT=3000` (internal app port)
 - `PUBLISH_PORT=8080` (host port; change if 8080 is taken, e.g., `8443` or `8081`)
 - `GTM_ID=GTM-XXXXXXX` (optional but recommended)
+- `GTM_SERVER_CONTAINER_URL=https://gtm.example.com` (optional; for sGTM Transport URL)
 - `MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js` (optional)
 - `OPTIMIZELY_WEB_SNIPPET_URL=https://cdn.optimizely.com/js/PROJECT_ID.js` (optional)
 - `ODP_SDK_URL=https://cdn.foqt.com/v1/odp.js` (optional)
@@ -33,6 +34,7 @@ Important: Stack env vars are used as substitutions. We reference them in the co
 - `GTM_ID`: String (e.g., `GTM-ABC123`)
   - GTM-first pattern: place GA4 and other tags in GTM
 - `GA4_ID`: String (not required; GA4 is managed inside GTM)
+- `GTM_SERVER_CONTAINER_URL`: String URL to your GTM Server container custom domain (e.g., `https://gtm.example.com`). App surfaces it as `transport_url` in `dataLayer` so GA4 can route via sGTM.
 - `MATOMO_TAG_MANAGER_CONTAINER_URL`: Full URL to MTM container script
 - `OPTIMIZELY_WEB_SNIPPET_URL`: Full snippet URL (if testing experiments)
 - `ODP_SDK_URL`: ODP web SDK URL (if applicable)

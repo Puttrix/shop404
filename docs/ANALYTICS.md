@@ -63,9 +63,13 @@ Setup checklist:
 ## Configuration
 - Dev: edit `public/config.json`
   - `GTM_ID`: your GTM container ID
+  - `GTM_SERVER_CONTAINER_URL`: optional sGTM custom domain (e.g., `https://gtm.example.com`). App exposes it as `transport_url` in `dataLayer` so GA4 can route via sGTM.
   - `MATOMO_TAG_MANAGER_CONTAINER_URL`: full URL to your MTM container script
   - Other optional tags (e.g., `OPTIMIZELY_WEB_SNIPPET_URL`, `ODP_SDK_URL`)
 - Prod / Docker / Portainer: set the same values via environment variables; the server exposes them at `/config.json`.
+
+### Server-side GTM (Optional)
+If using a GTM Server container, set `GTM_SERVER_CONTAINER_URL` in env/dev config. In your GTM Web container, bind GA4 Configuration → Transport URL to a Data Layer Variable named `transport_url`. The app pushes this before GTM loads. Consent Mode signals are forwarded automatically to sGTM (`gcs` param) when using GA4 via GTM.
 
 ## Debugging
 - GTM lifecycle logs appear in Console on localhost (init start, event push, script appended). Toggle with `window.__DEBUG_ANALYTICS__ = true|false`.
