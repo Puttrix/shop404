@@ -1,6 +1,6 @@
 services:
-  mockshop:
-    image: ghcr.io/puttrix/mocksite:latest
+  shop404:
+    image: ghcr.io/puttrix/shop404:latest
     ports:
       - "${PUBLISH_PORT:-8080}:3000"
     environment:

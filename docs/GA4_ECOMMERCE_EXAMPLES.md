@@ -30,8 +30,8 @@ Recommended
     item_list_id: 'home_grid',
     item_list_name: 'Home Featured',
     items: [
-      { item_id: 'p-1', item_name: 'Aurora Hoodie', item_category: 'Apparel', item_brand: 'MockShop', price: 59.0, index: 1 },
-      { item_id: 'p-2', item_name: 'Nimbus Tee', item_category: 'Apparel', item_brand: 'MockShop', price: 24.0, index: 2 }
+      { item_id: 'p-1', item_name: 'Aurora Hoodie', item_category: 'Apparel', item_brand: 'Shop404', price: 59.0, index: 1 },
+      { item_id: 'p-2', item_name: 'Nimbus Tee', item_category: 'Apparel', item_brand: 'Shop404', price: 24.0, index: 2 }
     ]
   }
 }
@@ -58,7 +58,7 @@ Recommended
       item_id: 'p-1',
       item_name: 'Aurora Hoodie',
       item_category: 'Apparel',
-      item_brand: 'MockShop',
+      item_brand: 'Shop404',
       item_variant: 'Green / M',
       price: 59.0
     } ]
@@ -85,7 +85,7 @@ Recommended
   ecommerce: {
     currency: 'USD',
     items: [ {
-      item_id: 'p-1', item_name: 'Aurora Hoodie', item_category: 'Apparel', item_brand: 'MockShop', item_variant: 'Green / M',
+      item_id: 'p-1', item_name: 'Aurora Hoodie', item_category: 'Apparel', item_brand: 'Shop404', item_variant: 'Green / M',
       price: 59.0, quantity: 2
     } ]
   }
@@ -115,8 +115,8 @@ Recommended
     currency: 'USD',
     coupon: 'SUMMER10',
     items: [
-      { item_id: 'p-1', item_name: 'Aurora Hoodie', item_category: 'Apparel', item_brand: 'MockShop', price: 59.0, quantity: 1 },
-      { item_id: 'p-2', item_name: 'Nimbus Tee', item_category: 'Apparel', item_brand: 'MockShop', price: 24.0, quantity: 2 }
+      { item_id: 'p-1', item_name: 'Aurora Hoodie', item_category: 'Apparel', item_brand: 'Shop404', price: 59.0, quantity: 1 },
+      { item_id: 'p-2', item_name: 'Nimbus Tee', item_category: 'Apparel', item_brand: 'Shop404', price: 24.0, quantity: 2 }
     ]
   }
 }
@@ -150,7 +150,7 @@ Recommended
     currency: 'USD',
     coupon: 'SUMMER10',
     items: [
-      { item_id: 'p-1', item_name: 'Aurora Hoodie', item_category: 'Apparel', item_brand: 'MockShop', price: 59.0, quantity: 2, discount: 10.0 }
+      { item_id: 'p-1', item_name: 'Aurora Hoodie', item_category: 'Apparel', item_brand: 'Shop404', price: 59.0, quantity: 2, discount: 10.0 }
     ]
   }
 }
@@ -160,4 +160,3 @@ Recommended
 - The app currently pushes the minimal required payloads; you can enrich with optional fields when available.
 - In GTM, create GA4 Event Tags for each event and pass the `items` array from the `ecommerce` object. Use Data Layer Variables for `transaction_id`, `value`, `currency`, etc.
 - Keep item field names exactly as GA4 expects (e.g., `item_id`, not `id`).
-

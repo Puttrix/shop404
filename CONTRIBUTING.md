@@ -1,4 +1,4 @@
-# Contributing to MockShop
+# Contributing to Shop404
 
 Thanks for your interest in improving this demo project. A few quick guidelines to help you ship focused, high‑quality changes.
 

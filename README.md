@@ -1,4 +1,4 @@
-# MockShop — Mock Ecommerce + Donation Site
+# Shop404 — Mock Ecommerce + Donation Site
 
 A modern, pretty demo site for testing analytics and experimentation implementations:
 - Matomo / Matomo Tag Manager
@@ -90,13 +90,13 @@ docker compose -f docker-compose.registry.yml up -d
 docker run (build locally)
 
 ```bash
-docker build -t mockshop .
+docker build -t shop404 .
 docker run -p 8080:3000 \
   -e GTM_ID=GTM-XXXXXXX \
   -e MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js \
   -e OPTIMIZELY_WEB_SNIPPET_URL=https://cdn.optimizely.com/js/PROJECT_ID.js \
   -e ODP_SDK_URL=https://cdn.foqt.com/v1/odp.js \
-  mockshop
+  shop404
 ```
 
 App serves at http://localhost:8080. `/config.json` reflects env settings.
@@ -110,7 +110,7 @@ docker run (from GHCR image)
 docker run -p 8080:3000 \
   -e GTM_ID=GTM-XXXXXXX \
   -e MATOMO_TAG_MANAGER_CONTAINER_URL=https://matomo.example.com/js/container_ABC123.js \
-  ghcr.io/puttrix/mocksite:latest
+  ghcr.io/puttrix/shop404:latest
 ```
 
 ## Portainer (Deploy from Git)
@@ -139,7 +139,7 @@ Quick outline:
  - Design shell: The Neo style is enabled by default (`style-neo` on `<html>`). The Classic toggle is hidden; re-enable by adding `StyleToggle` back into `Header.jsx` and adjusting the loader in `index.html`.
 
 ## Google Tag Manager / GA4 (Quick Setup)
-- Import variables + triggers (optional): `docs/gtm/container_mockshop.json` (Workspace import)
+- Import variables + triggers (optional): `docs/gtm/container_shop404.json` (Workspace import)
 - GA4 Configuration tag:
   - Measurement ID: your GA4 property ID
   - Send a page view event: disabled (app pushes `page_view`)
@@ -194,7 +194,7 @@ Cart updates (`update_cart`):
   - For GA4 ecommerce item payload examples per event, see `docs/GA4_ECOMMERCE_EXAMPLES.md`.
   - For Matomo Tag Manager ecommerce mapping (variables, triggers, tags), see `docs/MATOMO_ECOMMERCE_MAPPING.md`.
   - For Google Tag Manager setup (GA4 config, DLVs, triggers, tags), see `docs/GTM_CONTAINER.md`.
-  - Importable GTM container (variables + triggers): `docs/gtm/container_mockshop.json`.
+  - Importable GTM container (variables + triggers): `docs/gtm/container_shop404.json`.
   - UI/Theme notes (dark mode, mobile header) are kept in `docs/DESIGN_NOTES.md`.
 
 ## Testing

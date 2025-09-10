@@ -1,6 +1,6 @@
 # Developers Guide
 
-A quick, practical reference for working on MockShop locally: setup, APIs, data models, and debugging tips.
+A quick, practical reference for working on Shop404 locally: setup, APIs, data models, and debugging tips.
 
 ## Prereqs & Setup
 - Node 18+
@@ -72,4 +72,3 @@ Notes
 - React + Vite + Tailwind; utility-first styles in `src/index.css` and component classes.
 - SPA page titles via `src/utils/seo.js` `setTitle()`.
 - Cart state persisted to `localStorage` under key `cart`.
-

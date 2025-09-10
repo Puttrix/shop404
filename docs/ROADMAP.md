@@ -1,4 +1,4 @@
-# MockShop Roadmap
+# Shop404 Roadmap
 
 Purpose: A lightweight, living document to capture ideas, plans, and progress.
 

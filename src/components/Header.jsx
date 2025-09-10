@@ -38,7 +38,7 @@ export default function Header() {
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2" onClick={close}>
             <span className="inline-block h-8 w-8 rounded-lg bg-gradient-to-br from-brand-400 to-brand-700" />
-            <span className="font-semibold">MockShop</span>
+            <span className="font-semibold">Shop404</span>
           </Link>
           <nav className="hidden md:flex items-center gap-4 text-sm">
             <NavLink to="/" onClick={close} className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Home</NavLink>

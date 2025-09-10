@@ -1,8 +1,8 @@
 # GTM Container — Setup & Mapping Guide
 
-This guide helps you configure a Google Tag Manager container for MockShop. It maps app events to GA4 tags using Data Layer variables and Custom Event triggers. If you prefer importing a prebuilt container, use these steps as a checklist to recreate it safely in your GTM account.
+This guide helps you configure a Google Tag Manager container for Shop404. It maps app events to GA4 tags using Data Layer variables and Custom Event triggers. If you prefer importing a prebuilt container, use these steps as a checklist to recreate it safely in your GTM account.
 
-Note: MockShop follows a GTM‑first strategy. GA4 is configured inside GTM; the app only pushes events to `dataLayer` and loads GTM. Consent Mode v2 is set before tags load.
+Note: Shop404 follows a GTM‑first strategy. GA4 is configured inside GTM; the app only pushes events to `dataLayer` and loads GTM. Consent Mode v2 is set before tags load.
 
 Matomo parity note:
 - GA4 uses `add_to_cart`. Matomo uses `update_cart` and expects FULL CART updates (also at `begin_checkout`).
@@ -123,7 +123,7 @@ One GA4 Event Tag per event, using the GA4 Configuration Tag you created.
 For Matomo Tag Manager setup, see `docs/MATOMO_ECOMMERCE_MAPPING.md`.
 
 ## Importable Container (Variables + Triggers)
-- File: `docs/gtm/container_mockshop.json`
+- File: `docs/gtm/container_shop404.json`
 - Contains: Data Layer Variables and Custom Event triggers for all app events
 - After import: create GA4 Configuration and GA4 Event tags per the steps above
 

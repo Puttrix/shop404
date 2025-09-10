@@ -1,7 +1,7 @@
 export function setTitle(title) {
   try {
-    const base = 'MockShop';
-    const suffix = 'MockShop — Demo Ecommerce';
+    const base = 'Shop404';
+    const suffix = 'Shop404 — Demo Ecommerce';
     if (!title) {
       document.title = suffix;
       return;
@@ -9,4 +9,3 @@ export function setTitle(title) {
     document.title = `${title} — ${base}`;
   } catch {}
 }
-

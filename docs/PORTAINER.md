@@ -1,6 +1,6 @@
 # Portainer — Deploy From Git (Stack)
 
-This guide shows how to deploy MockShop on Portainer using “Stacks → Add stack → Repository”, configure runtime analytics env vars, and troubleshoot common issues.
+This guide shows how to deploy Shop404 on Portainer using “Stacks → Add stack → Repository”, configure runtime analytics env vars, and troubleshoot common issues.
 
 ## Prerequisites
 - Portainer with an agent on a Docker host (CE or BE)
@@ -38,7 +38,7 @@ Important: Stack env vars are used as substitutions. We reference them in the co
 - `ODP_SDK_URL`: ODP web SDK URL (if applicable)
 - `PORT`: Internal app port; defaults to `3000`
 - `PUBLISH_PORT`: Host port published; defaults to `8080`
-- `REGISTRY_IMAGE` (optional): Only if you override the default image. The provided `docker-compose.registry.yml` uses `ghcr.io/Puttrix/MockSite:latest` by default.
+- `REGISTRY_IMAGE` (optional): Only if you override the default image. The provided `docker-compose.registry.yml` uses `ghcr.io/puttrix/shop404:latest` by default.
 
 Notes:
 - The server exposes these at `/config.json` for the SPA to initialize tag loaders.
@@ -66,11 +66,11 @@ Notes:
 - No tags firing: Check `/config.json` shows the expected envs and confirm Consent Mode is granted in the app banner (GA4) and that `cookies_*` events have fired / Matomo consent is remembered
 
 ### Pull vs Build (stack updates)
-- Error: `pull access denied for mockshop ... requested access to the resource is denied`
-  - Cause: The stack defines `image: mockshop:latest` but it’s built locally (not published). Using “Pull and redeploy” runs `docker compose pull`, which tries to pull from a registry and fails.
+- Error: `pull access denied for shop404 ... requested access to the resource is denied`
+  - Cause: The stack defines `image: shop404:latest` but it’s built locally (not published). Using “Pull and redeploy” runs `docker compose pull`, which tries to pull from a registry and fails.
   - Fix options:
     - Preferred: Use “Update the stack” or let GitOps auto‑update redeploy the stack, which will build from source (this repo’s compose includes `pull_policy: build`).
-    - Or publish to a registry (e.g., `ghcr.io/you/mockshop:TAG`), update `image:` accordingly, and then “Pull and redeploy” will work.
+    - Or publish to a registry (e.g., `ghcr.io/you/shop404:TAG`), update `image:` accordingly, and then “Pull and redeploy” will work.
     - Avoid “Pull and redeploy” for stacks that build images from source and aren’t using a registry.
 
 ## Deploying From GitHub Container Registry (GHCR)
@@ -92,7 +92,7 @@ Notes
 - If your GHCR namespace is private, configure Portainer’s registry credentials for `ghcr.io` with a PAT that has `read:packages`.
 - You can pin to a specific tag or digest to control rollouts.
 
-Important: GHCR repository names must be lowercase. This repo publishes to `ghcr.io/puttrix/mocksite`. The provided `docker-compose.registry.yml` already uses the lowercase path.
+Important: GHCR repository names must be lowercase. This repo publishes to `ghcr.io/puttrix/shop404`. The provided `docker-compose.registry.yml` already uses the lowercase path.
 - Matomo not loading: Ensure `MATOMO_TAG_MANAGER_CONTAINER_URL` points to a valid container script URL
 - GTM not loading: Ensure `GTM_ID` is set and DNS allows `googletagmanager.com`
 - Env changes not reflected: You might be viewing a cached SPA; hard-refresh or clear cache, and confirm stack updated successfully

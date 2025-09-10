@@ -1,7 +1,7 @@
 services:
-  mockshop:
+  shop404:
     build: .
-    image: mockshop:latest
+    image: shop404:latest
     pull_policy: build
     ports:
       # Change the host port by setting PUBLISH_PORT (defaults to 8080)
