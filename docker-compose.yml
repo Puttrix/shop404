@@ -11,6 +11,7 @@ services:
       # Tag/Experiment configuration (set as needed). Values are substituted from the Stack env vars.
       - GTM_ID=${GTM_ID:-}
       - GA4_ID=${GA4_ID:-}
+      - GTM_SERVER_CONTAINER_URL=${GTM_SERVER_CONTAINER_URL:-}
       - MATOMO_TAG_MANAGER_CONTAINER_URL=${MATOMO_TAG_MANAGER_CONTAINER_URL:-}
       - OPTIMIZELY_WEB_SNIPPET_URL=${OPTIMIZELY_WEB_SNIPPET_URL:-}
       - ODP_SDK_URL=${ODP_SDK_URL:-}
