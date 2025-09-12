@@ -1,5 +1,7 @@
 # Shop404 — Mock Ecommerce + Donation Site
 
+![Shop404 preview](assets/image.png)
+
 A modern, pretty demo site for testing analytics and experimentation implementations:
 - Matomo / Matomo Tag Manager
 - Google Tag Manager (GTM) / GA4
