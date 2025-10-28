@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "user": {
+    "preferences": {
+      "response_style": "concise, direct, friendly",
+      "expect_memory": true,
+      "remember_conversations": true,
+      "notes": [
+        "Wants the assistant to remember conversations across sessions.",
+        "Prioritize recalling analytics decisions: GTM-first, MTM-only, Consent Mode v2.",
+        "Ensure GTM always loads; consent controls behavior."
+      ]
+    }
+  },
+  "project": {
+    "name": "MockShop — Mock Ecommerce + Donation Site",
+    "summary": "Vite + React + Tailwind frontend; Express server exposes /config.json from env and serves built assets. Includes ecommerce flow (products, cart, checkout, confirmation) and a SPA donation wizard. Analytics helpers emit GTM/GA4 dataLayer events and Matomo _paq; optional Optimizely Web/ODP; consent banner gates categories.",
+    "how_to_run": {
+      "dev": "npm install && npm run dev",
+      "prod": "npm run build && npm start",
+      "docker": "docker-compose up or docker build/run with envs"
+    },
+    "key_files": [
+      "README.md",
+      "server.js",
+      "index.html",
+      "src/utils/analytics.js",
+      "src/components/ConsentBanner.jsx",
+      "src/pages/donate/Donate.jsx",
+      "src/state/cartState.jsx"
+    ],
+    "roadmap": {
+      "path": "docs/ROADMAP.md",
+      "notes": "Seeded with initial priorities: analytics parity QA, donation wizard polish, Portainer deploy docs. Updated for GTM-first (GA4 via GTM), Matomo Tag Manager (MTM-only), and Google Consent Mode v2. Added GA4/Matomo ecommerce tasks (basic + extensions)."
+    }
+  },
+  "conversations": [
+    {
+      "date": "2025-09-03",
+      "summary": "Initial scan of repo; captured project overview, run instructions, and analytics/consent architecture. User asked to persist memory across sessions."
+    },
+    {
+      "date": "2025-09-03",
+      "summary": "Added ROADMAP.md and seeded initial priorities at user's request. Updated roadmap for GTM-first, Matomo Tag Manager, and Google Consent Mode."
+    },
+    {
+      "date": "2025-09-03",
+      "summary": "User reaffirmed: remember conversations across sessions; keep GTM-first, MTM-only, and Consent Mode decisions top-of-mind."
+    }
+  ]
+}
