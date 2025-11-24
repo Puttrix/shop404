@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart, totals } from '../state/cartState.jsx';
 import { getProduct } from '../data/products.js';
-import { trackBeginCheckout } from '../utils/analytics.js';
+import { trackBeginCheckout, trackPage } from '../utils/analytics.js';
 import { setTitle } from '../utils/seo.js';
 
 export default function Checkout() {
@@ -27,6 +27,7 @@ export default function Checkout() {
 
   useEffect(() => {
     setTitle('Checkout');
+    trackPage('Checkout');
     trackBeginCheckout(items);
   }, [items]);
 
