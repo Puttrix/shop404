@@ -32,3 +32,7 @@
   args: refresh .assistant/status.md last updated date, artifacts, changelog for Docker Hub publishing
   result: succeeded
   artifacts: .assistant/status.md
+- tool: apply_patch (shell)
+  args: add secret validation and env passthrough for Docker Hub login in .github/workflows/docker-publish.yml
+  result: succeeded
+  artifacts: .github/workflows/docker-publish.yml
