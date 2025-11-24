@@ -61,15 +61,15 @@ Matomo via Tag Manager can consume the same ecommerce events from `_mtm`/`dataLa
 
 ## Docker
 
-Docker Hub image
+Prebuilt image (GHCR)
 
 Pull the prebuilt image:
 
 ```bash
-docker pull puttrix/shop404:latest
+docker pull ghcr.io/puttrix/shop404:latest
 ```
 
-You can also use it in Compose with `image: puttrix/shop404:latest`.
+You can also use it in Compose with `image: ghcr.io/puttrix/shop404:latest`.
 
 Compose (build locally)
 

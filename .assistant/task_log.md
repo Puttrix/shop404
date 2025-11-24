@@ -36,3 +36,11 @@
   args: add secret validation and env passthrough for Docker Hub login in .github/workflows/docker-publish.yml
   result: succeeded
   artifacts: .github/workflows/docker-publish.yml
+- tool: apply_patch (shell)
+  args: remove Docker Hub publish workflow in favor of GHCR
+  result: succeeded
+  artifacts: .github/workflows/docker-publish.yml (deleted)
+- tool: apply_patch (shell)
+  args: update README Docker section to reference GHCR image and compose usage
+  result: succeeded
+  artifacts: README.md
