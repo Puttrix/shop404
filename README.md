@@ -2,7 +2,7 @@
 
 ![Shop404 preview](assets/image.png)
 
-A modern, pretty demo site for testing analytics and experimentation implementations:
+A modern, "pretty" demo site for testing analytics and experimentation implementations:
 - Matomo / Matomo Tag Manager
 - Google Tag Manager (GTM) / GA4
 - Optimizely Web Experimentation
