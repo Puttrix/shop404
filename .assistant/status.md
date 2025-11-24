@@ -1,6 +1,6 @@
 # Status
 
-**Last Updated**: 2025-10-28
+**Last Updated**: 2025-11-24
 
 ---
 
@@ -37,12 +37,13 @@ See `plan.md` for detailed breakdown.
 **Docs**: README, CONTRIBUTING, docs/*.md (analytics, parity, GTM, MTM, Portainer, design, developers)  
 **Code**: src/utils/analytics.js, ConsentBanner, cartState, donate/, learn/  
 **Scripts**: test-analytics.mjs, test-matomo.mjs, make-webp.mjs  
-**Config**: docker-compose.yml, Dockerfile, public/config.json
+**Config/CI**: docker-compose.yml, Dockerfile, public/config.json, .github/workflows/publish.yml, .github/workflows/docker-publish.yml
 
 ---
 
 ## Changelog
 
+**2025-11-24**: Added Docker Hub publish workflow and refreshed Dockerfile/README for image pulls  
 **2025-10-28**: Migration to .assistant/ workflow (canvas, backlog, plan, history, status, ADRs pending)  
 **2025-09-05**: Analytics parity docs, donation enhancements, Neo design, Portainer guide, photo pipeline  
 **2025-09-03**: .codex memory, ROADMAP adoption, GTM-first, Consent Mode v2, MTM-only  

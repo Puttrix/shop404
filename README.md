@@ -61,6 +61,16 @@ Matomo via Tag Manager can consume the same ecommerce events from `_mtm`/`dataLa
 
 ## Docker
 
+Docker Hub image
+
+Pull the prebuilt image:
+
+```bash
+docker pull puttrix/shop404:latest
+```
+
+You can also use it in Compose with `image: puttrix/shop404:latest`.
+
 Compose (build locally)
 
 ```bash
