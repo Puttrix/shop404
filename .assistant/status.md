@@ -1,6 +1,6 @@
 # Status
 
-**Last Updated**: 2025-11-24
+**Last Updated**: 2025-11-25
 
 ---
 
@@ -34,15 +34,16 @@ See `plan.md` for detailed breakdown.
 
 ## Artifacts
 
-**Docs**: README, CONTRIBUTING, docs/*.md (analytics, parity, GTM, MTM, Portainer, design, developers)  
+**Docs**: README, CONTRIBUTING, CODE_OF_CONDUCT.md, SECURITY.md, LICENSE, docs/*.md (analytics, parity, GTM, MTM, Portainer, design, developers)  
 **Code**: src/utils/analytics.js, ConsentBanner, cartState, donate/, learn/  
 **Scripts**: test-analytics.mjs, test-matomo.mjs, make-webp.mjs  
-**Config/CI**: docker-compose.yml, Dockerfile, public/config.json, .github/workflows/publish.yml, .github/workflows/docker-publish.yml
+**Config/CI**: docker-compose.yml, Dockerfile, public/config.json, .github/workflows/publish.yml, .github/workflows/docker-publish.yml, .github/ISSUE_TEMPLATE/*, .github/pull_request_template.md
 
 ---
 
 ## Changelog
 
+**2025-11-25**: Added community health files (Code of Conduct, License, Security policy, issue/PR templates)  
 **2025-11-24**: Added Docker Hub publish workflow and refreshed Dockerfile/README for image pulls  
 **2025-10-28**: Migration to .assistant/ workflow (canvas, backlog, plan, history, status, ADRs pending)  
 **2025-09-05**: Analytics parity docs, donation enhancements, Neo design, Portainer guide, photo pipeline  
