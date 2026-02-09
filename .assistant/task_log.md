@@ -136,3 +136,23 @@
   args: add backlog item P-015 for A/B test pre-testing page (content TBD)
   result: succeeded
   artifacts: .assistant/backlog.md
+- tool: apply_patch (shell)
+  args: implement A/B Test Lab page scaffold and route (/ab-test-lab), add header navigation link, and add README usage notes
+  result: succeeded
+  artifacts: src/pages/ABTestLab.jsx, src/App.jsx, src/components/Header.jsx, README.md
+- tool: exec_command (shell)
+  args: npm run build
+  result: succeeded — production build passes; existing warning in src/pages/learn/FAQ.jsx (duplicate onClick) remains unrelated
+  artifacts: dist/*
+- tool: exec_command (shell, escalated)
+  args: npm run dev -- --host 127.0.0.1 --port 4173 + curl /ab-test-lab
+  result: succeeded — HTTP 200 for /ab-test-lab
+  artifacts: /tmp/shop404-dev.log, /tmp/shop404-abtest.html
+- tool: apply_patch (shell)
+  args: mark backlog item P-015 as completed
+  result: succeeded
+  artifacts: .assistant/backlog.md
+- tool: apply_patch (shell)
+  args: update .assistant/status.md artifacts/changelog for P-015 completion
+  result: succeeded
+  artifacts: .assistant/status.md

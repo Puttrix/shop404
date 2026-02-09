@@ -161,7 +161,7 @@ Product backlog with P-IDs, tags, and acceptance criteria.
       - Record results in .assistant/task_log.md
 
 ## P-015: A/B Test Pre-Testing Page
-- [ ] Add a dedicated page to pre-test A/B experiments
+- [x] Add a dedicated page to pre-test A/B experiments
       tags: experimentation, ux, testing  priority: medium  est: 3h
       deps: none
       accepts:

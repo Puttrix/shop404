@@ -21,6 +21,7 @@ Built with Vite + React + Tailwind. Includes a full ecommerce flow (listings, pr
   - Currency on cart/checkout; purchase includes optional tax/shipping
 - Learn/Resources section for content (KB, FAQ, Testimonials)
   - Annotated with Matomo Content Tracking (impressions + interactions)
+- A/B Test Lab page (`/ab-test-lab`) for pre-validating experiment scenarios before production rollout
 - Consent banner with categories (analytics, marketing, experimentation) controlling tag behavior via Consent Mode (GTM always loads)
 - Runtime config via `/config.json` generated from container env vars
 - UX nicety: cart button shows a brief notification pulse when items are added
@@ -38,6 +39,7 @@ Prereqs: Node 18+.
 Notes for dev:
 - In dev, `/config.json` is served from `public/config.json`. Edit that file to set `GTM_ID`, `MATOMO_TAG_MANAGER_CONTAINER_URL`, etc. Do not commit secrets.
 - In production (`npm start` or Docker), `/config.json` is generated from environment variables.
+- For experiment dry-runs, open `http://localhost:5173/ab-test-lab` and switch scenarios/variants in the UI.
 
 Environment variables for runtime config are read by the server only when running the Docker image or `npm start` with built assets. For local dev, tags won’t load unless your tools are inserted manually.
 

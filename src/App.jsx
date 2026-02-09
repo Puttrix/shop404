@@ -12,6 +12,7 @@ import LearnLayout from './pages/learn/Learn.jsx';
 import FAQPage from './pages/learn/FAQ.jsx';
 import TestimonialsPage from './pages/learn/Testimonials.jsx';
 import { ArticlesList, ArticleDetail } from './pages/learn/Articles.jsx';
+import ABTestLab from './pages/ABTestLab.jsx';
 import ConsentBanner from './components/ConsentBanner.jsx';
 import { CartProvider } from './state/cartState.jsx';
 
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="/learn/articles/:slug" element={<ArticleDetail />} />
             <Route path="/learn/faq" element={<FAQPage />} />
             <Route path="/learn/testimonials" element={<TestimonialsPage />} />
+            <Route path="/ab-test-lab" element={<ABTestLab />} />
             <Route path="*" element={<div className='p-8'>Not Found</div>} />
           </Routes>
         </main>

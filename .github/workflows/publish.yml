@@ -22,12 +22,29 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to GHCR (with retry)
+        shell: bash
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          user="$(echo "$GHCR_USER" | tr '[:upper:]' '[:lower:]')"
+          max_attempts=5
+          for attempt in $(seq 1 "$max_attempts"); do
+            echo "GHCR login attempt ${attempt}/${max_attempts} as ${user}"
+            if echo "$GHCR_TOKEN" | docker login ghcr.io -u "$user" --password-stdin; then
+              echo "GHCR login succeeded"
+              exit 0
+            fi
+            if [ "$attempt" -lt "$max_attempts" ]; then
+              sleep_seconds=$(( attempt * 8 ))
+              echo "Login failed, retrying in ${sleep_seconds}s..."
+              sleep "$sleep_seconds"
+            fi
+          done
+          echo "GHCR login failed after ${max_attempts} attempts"
+          exit 1
 
       - name: Extract Docker metadata
         id: meta
