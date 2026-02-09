@@ -156,3 +156,11 @@
   args: update .assistant/status.md artifacts/changelog for P-015 completion
   result: succeeded
   artifacts: .assistant/status.md
+- tool: apply_patch (shell)
+  args: simplify P-015 AB Test Lab to baseline-only page for Optimizely-driven variants (remove local A/B toggle UI), update README/backlog/status wording
+  result: succeeded
+  artifacts: src/pages/ABTestLab.jsx, README.md, .assistant/backlog.md, .assistant/status.md
+- tool: exec_command (shell)
+  args: npm run build
+  result: succeeded — production build passes; existing warning in src/pages/learn/FAQ.jsx (duplicate onClick) remains unrelated
+  artifacts: dist/*

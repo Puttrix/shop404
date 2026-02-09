@@ -167,6 +167,7 @@ Product backlog with P-IDs, tags, and acceptance criteria.
       accepts:
       - Add route and page scaffold for A/B test pre-validation
       - Include experiment-ready placeholder sections/components
+      - Keep UI baseline-only; variants are controlled in Optimizely (no local toggle UI)
       - Make page safe for iterative content changes (content TBD)
       - Add brief usage notes in docs or README section
       - Verify page is reachable and renders in local dev

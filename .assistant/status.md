@@ -43,7 +43,7 @@ See `plan.md` for detailed breakdown.
 
 ## Changelog
 
-**2026-02-09**: Added A/B Test Lab page scaffold (`/ab-test-lab`) with scenario/variant preview controls and header navigation; backlog P-015 completed  
+**2026-02-09**: Added A/B Test Lab baseline page (`/ab-test-lab`) for Optimizely-driven experiments and header navigation; backlog P-015 completed  
 **2026-02-09**: Refreshed stale status from plan/backlog/task_log; MCP availability reconfirmed (context7/playwright callable, github MCP unavailable)  
 **2025-11-25**: Added community health files (Code of Conduct, License, Security policy, issue/PR templates)  
 **2025-11-24**: Added Docker Hub publish workflow and refreshed Dockerfile/README for image pulls  
