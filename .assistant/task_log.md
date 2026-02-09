@@ -144,6 +144,14 @@
   args: npm run build
   result: succeeded — production build passes; existing warning in src/pages/learn/FAQ.jsx (duplicate onClick) remains unrelated
   artifacts: dist/*
+- tool: apply_patch (shell)
+  args: add A/B content placeholder section on /ab-test-lab with content-area/block-outer structure for Optimizely targeting
+  result: succeeded
+  artifacts: src/pages/ABTestLab.jsx
+- tool: exec_command (shell)
+  args: npm run build
+  result: succeeded — production build passes; existing warning in src/pages/learn/FAQ.jsx (duplicate onClick) remains unrelated
+  artifacts: dist/*
 - tool: exec_command (shell, escalated)
   args: npm run dev -- --host 127.0.0.1 --port 4173 + curl /ab-test-lab
   result: succeeded — HTTP 200 for /ab-test-lab

@@ -53,6 +53,37 @@ export default function ABTestLab() {
           </div>
         </section>
       </section>
+
+      <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <h3 className="text-lg font-semibold tracking-tight">A/B Content Blocks</h3>
+        <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+          These are static placeholder blocks for Optimizely targeting and preview checks.
+        </p>
+
+        <div className="block-outer mt-5 grid gap-4 md:grid-cols-2">
+          <div className="content-area rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600" id="Värde för A-test">
+            <div className="space-y-3">
+              <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
+                <p>block a</p>
+              </div>
+              <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
+                <p>block a</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="content-area rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600" id="Värde för B-test">
+            <div className="space-y-3">
+              <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
+                <p>block b</p>
+              </div>
+              <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
+                <p>block b</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
