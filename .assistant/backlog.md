@@ -150,6 +150,27 @@ Product backlog with P-IDs, tags, and acceptance criteria.
       - Add setup instructions
       - Ensure graceful handling when not configured
 
+## P-014: Assistant Session Kickoff Hygiene
+- [x] Refresh assistant status and verify MCP availability
+      tags: process, docs, assistant  priority: low  est: 0.5h
+      deps: none
+      accepts:
+      - Validate status staleness against plan/backlog/task_log
+      - Refresh .assistant/status.md metadata/artifacts as needed
+      - Probe MCP availability for context7, playwright, github
+      - Record results in .assistant/task_log.md
+
+## P-015: A/B Test Pre-Testing Page
+- [ ] Add a dedicated page to pre-test A/B experiments
+      tags: experimentation, ux, testing  priority: medium  est: 3h
+      deps: none
+      accepts:
+      - Add route and page scaffold for A/B test pre-validation
+      - Include experiment-ready placeholder sections/components
+      - Make page safe for iterative content changes (content TBD)
+      - Add brief usage notes in docs or README section
+      - Verify page is reachable and renders in local dev
+
 ---
 
 ## Parking Lot

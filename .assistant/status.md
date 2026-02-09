@@ -1,6 +1,6 @@
 # Status
 
-**Last Updated**: 2025-11-25
+**Last Updated**: 2026-02-09
 
 ---
 
@@ -16,7 +16,7 @@ Completing Milestone M1 (Analytics Parity Validation) and preparing for M2.
 ## Now / Next / Later
 See `plan.md` for detailed breakdown.
 
-**Now**: M1 — Analytics Parity Validation (event mapping ✓, scripts ✓, preview validation in progress)  
+**Now**: M1 — Analytics Parity Validation (event mapping ✓, scripts ✓, preview validation pending)  
 **Next**: M2 — Learn & Content Tracking (content creation, annotated blocks)  
 **Later**: Experimentation, catalog enhancements, performance optimization
 
@@ -37,12 +37,13 @@ See `plan.md` for detailed breakdown.
 **Docs**: README, CONTRIBUTING, CODE_OF_CONDUCT.md, SECURITY.md, LICENSE, docs/*.md (analytics, parity, GTM, MTM, Portainer, design, developers)  
 **Code**: src/utils/analytics.js, ConsentBanner, cartState, donate/, learn/  
 **Scripts**: test-analytics.mjs, test-matomo.mjs, make-webp.mjs  
-**Config/CI**: docker-compose.yml, Dockerfile, public/config.json, .github/workflows/publish.yml, .github/workflows/docker-publish.yml, .github/ISSUE_TEMPLATE/*, .github/pull_request_template.md
+**Config/CI**: docker-compose.yml, Dockerfile, public/config.json, .github/workflows/publish.yml, .github/ISSUE_TEMPLATE/*, .github/pull_request_template.md
 
 ---
 
 ## Changelog
 
+**2026-02-09**: Refreshed stale status from plan/backlog/task_log; MCP availability reconfirmed (context7/playwright callable, github MCP unavailable)  
 **2025-11-25**: Added community health files (Code of Conduct, License, Security policy, issue/PR templates)  
 **2025-11-24**: Added Docker Hub publish workflow and refreshed Dockerfile/README for image pulls  
 **2025-10-28**: Migration to .assistant/ workflow (canvas, backlog, plan, history, status, ADRs pending)  
