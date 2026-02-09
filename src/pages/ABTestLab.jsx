@@ -61,7 +61,7 @@ export default function ABTestLab() {
         </p>
 
         <div className="block-outer mt-5 grid gap-4 md:grid-cols-2">
-          <div className="content-area rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600" id="Värde för A-test">
+          <div className="content-area rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600" id="123456">
             <div className="space-y-3">
               <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
                 <p>block a</p>
@@ -72,7 +72,7 @@ export default function ABTestLab() {
             </div>
           </div>
 
-          <div className="content-area rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600" id="Värde för B-test">
+          <div className="content-area rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600" id="654321">
             <div className="space-y-3">
               <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
                 <p>block b</p>
