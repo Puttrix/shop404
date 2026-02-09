@@ -60,25 +60,23 @@ export default function ABTestLab() {
           These are static placeholder blocks for Optimizely targeting and preview checks.
         </p>
 
-        <div className="block-outer mt-5 grid gap-4 md:grid-cols-2">
-          <div className="content-area rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600" id="A123456">
-            <div className="space-y-3">
+        <div className="block-outer mt-5">
+          <div id="@AB-123456" className="grid gap-4 md:grid-cols-2">
+            <div className="content-area ab-a rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600">
               <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
                 <p>block a</p>
               </div>
-              <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
+              <div className="block-outer mt-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
                 <p>block a</p>
               </div>
             </div>
-          </div>
 
-          <div className="content-area rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600" id="A654321">
-            <div className="space-y-3">
+            <div className="content-area ab-b rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-600">
               <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
-                <p>block b</p>
+                <p>block a</p>
               </div>
-              <div className="block-outer rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
-                <p>block b</p>
+              <div className="block-outer mt-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-900/50">
+                <p>block a</p>
               </div>
             </div>
           </div>
