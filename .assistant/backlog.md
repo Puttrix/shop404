@@ -30,6 +30,7 @@ Product backlog for the Umbraco integration initiative.
       tags: frontend, integration, api  priority: high  est: 1d
       deps: P-101
       accepts:
+      - Service calls repo-owned adapter endpoints (`/api/content/*`)
       - Service encapsulates content/navigation/blog/settings fetches
       - Error + empty-content fallback behavior is implemented
       - Mapping from API payload to UI-friendly types is tested
@@ -40,8 +41,9 @@ Product backlog for the Umbraco integration initiative.
       deps: P-103, P-102
       accepts:
       - `/about`, `/faq`, `/terms`, `/privacy` load from CMS
-      - Existing ecommerce/donation routes remain code-owned
-      - Missing route behavior is explicit (404 or fallback page)
+      - Reserved app routes remain code-owned (`/products`, `/cart`, `/checkout`, `/donate`, `/ab-test-lab`, `/api`, `/config.json`)
+      - Route order is explicit: reserved route match -> CMS slug match -> 404
+      - Collision behavior is covered by tests/documentation
 
 ## P-105: Block Renderer Registry
 - [ ] Implement block alias -> React component registry
@@ -114,6 +116,28 @@ Product backlog for the Umbraco integration initiative.
       - Go-live checklist includes monitoring and ownership
       - Rollback path is documented and testable
       - Critical risks and mitigations are tracked in status
+
+## P-113: Adapter Caching and CMS-Outage Fallbacks
+- [ ] Implement layered cache policy and fallback behavior for `/api/content/*`
+      tags: api, caching, reliability, cms  priority: high  est: 1d
+      deps: P-103
+      accepts:
+      - Adapter responses include agreed cache headers (edge + browser)
+      - Stale cached response is served when Umbraco is temporarily unavailable
+      - Critical pages have static fallback payload/path when no cache exists
+      - Non-critical CMS pages return graceful temporary-unavailable response
+      - Behavior is covered by tests and runbook notes
+
+## P-114: Environment Separation and Secret Topology
+- [ ] Implement and document secret/env management model for dev/staging/prod
+      tags: infra, security, operations, ci  priority: high  est: 1d
+      deps: P-107
+      accepts:
+      - Separate DB configuration per environment is enforced
+      - Separate media/storage volumes per environment are configured
+      - SQL/Umbraco credentials use secrets systems (GitHub/Portainer/local gitignored files)
+      - Bootstrap/admin secret rotation procedure is documented
+      - CI and deployment docs reflect secret boundaries
 
 ---
 

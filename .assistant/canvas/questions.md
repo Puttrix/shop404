@@ -3,28 +3,48 @@
 ## Umbraco Integration
 
 **Q-UM-01: Delivery API Shape vs Adapter Layer**  
-Status: Open  
+Status: Resolved (2026-02-20)  
 Context: TRD shows both raw Umbraco Delivery API and app-friendly `/api/content/*` endpoints.  
-- Should React call Umbraco Delivery API directly, or a backend adapter owned by this repo?
-- Who owns mapping from Umbraco property aliases to frontend DTOs?
+Decision:
+- React calls a repo-owned backend adapter contract (`/api/content/*`), not raw Umbraco endpoints.
+- Alias-to-DTO mapping ownership is in the adapter layer.
+Follow-up:
+- Implement adapter contract in P-103 and contract tests in P-110.
 
 **Q-UM-02: URL Routing Source of Truth**  
-Status: Open  
+Status: Resolved (2026-02-20)  
 Context: Existing SPA routes are code-defined; new marketing pages will come from CMS slugs.  
-- Do we implement a catch-all CMS route for unknown slugs?
-- Which routes remain code-owned (ecommerce, donation, checkout)?
+Decision:
+- Keep reserved transactional/app routes code-owned.
+- Add CMS catch-all routing only for non-reserved paths.
+- Route order: reserved app routes first -> CMS slug lookup -> 404.
+Follow-up:
+- Define reserved-prefix list and collision tests in P-104/P-110.
 
 **Q-UM-03: Content Caching Strategy**  
-Status: Open  
+Status: Resolved (2026-02-20)  
 Context: CMS calls are now runtime dependencies.  
-- Should we cache in-browser only, edge cache, or both?
-- What is the fallback behavior when Umbraco is unavailable?
+Decision:
+- Use both edge and browser caching, with adapter endpoints as the cache boundary.
+- Prefer edge cache with short TTL and `stale-while-revalidate`; keep browser TTL short.
+- Fallback order when Umbraco is unavailable:
+  - serve last-known-good cached adapter response if present,
+  - otherwise render static fallback content for critical marketing pages,
+  - otherwise show graceful temporary-unavailable state.
+- Code-owned transactional routes must not depend on CMS availability.
+Follow-up:
+- Implement cache headers and fallback behavior in adapter and route integration (P-113).
 
 **Q-UM-04: Environment and Secret Management**  
-Status: Open  
+Status: Resolved (2026-02-20)  
 Context: We need frontend + Umbraco + SQL Server in Docker/CI/CD.  
-- Where are Umbraco connection strings and admin bootstrap secrets stored?
-- Do local/dev/staging/prod use separate databases and media volumes?
+Decision:
+- Use strict environment separation (dev/staging/prod) with separate databases and media volumes.
+- Store credentials in secret stores (local `.env.local` only for dev, GitHub/Portainer secrets for CI/runtime).
+- Keep non-sensitive configuration in env vars; keep connection strings/bootstrap credentials in secrets.
+- Rotate bootstrap/admin secrets after provisioning.
+Follow-up:
+- Document secret and environment topology in compose/runbooks/CI config (P-114).
 
 ## Content and Governance
 

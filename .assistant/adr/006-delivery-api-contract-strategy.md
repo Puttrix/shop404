@@ -1,6 +1,6 @@
 # ADR-006: Delivery API Contract Strategy
 
-**Status**: Proposed  
+**Status**: Accepted  
 **Date**: 2026-02-20  
 **Deciders**: Project team  
 **Tags**: api, integration, contract
@@ -16,6 +16,11 @@ TRD references Umbraco Delivery API endpoints and app-facing `/api/content/*` ex
 ## Decision
 
 Define a versioned application contract for page/navigation/blog/settings reads, with ownership and mapping rules documented before broad frontend migration.
+
+Implementation direction:
+- React consumes repo-owned adapter endpoints (`/api/content/*`).
+- Adapter layer maps Umbraco aliases/properties to stable frontend DTOs.
+- Raw Umbraco Delivery API details remain internal to adapter implementation.
 
 ---
 
@@ -34,10 +39,10 @@ Define a versioned application contract for page/navigation/blog/settings reads,
 - Easier compatibility handling during CMS schema evolution.
 
 ### Negative
-- Additional mapping layer to maintain if adapter is chosen.
+- Additional mapping layer to maintain.
 
 ### Neutral
-- Can start with direct API spike before finalizing adapter.
+- Adapter may initially proxy selected fields before full normalization.
 
 ---
 

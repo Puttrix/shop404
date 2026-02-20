@@ -1,6 +1,6 @@
 # ADR-007: React CMS Service and Block Registry Pattern
 
-**Status**: Proposed  
+**Status**: Accepted  
 **Date**: 2026-02-20  
 **Deciders**: Project team  
 **Tags**: frontend, architecture, blocks, react
@@ -19,6 +19,7 @@ Introduce:
 - `cmsService` for API access and DTO mapping.
 - A block registry mapping Umbraco block aliases to React components.
 - Explicit fallback behavior for unknown blocks and missing fields.
+- Routing model: reserved application routes are matched first; non-reserved paths use CMS lookup; unresolved slugs return 404.
 
 ---
 

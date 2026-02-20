@@ -1,6 +1,6 @@
 # ADR-008: Container Topology for Frontend + Umbraco + SQL Server
 
-**Status**: Proposed  
+**Status**: Accepted  
 **Date**: 2026-02-20  
 **Deciders**: Project team  
 **Tags**: deployment, docker, infra, sqlserver
@@ -21,6 +21,12 @@ Adopt a three-service container topology:
 - `sql-server`
 
 With persistent volumes for Umbraco data/logs/media and environment-driven configuration for local/dev/prod.
+
+Environment and secret rules:
+- Separate DB instances/schemas per environment (`dev`, `staging`, `prod`).
+- Separate media/storage volumes per environment (no shared volume across envs).
+- Sensitive values (SQL connection strings, Umbraco bootstrap/admin credentials) are stored in secrets systems, not committed files.
+- Local development may use `.env.local` (gitignored) for developer-scoped secrets only.
 
 ---
 
