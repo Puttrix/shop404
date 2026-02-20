@@ -1,62 +1,55 @@
 # Open Questions
 
-## Analytics & Tracking
+## Umbraco Integration
 
-**Q1: Server-Side GTM (sGTM) GDPR Compliance**  
-Status: Researching  
-Context: Optional sGTM support exists via `GTM_SERVER_CONTAINER_URL`  
-- What are GDPR compliance requirements for sGTM in EU?
-- Should we add explicit warnings about measurement protocol usage?
-- Do we need consent forwarding examples beyond basic `gcs` parameter?
+**Q-UM-01: Delivery API Shape vs Adapter Layer**  
+Status: Open  
+Context: TRD shows both raw Umbraco Delivery API and app-friendly `/api/content/*` endpoints.  
+- Should React call Umbraco Delivery API directly, or a backend adapter owned by this repo?
+- Who owns mapping from Umbraco property aliases to frontend DTOs?
 
-**Q2: Matomo Cart Update Timing**  
-Status: Implemented, needs validation  
-Context: `update_cart` emitted with FULL CART on all cart changes + `begin_checkout`  
-- Is this sufficient for Matomo ecommerce accuracy?
-- Should we debounce rapid cart changes to reduce event volume?
+**Q-UM-02: URL Routing Source of Truth**  
+Status: Open  
+Context: Existing SPA routes are code-defined; new marketing pages will come from CMS slugs.  
+- Do we implement a catch-all CMS route for unknown slugs?
+- Which routes remain code-owned (ecommerce, donation, checkout)?
 
-**Q3: GA4 Category Hierarchy Limits**  
-Status: Researching  
-Context: Currently emits `item_category...item_category5` (5 levels max)  
-- What happens if product categories exceed 5 levels?
-- Should we truncate, concatenate, or document limitations?
+**Q-UM-03: Content Caching Strategy**  
+Status: Open  
+Context: CMS calls are now runtime dependencies.  
+- Should we cache in-browser only, edge cache, or both?
+- What is the fallback behavior when Umbraco is unavailable?
 
-## User Experience
+**Q-UM-04: Environment and Secret Management**  
+Status: Open  
+Context: We need frontend + Umbraco + SQL Server in Docker/CI/CD.  
+- Where are Umbraco connection strings and admin bootstrap secrets stored?
+- Do local/dev/staging/prod use separate databases and media volumes?
 
-**Q4: Consent Banner Defaults**  
-Status: Active decision needed  
-Context: Currently defaults all categories to denied  
-- Should we offer "legitimate interest" option for analytics?
-- Would pre-selecting "necessary" improve UX without compromising compliance?
+## Content and Governance
 
-**Q5: Donation Monthly Default Persistence**  
-Status: Implemented via localStorage  
-- Should preference sync across devices (requires backend)?
-- Should we add explicit preference management page?
+**Q-UM-05: Initial Content Migration Scope**  
+Status: Open  
+Context: TRD targets marketing/informational pages first.  
+- Which existing pages are phase-1 CMS-owned vs deferred?
+- Do we seed content automatically or migrate manually in backoffice?
 
-## Technical
+**Q-UM-06: Editorial Workflow**  
+Status: Open  
+Context: CMS introduces draft/publish and role permissions.  
+- Which roles can publish to production?
+- Is approval workflow required before publish?
 
-**Q6: Test Coverage Strategy**  
-Status: Limited to payload validation scripts  
-- Do we need React component tests for demo project?
-- Would Playwright E2E tests add educational value?
+## Testing and Quality
 
-**Q7: Environment Variable Validation**  
-Status: No validation currently  
-- Should we add schema validation for `/config.json`?
-- Would startup healthcheck endpoint help troubleshooting?
+**Q-UM-07: E2E Validation Strategy**  
+Status: Open  
+Context: Existing tests are analytics payload-focused.  
+- Do we add API contract tests for `cmsService` mappings?
+- Do we add route-level E2E checks for CMS-rendered pages?
 
-**Q8: Additional Analytics Platforms**  
-Status: Future consideration  
-- Would examples for Adobe Analytics, Mixpanel, or Segment add value?
-- How to balance demo complexity with educational breadth?
-
-**Q9: Experimentation Examples**  
-Status: Optimizely Web supported but minimal  
-- Should we add example A/B test variations in codebase?
-- How to show experiment tracking without user's Optimizely account?
-
-**Q10: Accessibility Audit**  
-Status: Not yet conducted  
-- Is WCAG 2.1 AA compliance expected for demo site?
-- Should we add keyboard navigation examples? 
+**Q-UM-08: Analytics Regression Guardrails**  
+Status: Open  
+Context: Content source is changing but event behavior must remain stable.  
+- Which baseline events must be identical before/after CMS migration?
+- Do we need pre/post payload snapshots for parity checks?

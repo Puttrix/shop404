@@ -1,83 +1,61 @@
 # Plan
 
-Current development plan organized by timeframe.
+Now / Next / Later plan for the Umbraco integration stream.
 
 ---
 
-## Now (Current Sprint)
+## Now
 
-**Focus**: Foundation solidification and documentation completeness
+**Focus**: Integration foundation and technical spike
 
-### M1 — Analytics Parity Validation
-- [x] Create event mapping matrix (docs/ANALYTICS_PARITY.md)
-- [x] Document GA4 ecommerce examples
-- [x] Document Matomo MTM setup and triggers
-- [x] Create payload validation scripts (test:analytics, test:matomo)
-- [ ] Validate end-to-end in Preview environments (GTM + MTM)
-- [ ] Document troubleshooting steps for common issues
+### M-UM-1: Foundations
+- [ ] Confirm architectural boundaries (CMS-owned vs code-owned routes)
+- [ ] Scaffold Umbraco (.NET 8) project in repository -> P-101
+- [ ] Stand up local SQL Server connection and boot Umbraco
+- [ ] Define initial content model and aliases -> P-102
+- [ ] Create ADR stubs for key integration decisions
 
----
-
-## Next (Upcoming)
-
-**Focus**: Content enrichment and enhanced tracking demonstrations
-
-### M2 — Learn/Resources Section & Content Tracking
-- [ ] Complete Learn section content (KB, FAQ, testimonials) → P-001
-- [ ] Add annotated content blocks to Home page → P-002
-- [ ] Implement content impression/interaction tracking
-- [ ] Document content tracking patterns
-- [ ] Validate in MTM Preview
-
-### M3 — Donation Flow Polish
-- [x] Monthly vs one-time UX nudge
-- [x] Persistent monthly default (localStorage)
-- [x] Client-side validation
-- [x] Error tracking via donation_step events
-- [ ] Add step progress indicator
-- [ ] Enhanced error messaging
-- [ ] Track abandonment by step
+### M-UM-2: Frontend Adapter Baseline
+- [ ] Add `cmsService` with route/content/settings fetch APIs -> P-103
+- [ ] Implement error/fallback model for unavailable CMS
+- [ ] Create initial mapping tests -> P-110
 
 ---
 
-## Later (Backlog)
+## Next
 
-**Focus**: Advanced features and optimization
+**Focus**: End-to-end content delivery and editorial ownership
 
-### M4 — Experimentation & Personalization
-- [ ] Simple Optimizely Web experiment example → P-004
-- [ ] ODP SDK usage examples → P-013
-- [ ] Experiment tracking event examples
-- [ ] Consent-aware activation patterns
+### M-UM-3: CMS-Rendered Pages
+- [ ] Wire marketing/informational routes to CMS -> P-104
+- [ ] Build block renderer registry for first block set -> P-105
+- [ ] Drive nav/footer/SEO defaults from Site Settings -> P-106
+- [ ] Seed and migrate initial content -> P-109
 
-### M5 — Product Catalog Enhancements
-- [ ] Price filters and sorting → P-005
-- [ ] Product variants (size, color)
-- [ ] Coupon code support
-- [ ] Empty states and error handling
+### M-UM-4: Deployment and Delivery Pipeline
+- [ ] Add multi-service Docker compose -> P-107
+- [ ] Extend CI/CD for dual image build/publish/deploy -> P-108
+- [ ] Document environment variables, secrets, and runbooks
 
-### M6 — Performance & Accessibility
-- [ ] Accessibility audit and fixes → P-006
-- [ ] Image pipeline optimization → P-011
-- [ ] Lazy loading implementation
-- [ ] Lighthouse score optimization
+---
 
-### M7 — Extended Analytics
-- [ ] GA4 ecommerce extensions → P-009
-- [ ] Matomo ecommerce extensions → P-010
-- [ ] sGTM comprehensive documentation → P-012
-- [ ] Custom dimension examples
+## Later
 
-### M8 — Developer Experience
-- [ ] Config schema validation → P-007
-- [ ] Fake order generation script → P-008
-- [ ] Enhanced debugging tools
-- [ ] Automated E2E tests (optional)
+**Focus**: hardening, parity validation, and release safety
+
+### M-UM-5: Quality and Parity
+- [ ] Expand API contract tests and route-level checks -> P-110
+- [ ] Validate analytics + consent parity across migrated pages -> P-111
+
+### M-UM-6: Release Readiness
+- [ ] Finalize go-live checklist and rollback plan -> P-112
+- [ ] Run cutover rehearsal in staging
+- [ ] Close open questions or convert to ADRs
 
 ---
 
 ## Dependencies
-- M2 depends on M1 (analytics foundation)
-- M4 depends on M1 (experiment tracking needs analytics)
-- M7 depends on M1 (extensions build on core)
-- P-012 (sGTM) depends on ADR-002 (GDPR compliance) 
+- P-101 precedes most integration work.
+- P-102 and P-103 unblock page integration (P-104/P-105/P-106).
+- P-107 unblocks CI/CD extension (P-108).
+- P-104/P-105/P-106/P-108 feed release readiness and parity checks.

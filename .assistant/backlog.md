@@ -1,182 +1,122 @@
 # Backlog
 
-Product backlog with P-IDs, tags, and acceptance criteria.
+Product backlog for the Umbraco integration initiative.
 
 ---
 
-## P-001: Learn/Resources Section Content
-- [ ] Complete Learn/Resources section content
-      tags: content, analytics, matomo  priority: high  est: 4h
+## Active Items
+
+## P-101: Bootstrap Umbraco Solution in Repo
+- [ ] Create Umbraco (.NET 8 LTS) project and wire local startup
+      tags: cms, umbraco, backend, setup  priority: high  est: 1d
       deps: none
       accepts:
-      - Seed 2 KB articles (Sizing, Care) in src/data/kb.js
-      - Add 1 FAQ set to src/data/faqs.js
-      - Add 4-6 testimonials to src/data/testimonials.js
-      - Annotate cards/CTAs with Matomo Content Tracking (matomoTrackContent, data-content-*)
-      - Trigger SPA scans on route changes via trackContentScan(document)
-      - Verify content impressions/interactions in MTM Preview
+      - Umbraco project exists under a stable repo path
+      - Local run succeeds against SQL Server connection string
+      - README section documents local startup and prerequisites
 
-## P-002: Matomo Content Tracking - Rich Content Blocks
-- [ ] Add annotated content blocks to Home page
-      tags: analytics, matomo, ui  priority: high  est: 3h
-      deps: none
+## P-102: Define Content Model (BasePage + Page Types)
+- [ ] Implement TRD document types and compositions in Umbraco
+      tags: cms, content-model, umbraco  priority: high  est: 1.5d
+      deps: P-101
       accepts:
-      - Add PromoBanner, TeaserCards, or USP/Trust bar to Home
-      - Markup with matomoTrackContent class + data-content-name|piece|target
-      - Implement IntersectionObserver for visible-only tracking
-      - Add trackContentClick on CTA clicks
-      - Gate behind analytics consent
-      - Validate in MTM Preview
+      - `BasePage` composition fields are created
+      - `HomePage`, `StandardPage`, `BlogOverview`, `BlogPost` are created
+      - Block types exist for hero/cta/product teaser
+      - Site settings singleton type exists
 
-## P-003: Matomo Ecommerce - Product/Category Details
-- [ ] Enhance Matomo ecommerce tracking details
-      tags: analytics, matomo, enhancement  priority: medium  est: 2h
-      deps: none
+## P-103: Frontend CMS Service Layer
+- [ ] Add `cmsService` abstraction and DTO mapping in React app
+      tags: frontend, integration, api  priority: high  est: 1d
+      deps: P-101
       accepts:
-      - Verify category hierarchy mapping (item_category_path)
-      - Ensure cart totals match sum(price*qty) in update_cart
-      - Add product dimension enrichment
-      - Document mapping in docs/MATOMO_ECOMMERCE_MAPPING.md
+      - Service encapsulates content/navigation/blog/settings fetches
+      - Error + empty-content fallback behavior is implemented
+      - Mapping from API payload to UI-friendly types is tested
 
-## P-004: Simple Experiment Example with Optimizely
-- [ ] Add basic A/B test example
-      tags: experimentation, optimizely, example  priority: medium  est: 3h
-      deps: none
+## P-104: Route Integration for CMS Pages
+- [ ] Render CMS-driven marketing pages in SPA
+      tags: frontend, routing, cms  priority: high  est: 1.5d
+      deps: P-103, P-102
       accepts:
-      - Add variation code examples in comments/docs
-      - Show experiment tracking via custom events
-      - Document setup steps for Optimizely users
-      - Ensure consent-aware activation
-      - Validate experiment activation in console
+      - `/about`, `/faq`, `/terms`, `/privacy` load from CMS
+      - Existing ecommerce/donation routes remain code-owned
+      - Missing route behavior is explicit (404 or fallback page)
 
-## P-005: Price Filters & Sort on Product List
-- [ ] Add filtering and sorting to products page
-      tags: feature, ux, analytics  priority: low  est: 4h
-      deps: none
+## P-105: Block Renderer Registry
+- [ ] Implement block alias -> React component registry
+      tags: frontend, components, cms-blocks  priority: high  est: 1d
+      deps: P-103, P-102
       accepts:
-      - Add filter UI (price range)
-      - Add sort dropdown (price, name)
-      - Push view_item_list params with filters/sort
-      - Persist filter state in URL query params
-      - Maintain list context in analytics
+      - Hero, CTA, ProductTeaser blocks render from API payload
+      - Unknown block aliases degrade gracefully with logging
+      - Block rendering keeps existing design system styling
 
-## P-006: Accessibility Sweep
-- [ ] Conduct accessibility audit and improvements
-      tags: a11y, ux, compliance  priority: medium  est: 4h
-      deps: none
+## P-106: Global Site Settings from CMS
+- [ ] Drive header/footer/default SEO from Umbraco Site Settings singleton
+      tags: frontend, seo, cms  priority: medium  est: 1d
+      deps: P-103, P-102
       accepts:
-      - Verify focus order on all pages
-      - Add proper ARIA landmarks (main, nav, aside)
-      - Check color contrast ratios (WCAG AA)
-      - Test keyboard navigation (Tab, Enter, Escape)
-      - Add skip-to-main-content link
-      - Document accessibility features in README
+      - Header navigation comes from CMS config
+      - Footer links/text come from CMS config
+      - Default SEO title/description fallback is wired
 
-## P-007: Config Schema Validation
-- [ ] Add validation for /config.json
-      tags: devex, reliability, config  priority: low  est: 2h
-      deps: none
+## P-107: Docker Compose Topology (Frontend + Umbraco + SQL)
+- [ ] Add multi-service compose for integrated local/dev deployment
+      tags: infra, docker, umbraco, sqlserver  priority: high  est: 1d
+      deps: P-101
       accepts:
-      - Define JSON schema for config
-      - Add validation on server startup
-      - Provide clear error messages
-      - Add helpful 404 fallback
-      - Document schema in README
+      - Compose starts three services and network connectivity works
+      - Persistent volumes for Umbraco data/logs/media are mounted
+      - Environment variables and secrets are documented
 
-## P-008: CLI Script for Fake Orders
-- [ ] Generate fake orders for analytics testing
-      tags: testing, analytics, devex  priority: low  est: 2h
-      deps: none
+## P-108: CI/CD for Umbraco + Frontend Images
+- [ ] Extend GitHub Actions to build/push both images and redeploy
+      tags: ci, cd, deployment, portainer  priority: medium  est: 1d
+      deps: P-107
       accepts:
-      - Generate realistic transaction IDs, items, values
-      - Push to dataLayer and _mtm in sequence
-      - Support configurable count and delay
-      - Output summary of generated orders
-      - Document usage in README
+      - Workflow builds frontend and Umbraco images
+      - Tags include `latest` and commit SHA
+      - Portainer redeploy trigger path is documented or scripted
 
-## P-009: GA4 Ecommerce Extensions
-- [ ] Add extended GA4 ecommerce events
-      tags: analytics, ga4, enhancement  priority: low  est: 3h
-      deps: none
+## P-109: Initial Content Seeding and Page Migration
+- [ ] Migrate initial marketing/informational content into Umbraco
+      tags: content, migration, editorial  priority: medium  est: 1.5d
+      deps: P-102
       accepts:
-      - Implement add_payment_info event
-      - Implement add_shipping_info event
-      - Add promotion impressions/clicks examples
-      - Add refund event examples
-      - Document in docs/GA4_ECOMMERCE_EXAMPLES.md
+      - Seed data exists for home/about/faq/terms/privacy
+      - Editors can update content without code changes
+      - Migration mapping is documented in `.assistant/canvas/notes.md`
 
-## P-010: Matomo Ecommerce Extensions
-- [ ] Extend Matomo ecommerce tracking
-      tags: analytics, matomo, enhancement  priority: low  est: 3h
-      deps: none
+## P-110: API Contract and Integration Tests
+- [ ] Add contract-level checks for CMS payload mapping
+      tags: testing, quality, api  priority: medium  est: 1d
+      deps: P-103, P-104
       accepts:
-      - Add trackEcommerceCartUpdate examples
-      - Implement category hierarchy enrichment
-      - Add product custom dimensions
-      - Update docs/MATOMO_ECOMMERCE_MAPPING.md
+      - Test coverage validates required fields and fallbacks
+      - Failure cases (missing property/unknown block) are covered
+      - Test commands are documented in README
 
-## P-011: Image Pipeline Polish
-- [ ] Enhance image loading performance
-      tags: performance, ux, images  priority: low  est: 3h
-      deps: none
+## P-111: Analytics and Consent Parity After CMS Cutover
+- [ ] Verify no regression in analytics + consent behavior on CMS pages
+      tags: analytics, consent, regression  priority: medium  est: 0.5d
+      deps: P-104, P-105
       accepts:
-      - Add lazy-loading with IntersectionObserver
-      - Implement blur-up placeholders (optional)
-      - Add loading skeletons
-      - Document CDN path config option
-      - Measure Lighthouse score improvement
+      - Existing core events fire on migrated pages where applicable
+      - Consent gating behavior remains unchanged
+      - Parity checks are recorded in status/history
 
-## P-012: Server-Side GTM (sGTM) Enhancement
-- [ ] Comprehensive sGTM documentation
-      tags: analytics, gtm, advanced  priority: low  est: 4h
-      deps: ADR-002
+## P-112: Production Readiness and Rollback
+- [ ] Define readiness checklist and rollback strategy for CMS rollout
+      tags: release, risk, operations  priority: medium  est: 0.5d
+      deps: P-106, P-108, P-111
       accepts:
-      - Document DNS setup (CNAME)
-      - Add consent forwarding examples
-      - Show client hints configuration
-      - Document preview and verification
-      - Add GDPR compliance warnings
-      - Provide Measurement Protocol fallback
-      - Update docs/ANALYTICS.md
-
-## P-013: ODP Web SDK Example Usage
-- [ ] Add ODP SDK usage examples
-      tags: experimentation, odp, example  priority: low  est: 2h
-      deps: account-access
-      accepts:
-      - Show window.zaius.identify() usage
-      - Show window.zaius.track() custom event
-      - Document consent requirements
-      - Add setup instructions
-      - Ensure graceful handling when not configured
-
-## P-014: Assistant Session Kickoff Hygiene
-- [x] Refresh assistant status and verify MCP availability
-      tags: process, docs, assistant  priority: low  est: 0.5h
-      deps: none
-      accepts:
-      - Validate status staleness against plan/backlog/task_log
-      - Refresh .assistant/status.md metadata/artifacts as needed
-      - Probe MCP availability for context7, playwright, github
-      - Record results in .assistant/task_log.md
-
-## P-015: A/B Test Pre-Testing Page
-- [x] Add a dedicated page to pre-test A/B experiments
-      tags: experimentation, ux, testing  priority: medium  est: 3h
-      deps: none
-      accepts:
-      - Add route and page scaffold for A/B test pre-validation
-      - Include experiment-ready placeholder sections/components
-      - Keep UI baseline-only; variants are controlled in Optimizely (no local toggle UI)
-      - Make page safe for iterative content changes (content TBD)
-      - Add brief usage notes in docs or README section
-      - Verify page is reachable and renders in local dev
+      - Go-live checklist includes monitoring and ownership
+      - Rollback path is documented and testable
+      - Critical risks and mitigations are tracked in status
 
 ---
 
-## Parking Lot
+## Deferred / Legacy
 
-Items deferred or out of scope:
-- Server-side tagging examples (requires backend infrastructure)
-- Multi-container deployment (single container sufficient)
-- Additional platforms (Adobe Analytics, Mixpanel, Segment)
+Analytics enhancement items from pre-Umbraco roadmap remain deferred until P-101..P-112 baseline is stable.
