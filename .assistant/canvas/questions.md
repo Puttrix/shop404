@@ -49,27 +49,46 @@ Follow-up:
 ## Content and Governance
 
 **Q-UM-05: Initial Content Migration Scope**  
-Status: Open  
+Status: Resolved (2026-02-20)  
 Context: TRD targets marketing/informational pages first.  
-- Which existing pages are phase-1 CMS-owned vs deferred?
-- Do we seed content automatically or migrate manually in backoffice?
+Decision:
+- Phase-1 CMS-owned: `/`, `/about`, `/faq`, `/terms`, `/privacy`, blog index/detail, and global nav/footer/default SEO settings.
+- Deferred and code-owned: `/products`, `/product/:id`, `/cart`, `/checkout`, `/donate/*`, `/ab-test-lab`, and transactional state flows.
+- Migration method is hybrid: idempotent seed content for dev/staging baseline, manual editorial migration/approval in production backoffice.
+Follow-up:
+- Implement scoped migration + seeding workflow in P-115.
 
 **Q-UM-06: Editorial Workflow**  
-Status: Open  
+Status: Resolved (2026-02-20)  
 Context: CMS introduces draft/publish and role permissions.  
-- Which roles can publish to production?
-- Is approval workflow required before publish?
+Decision:
+- Roles:
+  - Editor: create/edit and submit for review.
+  - Publisher (Content Lead): approve and publish to production.
+  - Admin: schema/settings/users/infrastructure only.
+- Approval workflow is required before production publish.
+- Legal/compliance-sensitive pages require two-person review before publish.
+Follow-up:
+- Implement role/approval/runbook controls in P-116.
 
 ## Testing and Quality
 
 **Q-UM-07: E2E Validation Strategy**  
-Status: Open  
+Status: Resolved (2026-02-20)  
 Context: Existing tests are analytics payload-focused.  
-- Do we add API contract tests for `cmsService` mappings?
-- Do we add route-level E2E checks for CMS-rendered pages?
+Decision:
+- Add both API contract tests and route-level E2E checks.
+- PR gate: fast contract tests + CMS route smoke checks.
+- Scheduled/release gate: expanded E2E matrix including fallback/collision/404 cases.
+Follow-up:
+- Implement validation pipeline in P-117.
 
 **Q-UM-08: Analytics Regression Guardrails**  
-Status: Open  
+Status: Resolved (2026-02-20)  
 Context: Content source is changing but event behavior must remain stable.  
-- Which baseline events must be identical before/after CMS migration?
-- Do we need pre/post payload snapshots for parity checks?
+Decision:
+- Define a parity baseline on migrated pages for `page_view`, consent-state events/signals, and tracked content interaction events where implemented.
+- Require pre/post payload snapshots for key routes and fail checks on schema drift, missing required fields, or unacceptable event-count deltas.
+- Keep transactional route analytics unaffected by CMS migration.
+Follow-up:
+- Implement snapshot/threshold guardrails in P-118.

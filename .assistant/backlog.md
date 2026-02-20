@@ -139,6 +139,46 @@ Product backlog for the Umbraco integration initiative.
       - Bootstrap/admin secret rotation procedure is documented
       - CI and deployment docs reflect secret boundaries
 
+## P-115: Phase-1 Content Scope and Seeding Workflow
+- [ ] Implement phase-1 page ownership boundaries and seeding strategy
+      tags: content, migration, governance  priority: high  est: 1d
+      deps: P-102, P-109
+      accepts:
+      - CMS-owned routes are limited to phase-1 scope (`/`, `/about`, `/faq`, `/terms`, `/privacy`, blog, global settings)
+      - Deferred transactional routes remain code-owned and unaffected
+      - Idempotent seed process exists for dev/staging baseline content
+      - Production content migration process is documented as manual backoffice workflow
+
+## P-116: Editorial Roles and Approval Workflow
+- [ ] Configure and document role-based publishing controls
+      tags: governance, editorial, compliance  priority: high  est: 1d
+      deps: P-109
+      accepts:
+      - Editor/Publisher/Admin roles and permissions are defined
+      - Production publishing requires approval workflow
+      - Two-person review rule is documented for legal/compliance pages
+      - Audit and rollback ownership is documented
+
+## P-117: CMS Contract + E2E Validation Pipeline
+- [ ] Implement combined contract and route-level E2E strategy
+      tags: testing, ci, quality  priority: high  est: 1.5d
+      deps: P-103, P-104, P-110
+      accepts:
+      - Contract tests validate DTO mapping and fallback behavior
+      - PR pipeline runs contract tests + CMS smoke E2E
+      - Nightly/release pipeline runs extended CMS E2E (fallback/collision/404)
+      - Test runbook documents scope and gating behavior
+
+## P-118: Analytics Parity Snapshot Guardrails
+- [ ] Add pre/post snapshot and threshold checks for analytics parity
+      tags: analytics, regression, consent, quality  priority: high  est: 1d
+      deps: P-111
+      accepts:
+      - Baseline migrated-route events are defined (`page_view`, consent signals, content interactions where configured)
+      - Snapshot comparison tooling or script exists for pre/post checks
+      - CI fails on missing required fields, schema drift, or out-of-threshold event deltas
+      - Intentional tracking changes require explicit baseline update process
+
 ---
 
 ## Deferred / Legacy

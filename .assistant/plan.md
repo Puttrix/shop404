@@ -16,6 +16,7 @@ Now / Next / Later plan for the Umbraco integration stream.
 - [x] Accept API and routing integration ADRs (ADR-006, ADR-007)
 - [x] Accept container/env separation decision (ADR-008)
 - [x] Accept cache/fallback policy decision (ADR-010)
+- [x] Accept migration scope + editorial + testing + analytics guardrail decisions (ADR-009, ADR-011, ADR-012, ADR-013)
 
 ### M-UM-2: Frontend Adapter Baseline
 - [ ] Add `cmsService` with route/content/settings fetch APIs -> P-103
@@ -34,6 +35,8 @@ Now / Next / Later plan for the Umbraco integration stream.
 - [ ] Build block renderer registry for first block set -> P-105
 - [ ] Drive nav/footer/SEO defaults from Site Settings -> P-106
 - [ ] Seed and migrate initial content -> P-109
+- [ ] Implement phase-1 ownership boundaries and seeding process -> P-115
+- [ ] Configure editorial roles and approval workflow -> P-116
 
 ### M-UM-4: Deployment and Delivery Pipeline
 - [ ] Add multi-service Docker compose -> P-107
@@ -51,6 +54,8 @@ Now / Next / Later plan for the Umbraco integration stream.
 - [ ] Expand API contract tests and route-level checks -> P-110
 - [ ] Validate analytics + consent parity across migrated pages -> P-111
 - [ ] Implement adapter caching and outage fallback behavior -> P-113
+- [ ] Implement combined contract + E2E pipeline -> P-117
+- [ ] Implement analytics snapshot guardrails -> P-118
 
 ### M-UM-6: Release Readiness
 - [ ] Finalize go-live checklist and rollback plan -> P-112

@@ -1,6 +1,6 @@
 # ADR-009: Content Governance and Migration Strategy
 
-**Status**: Proposed  
+**Status**: Accepted  
 **Date**: 2026-02-20  
 **Deciders**: Project team  
 **Tags**: content, migration, governance
@@ -19,6 +19,14 @@ Adopt a phased migration strategy:
 - Phase 1: marketing/informational pages to CMS.
 - Keep ecommerce/donation transactional flows code-owned.
 - Define editorial roles and publish approvals before production cutover.
+
+Phase-1 scope:
+- CMS-owned: `/`, `/about`, `/faq`, `/terms`, `/privacy`, blog pages, global nav/footer/default SEO.
+- Deferred/code-owned: `/products`, product detail, cart, checkout, donate flow, experimentation lab.
+
+Migration approach:
+- Seed baseline content automatically for dev/staging (idempotent).
+- Use manual backoffice migration + approval workflow for production content.
 
 ---
 
