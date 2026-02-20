@@ -8,7 +8,7 @@ The feature introduces Umbraco as a headless CMS backend for marketing and infor
 React SPA (shop404)
   -> CMS service layer
   -> Umbraco Delivery API
-  -> Umbraco CMS (.NET 8 LTS)
+  -> Umbraco CMS (.NET 10)
   -> SQL Server
 ```
 

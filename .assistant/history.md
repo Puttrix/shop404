@@ -24,7 +24,7 @@ Condensed milestone history for shop404.
 - Updated assistant status/backlog for experimentation workflows.
 
 ## 2026-02-20: Umbraco Integration Track Initiated
-- Introduced TRD context for integrating Umbraco headless CMS (.NET 8 + SQL Server).
+- Introduced TRD context for integrating Umbraco headless CMS (.NET 10 + SQL Server).
 - Reframed `.assistant` planning artifacts around CMS migration:
   - Canvas refreshed (vision/design/questions).
   - Backlog normalized to P-101..P-112.

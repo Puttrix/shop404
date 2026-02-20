@@ -7,7 +7,7 @@ Product backlog for the Umbraco integration initiative.
 ## Active Items
 
 ## P-101: Bootstrap Umbraco Solution in Repo
-- [ ] Create Umbraco (.NET 8 LTS) project and wire local startup
+- [ ] Create Umbraco (.NET 10) project and wire local startup
       tags: cms, umbraco, backend, setup  priority: high  est: 1d
       deps: none
       accepts:

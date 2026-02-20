@@ -15,7 +15,7 @@ The project needs non-developer content editing for marketing/informational page
 
 ## Decision
 
-Use Umbraco (latest LTS on .NET 8) as a headless CMS backend, with React consuming content through APIs rather than server-rendered Umbraco templates.
+Use Umbraco (latest target on .NET 10) as a headless CMS backend, with React consuming content through APIs rather than server-rendered Umbraco templates.
 
 ---
 

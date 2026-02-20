@@ -1,7 +1,7 @@
 # Goals
 
 ## Short-term (current integration phase)
-- Stand up Umbraco (.NET 8) with local SQL Server and runnable dev workflow.
+- Stand up Umbraco (.NET 10) with local SQL Server and runnable dev workflow.
 - Model core content types and site settings from the TRD.
 - Deliver one CMS-driven page end-to-end in the React SPA.
 
