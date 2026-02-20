@@ -8,7 +8,7 @@
 
 ## 1.1 Objective
 
-Integrate **Umbraco CMS (latest LTS, .NET 8)** into the existing
+Integrate **Umbraco CMS (latest LTS, .NET 10)** into the existing
 **shop404** repository to enable:
 
 -   Editing all marketing and informational pages via Umbraco
@@ -27,7 +27,7 @@ Integrate **Umbraco CMS (latest LTS, .NET 8)** into the existing
         ↓ fetch
     Umbraco Content Delivery API
         ↓
-    Umbraco CMS (.NET 8)
+    Umbraco CMS (.NET 10)
         ↓
     SQL Server
 
