@@ -37,6 +37,7 @@ See `.assistant/plan.md`.
 - Planning: `.assistant/backlog.md`, `.assistant/plan.md`, `.assistant/history.md`, `.assistant/status.md`
 - Canvas: `.assistant/canvas/vision.md`, `.assistant/canvas/design.md`, `.assistant/canvas/questions.md`
 - ADRs: `.assistant/adr/001-gtm-first-architecture.md` .. `.assistant/adr/013-analytics-parity-guardrails-for-cms-migration.md`
+- CMS code: `umbraco-cms/` (`Shop404.Cms.csproj`, Program/appsettings, Umbraco template scaffold)
 - Product docs and repo context: `README.md`, `docs/ROADMAP.md`, `docs/DESIGN_NOTES.md`
 
 ---
@@ -51,6 +52,10 @@ See `.assistant/plan.md`.
 - 2026-02-20: Resolved Q-UM-01/Q-UM-02 and accepted adapter-first + reserved-route catch-all strategy (ADR-006/ADR-007).
 - 2026-02-20: Resolved Q-UM-03/Q-UM-04 and accepted caching/fallback + env/secret separation strategy (ADR-010/ADR-008).
 - 2026-02-20: Resolved Q-UM-05..Q-UM-08 and accepted migration scope, editorial workflow, test strategy, and analytics parity guardrails (ADR-009/011/012/013).
+- 2026-02-20: Started P-101 by scaffolding `umbraco-cms/` (`.NET 10` Umbraco project), validating build, and adding SQL-based local startup instructions to README.
+- 2026-02-20: Added `docker-compose.cms.yml` for local SQL Server and updated Umbraco quick-start commands in README.
+- 2026-02-20: Completed P-101 (Umbraco scaffold + local SQL container workflow verified).
+- 2026-02-20: Started P-102 by adding an idempotent Umbraco startup bootstrapper for BasePage/page types/site settings/block types (`umbraco-cms/Bootstrap/ContentTypeBootstrapper.cs`).
 
 ---
 

@@ -10,8 +10,8 @@ Now / Next / Later plan for the Umbraco integration stream.
 
 ### M-UM-1: Foundations
 - [x] Confirm architectural boundaries (CMS-owned vs code-owned routes)
-- [ ] Scaffold Umbraco (.NET 10) project in repository -> P-101
-- [ ] Stand up local SQL Server connection and boot Umbraco
+- [x] Scaffold Umbraco (.NET 10) project in repository -> P-101
+- [x] Stand up local SQL Server connection and boot Umbraco
 - [ ] Define initial content model and aliases -> P-102
 - [x] Accept API and routing integration ADRs (ADR-006, ADR-007)
 - [x] Accept container/env separation decision (ADR-008)

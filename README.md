@@ -43,6 +43,45 @@ Notes for dev:
 
 Environment variables for runtime config are read by the server only when running the Docker image or `npm start` with built assets. For local dev, tags won’t load unless your tools are inserted manually.
 
+## Umbraco CMS Development (.NET 10)
+
+The Umbraco integration project is scaffolded in `umbraco-cms/` and targets `.NET 10`.
+
+Prereqs:
+- .NET SDK 10.x (`dotnet --info`)
+- SQL Server instance (local, container, or remote)
+
+Quick start (from repo root):
+
+```bash
+# Start local SQL Server via Docker Compose
+MSSQL_SA_PASSWORD='Your_strong_password123!' docker compose -f docker-compose.cms.yml up -d
+
+# Create Umbraco database inside SQL container (idempotent)
+MSSQL_SA_PASSWORD='Your_strong_password123!' ./scripts/create-umbraco-db.sh
+
+# Stop it when done
+docker compose -f docker-compose.cms.yml down
+
+# Build Umbraco CMS project
+dotnet build umbraco-cms/Shop404.Cms.csproj
+
+# Run Umbraco CMS with SQL Server connection string
+ConnectionStrings__umbracoDbDSN='Server=localhost,1433;Database=Shop404UmbracoDev;User Id=sa;Password=Your_strong_password123!;TrustServerCertificate=true;Encrypt=false' \
+ASPNETCORE_URLS='http://localhost:5085' \
+dotnet run --project umbraco-cms/Shop404.Cms.csproj --no-launch-profile
+```
+
+Then open `http://localhost:5085/umbraco` and complete the installer flow.
+
+Notes:
+- `docker-compose.cms.yml` creates a persistent SQL data volume (`shop404_sql_data`).
+- If you use a custom `MSSQL_SA_PASSWORD`, use the same value in `ConnectionStrings__umbracoDbDSN`.
+- Content model bootstrapper: on app startup, `umbraco-cms/Bootstrap/ContentTypeBootstrapper.cs` ensures TRD document/element types exist (idempotent).
+- On Apple Silicon (M1/M2/M3), this compose uses `platform: linux/amd64` for SQL Server compatibility.
+- Ensure Docker Desktop has enough memory for SQL Server (recommended 4GB+), or the container may exit immediately.
+- If startup fails, check logs with: `docker compose -f docker-compose.cms.yml logs shop404-sql`.
+
 ## Events & Data Layer
 Key events emitted:
 - `page_view`: on route changes/pages
@@ -204,6 +243,7 @@ Cart updates (`update_cart`):
 - `src/state`: simple cart state with localStorage persistence
 - `src/utils/analytics.js`: unified event helpers and tag loader
 - `server.js`: static file server and runtime config endpoint
+- `umbraco-cms`: Umbraco CMS backend project (`.NET 10`)
 
 ## Roadmap & Ideas
 - See `docs/ROADMAP.md` for themes, milestones, backlog, and decisions. Add ideas there as short bullets; move items across sections as work progresses.

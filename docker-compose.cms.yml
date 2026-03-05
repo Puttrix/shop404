@@ -1,0 +1,17 @@
+services:
+  shop404-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: ${MSSQL_PLATFORM:-linux/amd64}
+    container_name: shop404-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:-Your_strong_password123!}
+      - MSSQL_PID=Developer
+    ports:
+      - "${MSSQL_PUBLISH_PORT:-1433}:1433"
+    volumes:
+      - shop404_sql_data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  shop404_sql_data:

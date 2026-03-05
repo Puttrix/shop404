@@ -7,7 +7,7 @@ Product backlog for the Umbraco integration initiative.
 ## Active Items
 
 ## P-101: Bootstrap Umbraco Solution in Repo
-- [ ] Create Umbraco (.NET 10) project and wire local startup
+- [x] Create Umbraco (.NET 10) project and wire local startup
       tags: cms, umbraco, backend, setup  priority: high  est: 1d
       deps: none
       accepts:
@@ -15,7 +15,7 @@ Product backlog for the Umbraco integration initiative.
       - Local run succeeds against SQL Server connection string
       - README section documents local startup and prerequisites
 
-## P-102: Define Content Model (BasePage + Page Types)
+## P-102: Define Content Model (BasePage + Page Types) (In Progress)
 - [ ] Implement TRD document types and compositions in Umbraco
       tags: cms, content-model, umbraco  priority: high  est: 1.5d
       deps: P-101
