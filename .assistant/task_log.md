@@ -144,6 +144,32 @@
   args: npm run build
   result: succeeded — production build passes; existing warning in src/pages/learn/FAQ.jsx (duplicate onClick) remains unrelated
   artifacts: dist/*
+
+## 2026-03-05
+- tool: list_mcp_resources (context7)
+  args: {server: context7}
+  result: failed — Method not found (resources/list unsupported by server)
+  artifacts: none
+- tool: list_mcp_resource_templates (context7)
+  args: {server: context7}
+  result: failed — Method not found (resources/templates/list unsupported by server)
+  artifacts: none
+- tool: list_mcp_resources (playwright)
+  args: {server: playwright}
+  result: failed — Method not found (resources/list unsupported by server)
+  artifacts: none
+- tool: list_mcp_resource_templates (playwright)
+  args: {server: playwright}
+  result: failed — Method not found (resources/templates/list unsupported by server)
+  artifacts: none
+- tool: list_mcp_resources (github)
+  args: {server: github}
+  result: failed — unknown MCP server
+  artifacts: none
+- tool: list_mcp_resource_templates (github)
+  args: {server: github}
+  result: failed — unknown MCP server
+  artifacts: none
 - tool: apply_patch (shell)
   args: add A/B content placeholder section on /ab-test-lab with content-area/block-outer structure for Optimizely targeting
   result: succeeded

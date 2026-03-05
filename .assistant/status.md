@@ -1,6 +1,6 @@
 # Status
 
-**Last Updated**: 2026-02-09
+**Last Updated**: 2026-03-05
 
 ---
 
@@ -43,8 +43,9 @@ See `plan.md` for detailed breakdown.
 
 ## Changelog
 
+**2026-03-05**: Session kickoff refresh completed; MCP probe run for context7/playwright/github (resource-list methods unsupported on context7/playwright servers, github MCP server unavailable), and results logged in task_log  
 **2026-02-09**: Added A/B Test Lab baseline page (`/ab-test-lab`) for Optimizely-driven experiments and header navigation; backlog P-015 completed  
-**2026-02-09**: Refreshed stale status from plan/backlog/task_log; MCP availability reconfirmed (context7/playwright callable, github MCP unavailable)  
+**2026-02-09**: Refreshed stale status from plan/backlog/task_log; MCP availability reconfirmed (context7/playwright present, github MCP unavailable)  
 **2025-11-25**: Added community health files (Code of Conduct, License, Security policy, issue/PR templates)  
 **2025-11-24**: Added Docker Hub publish workflow and refreshed Dockerfile/README for image pulls  
 **2025-10-28**: Migration to .assistant/ workflow (canvas, backlog, plan, history, status, ADRs pending)  

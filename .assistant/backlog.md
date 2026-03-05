@@ -172,6 +172,15 @@ Product backlog with P-IDs, tags, and acceptance criteria.
       - Add brief usage notes in docs or README section
       - Verify page is reachable and renders in local dev
 
+## P-016: Session Kickoff MCP Re-Probe
+- [x] Re-run MCP availability checks and refresh assistant status metadata
+      tags: process, docs, assistant  priority: low  est: 0.5h
+      deps: none
+      accepts:
+      - Probe context7/playwright/github MCP availability at session start
+      - Log MCP probe results in .assistant/task_log.md
+      - Refresh .assistant/status.md Last Updated and changelog note
+
 ---
 
 ## Parking Lot
