@@ -1,4 +1,4 @@
-name: Publish Docker image to GHCR
+name: Publish Docker images to GHCR
 
 on:
   push:
@@ -6,12 +6,20 @@ on:
     tags: [ 'v*' ]
   workflow_dispatch: {}
 
+# Shared login helper used by both build jobs.
+# GHCR_TOKEN is the auto-provisioned GITHUB_TOKEN (packages: write).
+
 jobs:
-  build-and-push:
+
+  # ── Frontend (React SPA) ──────────────────────────────────────────────────
+  build-frontend:
+    name: Build & push frontend image
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,7 +30,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to GHCR (with retry)
+      - name: Log in to GHCR
         shell: bash
         env:
           GHCR_USER: ${{ github.actor }}
@@ -64,3 +72,102 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  # ── Umbraco CMS ──────────────────────────────────────────────────────────
+  build-cms:
+    name: Build & push Umbraco CMS image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        shell: bash
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          user="$(echo "$GHCR_USER" | tr '[:upper:]' '[:lower:]')"
+          max_attempts=5
+          for attempt in $(seq 1 "$max_attempts"); do
+            echo "GHCR login attempt ${attempt}/${max_attempts} as ${user}"
+            if echo "$GHCR_TOKEN" | docker login ghcr.io -u "$user" --password-stdin; then
+              echo "GHCR login succeeded"
+              exit 0
+            fi
+            if [ "$attempt" -lt "$max_attempts" ]; then
+              sleep_seconds=$(( attempt * 8 ))
+              echo "Login failed, retrying in ${sleep_seconds}s..."
+              sleep "$sleep_seconds"
+            fi
+          done
+          echo "GHCR login failed after ${max_attempts} attempts"
+          exit 1
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/puttrix/shop404-cms
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=tag
+            type=sha
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./umbraco-cms
+          dockerfile: ./umbraco-cms/Dockerfile
+          # CMS image is amd64-only: SQL Server 2022 and .NET 10 ASP.NET runtime
+          # are stable on amd64; arm64 support is possible but not required yet.
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  # ── Portainer redeploy ────────────────────────────────────────────────────
+  # Triggers a Portainer stack webhook after both images are pushed.
+  # Configure the following repository secrets before enabling this job:
+  #   PORTAINER_WEBHOOK_URL  — full webhook URL from Portainer stack "Webhooks" tab
+  #                            (e.g. https://portainer.example.com/api/stacks/webhooks/<uuid>)
+  # If the secret is absent the step is skipped gracefully (no failure).
+  deploy:
+    name: Trigger Portainer redeploy
+    runs-on: ubuntu-latest
+    needs: [ build-frontend, build-cms ]
+    # Only redeploy on main branch pushes, not on tag-only builds.
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Redeploy stack via Portainer webhook
+        shell: bash
+        env:
+          PORTAINER_WEBHOOK_URL: ${{ secrets.PORTAINER_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${PORTAINER_WEBHOOK_URL:-}" ]; then
+            echo "PORTAINER_WEBHOOK_URL secret not set — skipping redeploy trigger."
+            exit 0
+          fi
+          echo "Triggering Portainer stack redeploy..."
+          http_status=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "${PORTAINER_WEBHOOK_URL}")
+          echo "Portainer responded with HTTP ${http_status}"
+          if [ "$http_status" -ge 200 ] && [ "$http_status" -lt 300 ]; then
+            echo "Redeploy triggered successfully."
+          else
+            echo "Unexpected HTTP status ${http_status} from Portainer webhook."
+            exit 1
+          fi

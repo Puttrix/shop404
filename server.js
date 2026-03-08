@@ -13,8 +13,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Runtime config from env (used by tag loaders)
+// Runtime config from env (used by tag loaders and CMS service)
 const runtimeConfig = {
+  // CMS adapter base URL — empty string means same-origin (dev proxy or reverse proxy).
+  CMS_API_URL: process.env.CMS_API_URL || '',
   GTM_ID: process.env.GTM_ID || '',
   GA4_ID: process.env.GA4_ID || '',
   // Optional Server-side GTM custom domain, e.g., https://gtm.example.com

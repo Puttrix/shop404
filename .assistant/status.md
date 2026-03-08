@@ -14,8 +14,8 @@ Primary focus is the Umbraco integration stream: stand up CMS foundations, defin
 
 See `.assistant/plan.md`.
 
-- Now: M-UM-3 CMS-Rendered Pages (P-106 closed, next: P-109 content seeding)
-- Next: M-UM-3 remaining (P-109/115/116) + M-UM-4 Deployment Pipeline
+- Now: M-UM-3 Content + Editorial (P-109/115/116)
+- Next: M-UM-5 Quality/Parity (P-110/117)
 - Later: M-UM-5 Quality/Parity + M-UM-6 Release Readiness
 
 ---
@@ -42,6 +42,7 @@ See `.assistant/plan.md`.
 - CMS routing: `src/pages/CmsPage.jsx`, `src/config/reservedRoutes.js`, `src/config/reservedRoutes.test.js`
 - CMS blocks: `src/components/cms/blocks/` (HeroBlock, CtaBlock, ProductTeaserBlock), `src/components/cms/BlockRegistry.js`, `src/components/cms/BlockRenderer.jsx`, `src/components/cms/BlockRegistry.test.js`
 - CMS site settings: `src/state/cmsSettingsContext.jsx` (CmsSettingsProvider + useCmsSettings hook)
+- Docker topology: `umbraco-cms/Dockerfile`, `docker-compose.full.yml`, `.env.example`
 - Product docs and repo context: `README.md`, `docs/ROADMAP.md`, `docs/DESIGN_NOTES.md`
 
 ---
@@ -65,6 +66,8 @@ See `.assistant/plan.md`.
 - 2026-03-08: Completed P-104: added `CmsPage` catch-all component (fetch → render → 404), `reservedRoutes.js` collision boundary, 22 collision guard tests. 42 tests passing, build clean.
 - 2026-03-08: Completed P-105: block registry (alias → component map), BlockRenderer (unknown alias degrades with console.warn), HeroBlock/CtaBlock/ProductTeaserBlock using existing design system. Controller updated to map BlockListModel → structured JSON. 51 tests passing, build clean.
 - 2026-03-08: Completed P-106: CmsSettingsProvider fetches nav + settings once at boot. Header nav driven by CMS headerNavigation. Footer text/links driven by CMS footerText/footerLinks (static fallback when unconfigured). Controller GetSettings surfaces footerLinks. CmsPage passes defaultSeoTitle fallback to setTitle. Build clean.
+- 2026-03-08: Completed P-107: added `umbraco-cms/Dockerfile` (.NET 10 multi-stage), `docker-compose.full.yml` (three-service topology: SQL + CMS + frontend, shared network, 4 named volumes), `.env.example` (all secrets/env vars documented). Added `CMS_API_URL` to `server.js` runtimeConfig so browser receives it from `/config.json`.
+- 2026-03-08: Completed P-108: extended `.github/workflows/publish.yml` with two parallel build jobs (`build-frontend` → `ghcr.io/puttrix/shop404`, `build-cms` → `ghcr.io/puttrix/shop404-cms`) plus a `deploy` job that POSTs to `PORTAINER_WEBHOOK_URL` secret after both images are pushed (skipped gracefully if secret absent). Both images tagged `latest` + commit SHA + semver tag.
 
 ---
 

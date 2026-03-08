@@ -1,0 +1,98 @@
+# Full-stack compose: React SPA + Umbraco CMS + SQL Server.
+# For integrated local/dev deployment. Copy .env.example → .env before first run.
+#
+# Usage:
+#   docker compose -f docker-compose.full.yml up --build
+#
+# Required env vars (see .env.example):
+#   MSSQL_SA_PASSWORD        — SQL Server SA password
+#   UMBRACO_ADMIN_PASSWORD   — Umbraco backoffice admin password on first install
+
+services:
+
+  # ── SQL Server ─────────────────────────────────────────────────────────────
+  shop404-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: ${MSSQL_PLATFORM:-linux/amd64}
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?MSSQL_SA_PASSWORD is required — see .env.example}
+      - MSSQL_PID=Developer
+    volumes:
+      - shop404_sql_data:/var/opt/mssql
+    networks:
+      - shop404-net
+    restart: unless-stopped
+    healthcheck:
+      # -C skips certificate validation (SQL Server self-signed cert in container)
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $$MSSQL_SA_PASSWORD -Q 'SELECT 1' -b -C || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 45s
+
+  # ── Umbraco CMS ────────────────────────────────────────────────────────────
+  shop404-cms:
+    build:
+      context: ./umbraco-cms
+      dockerfile: Dockerfile
+    image: shop404-cms:latest
+    pull_policy: build
+    ports:
+      # Expose backoffice to host for editorial access and dev tooling.
+      - "${CMS_PUBLISH_PORT:-13802}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      # SQL connection string — references sql service by its compose service name.
+      - ConnectionStrings__umbracoDbDSN=Server=shop404-sql,1433;Database=Shop404Cms;User Id=sa;Password=${MSSQL_SA_PASSWORD:?};TrustServerCertificate=True;
+      # Unattended install — creates admin account on first run only.
+      - Umbraco__CMS__Unattended__InstallUnattended=true
+      - Umbraco__CMS__Unattended__UnattendedUserName=${UMBRACO_ADMIN_NAME:-Shop404 Admin}
+      - Umbraco__CMS__Unattended__UnattendedUserEmail=${UMBRACO_ADMIN_EMAIL:-admin@shop404.local}
+      - Umbraco__CMS__Unattended__UnattendedUserPassword=${UMBRACO_ADMIN_PASSWORD:?UMBRACO_ADMIN_PASSWORD is required — see .env.example}
+    volumes:
+      # Persist media uploads, logs, and Umbraco NuCache across restarts.
+      - shop404_cms_media:/app/wwwroot/media
+      - shop404_cms_logs:/app/umbraco/Logs
+      - shop404_cms_data:/app/umbraco/Data
+    networks:
+      - shop404-net
+    depends_on:
+      shop404-sql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── React SPA (frontend) ───────────────────────────────────────────────────
+  shop404-frontend:
+    build: .
+    image: shop404:latest
+    pull_policy: build
+    ports:
+      - "${PUBLISH_PORT:-8080}:3000"
+    environment:
+      - PORT=${PORT:-3000}
+      # CMS adapter URL — must be reachable from the browser (not the docker network).
+      # In local container mode this is the host-exposed Umbraco port.
+      # In production set this to the public CMS hostname or reverse-proxy path.
+      - CMS_API_URL=${CMS_API_URL:-http://localhost:13802}
+      - GTM_ID=${GTM_ID:-}
+      - GA4_ID=${GA4_ID:-}
+      - GTM_SERVER_CONTAINER_URL=${GTM_SERVER_CONTAINER_URL:-}
+      - MATOMO_TAG_MANAGER_CONTAINER_URL=${MATOMO_TAG_MANAGER_CONTAINER_URL:-}
+      - OPTIMIZELY_WEB_SNIPPET_URL=${OPTIMIZELY_WEB_SNIPPET_URL:-}
+      - ODP_SDK_URL=${ODP_SDK_URL:-}
+    networks:
+      - shop404-net
+    depends_on:
+      - shop404-cms
+    restart: unless-stopped
+
+volumes:
+  shop404_sql_data:
+  shop404_cms_media:
+  shop404_cms_logs:
+  shop404_cms_data:
+
+networks:
+  shop404-net:
+    driver: bridge

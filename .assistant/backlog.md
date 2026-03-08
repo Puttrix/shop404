@@ -64,7 +64,7 @@ Product backlog for the Umbraco integration initiative.
       - Default SEO title/description fallback is wired
 
 ## P-107: Docker Compose Topology (Frontend + Umbraco + SQL)
-- [ ] Add multi-service compose for integrated local/dev deployment
+- [x] Add multi-service compose for integrated local/dev deployment
       tags: infra, docker, umbraco, sqlserver  priority: high  est: 1d
       deps: P-101
       accepts:
@@ -73,7 +73,7 @@ Product backlog for the Umbraco integration initiative.
       - Environment variables and secrets are documented
 
 ## P-108: CI/CD for Umbraco + Frontend Images
-- [ ] Extend GitHub Actions to build/push both images and redeploy
+- [x] Extend GitHub Actions to build/push both images and redeploy
       tags: ci, cd, deployment, portainer  priority: medium  est: 1d
       deps: P-107
       accepts:
