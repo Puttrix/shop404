@@ -82,7 +82,7 @@ Product backlog for the Umbraco integration initiative.
       - Portainer redeploy trigger path is documented or scripted
 
 ## P-109: Initial Content Seeding and Page Migration
-- [ ] Migrate initial marketing/informational content into Umbraco
+- [x] Migrate initial marketing/informational content into Umbraco
       tags: content, migration, editorial  priority: medium  est: 1.5d
       deps: P-102
       accepts:
