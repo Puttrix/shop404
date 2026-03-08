@@ -91,7 +91,7 @@ Product backlog for the Umbraco integration initiative.
       - Migration mapping is documented in `.assistant/canvas/notes.md`
 
 ## P-110: API Contract and Integration Tests
-- [ ] Add contract-level checks for CMS payload mapping
+- [x] Add contract-level checks for CMS payload mapping
       tags: testing, quality, api  priority: medium  est: 1d
       deps: P-103, P-104
       accepts:

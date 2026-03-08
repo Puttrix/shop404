@@ -256,11 +256,32 @@ Cart updates (`update_cart`):
   - UI/Theme notes (dark mode, mobile header) are kept in `docs/DESIGN_NOTES.md`.
 
 ## Testing
+
+### Unit + Contract Tests (Vitest)
+
+```bash
+npm test            # run all tests once (CI mode)
+npm run test:watch  # watch mode for development
+```
+
+| Test file | What it covers |
+|-----------|----------------|
+| `src/config/reservedRoutes.test.js` | Reserved-route collision guard (22 tests) |
+| `src/services/cmsService.test.js` | HTTP adapter: fetch, errors, fallbacks, `CMS_API_URL` (20 tests) |
+| `src/components/cms/BlockRegistry.test.js` | Block alias → component registry (9 tests) |
+| `src/services/cmsContract.test.js` | **CMS adapter contract**: DTO shapes, required fields, sparse payload fallbacks, block data shapes, title resolution, settings consumer logic (77 tests) |
+
+The contract tests (`cmsContract.test.js`) are the primary regression guard against DTO drift.
+If the Umbraco controller (`Controllers/ContentApiController.cs`) renames or removes a field,
+the corresponding contract test will fail on the next `npm test` run.
+
+### Analytics Checks (Node scripts)
+
 - Run analytics payload checks: `npm run test:analytics`
   - Verifies GA4 payload structure (list context, category hierarchy, currency on cart/checkout, purchase tax/shipping) and donation error tracking.
 - Run Matomo cart sync checks: `npm run test:matomo`
   - Verifies `_mtm` `update_cart` emits FULL CART on add/remove/quantity change and at `begin_checkout`, plus mapping of item quantities.
- - Manual: verify Matomo content impressions/interactions in MTM Preview on `/learn` and `/learn/articles`
+- Manual: verify Matomo content impressions/interactions in MTM Preview on `/learn` and `/learn/articles`
 
 ## For Developers: dataLayer and _mtm pushes
 See also: `docs/DEVELOPERS.md` for setup, helper API, data models, and debugging tips.
