@@ -170,7 +170,8 @@ docker run -p 8080:3000 \
 ```
 
 ## Portainer (Deploy from Git)
-See `docs/PORTAINER.md` for full steps, env matrix, and troubleshooting.
+See `docs/PORTAINER.md` for full steps, env matrix, full-stack (CMS + SQL) setup, and troubleshooting.
+For secret inventory, per-environment isolation, and rotation procedures, see `docs/SECRETS.md`.
 Quick outline:
 1. Push this repo (or your fork) to Git.
 2. Portainer → Stacks → Add stack → Repository:

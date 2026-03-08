@@ -44,7 +44,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       # SQL connection string — references sql service by its compose service name.
-      - ConnectionStrings__umbracoDbDSN=Server=shop404-sql,1433;Database=Shop404Cms;User Id=sa;Password=${MSSQL_SA_PASSWORD:?};TrustServerCertificate=True;
+      - ConnectionStrings__umbracoDbDSN=Server=shop404-sql,1433;Database=${MSSQL_DATABASE:-Shop404Cms};User Id=sa;Password=${MSSQL_SA_PASSWORD:?};TrustServerCertificate=True;
       # Unattended install — creates admin account on first run only.
       - Umbraco__CMS__Unattended__InstallUnattended=true
       - Umbraco__CMS__Unattended__UnattendedUserName=${UMBRACO_ADMIN_NAME:-Shop404 Admin}

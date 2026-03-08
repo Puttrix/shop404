@@ -125,3 +125,55 @@ Webhook
 Notes
 - If build cache issues arise, toggle “Re-pull image” or add a cache-busting arg.
 - For private repos over SSH, add a Portainer Git credential or deploy from a mirror.
+
+---
+
+## Full-Stack Deployment (Frontend + Umbraco CMS + SQL Server)
+
+Use `docker-compose.full.yml` to run the complete stack: React SPA, Umbraco CMS, and
+SQL Server as a single Compose project.
+
+### Compose path
+
+Set the Compose path in Portainer to `docker-compose.full.yml`.
+
+### Required stack env vars
+
+```
+COMPOSE_PROJECT_NAME=shop404-prod        # isolates volumes from other stacks
+MSSQL_SA_PASSWORD=<strong-password>      # SQL Server SA; see docs/SECRETS.md
+MSSQL_DATABASE=Shop404CmsProd            # separate DB per environment
+UMBRACO_ADMIN_PASSWORD=<strong-password> # first-install only; see docs/SECRETS.md
+UMBRACO_ADMIN_EMAIL=admin@yourdomain.com
+CMS_PUBLISH_PORT=13802                   # host port for Umbraco backoffice
+PUBLISH_PORT=8080                        # host port for the SPA
+CMS_API_URL=https://cms.yourdomain.com   # public URL reachable by the browser
+                                         # (or leave empty for same-origin reverse proxy)
+```
+
+### Service startup order
+
+The stack enforces dependency order automatically:
+
+```
+SQL Server (healthcheck) → Umbraco CMS → React SPA
+```
+
+SQL Server takes ~45 s on first start. Umbraco runs the unattended install and content
+bootstrapper on first launch. The SPA is available once all three services are healthy.
+
+### Verifying the full-stack deployment
+
+1. Open `http://YOUR-HOST:${CMS_PUBLISH_PORT}/umbraco` — Umbraco backoffice login.
+2. Open `http://YOUR-HOST:${PUBLISH_PORT}/config.json` — confirm `CMS_API_URL` is correct.
+3. Open `http://YOUR-HOST:${PUBLISH_PORT}/about` — should load from CMS.
+4. Open `http://YOUR-HOST:${PUBLISH_PORT}/api/content/navigation` — should return `{ items: [] }` until navigation is configured.
+
+### Secrets and environment isolation
+
+See **`docs/SECRETS.md`** for:
+- Full secret inventory and where each secret is stored
+- Per-environment volume isolation via `COMPOSE_PROJECT_NAME`
+- Database naming strategy (`MSSQL_DATABASE`)
+- SA password and Umbraco admin rotation procedures
+- New environment setup checklist

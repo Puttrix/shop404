@@ -4,6 +4,51 @@ Sketches, links, snippets. Purge or refactor regularly to docs/.
 
 ---
 
+## P-113 CMS Caching & Outage Runbook
+
+### Cache layers
+
+| Layer | Where | Mechanism | Serves stale when |
+|---|---|---|---|
+| HTTP cache | Browser / CDN | `Cache-Control` headers on `/api/content/*` responses | Normal staleness (`stale-while-revalidate`) |
+| In-process cache | `cmsService.js` `_cache` Map | Updated on every successful fetch; never expires | CMS is unreachable (network error, timeout, 5xx) |
+| Static fallback | `cmsFallbacks.js` `PAGE_FALLBACKS` | Hard-coded minimal payload | In-process cache is cold **and** CMS is down |
+
+### Cache-Control headers (set by ContentApiController.cs)
+
+| Endpoint | Headers |
+|---|---|
+| `/api/content/page` | `public, max-age=60, stale-while-revalidate=30` |
+| `/api/content/navigation` | `public, max-age=120, stale-while-revalidate=60` |
+| `/api/content/blog` | `public, max-age=60, stale-while-revalidate=30` |
+| `/api/content/blog/{slug}` | `public, max-age=60, stale-while-revalidate=30` |
+| `/api/content/settings` | `public, max-age=300, stale-while-revalidate=60` |
+
+### Outage behaviour matrix
+
+| Scenario | Navigation/Settings | Critical pages (`/about` `/faq` `/terms` `/privacy`) | Non-critical (blog posts, unknown routes) |
+|---|---|---|---|
+| CMS up, response fresh | Live data | Live data | Live data |
+| CMS up, response stale | HTTP `stale-while-revalidate` serves cached | Same | Same |
+| CMS down, in-process cache warm | Stale cache | Stale cache | Stale cache |
+| CMS down, in-process cache cold | `[]` / `null` (graceful empty state) | Static fallback (temporarily unavailable message) | `null` → CmsPage shows "page not found" |
+
+### Incident runbook
+
+**CMS is down (e.g. container crashed, SQL Server unreachable):**
+1. The frontend continues to serve from the in-process cache until the next page reload.
+2. On first cold load (no cache), critical pages show a "temporarily unavailable" message from `PAGE_FALLBACKS`. Non-critical pages (blog) show the standard "page not found" state.
+3. Navigation and settings fall back to empty (`[]` / `null`); the Header shows no nav items and the Footer shows the static fallback links.
+4. **Remediation**: restart the `shop404-cms` container (`docker compose restart shop404-cms`). The in-process cache auto-repopulates on the next successful fetch.
+
+**CMS returns 5xx (partial outage):**
+- Same behaviour as "CMS down, in-process cache warm" if any previous successful fetch has run in the current session.
+
+**Updating static fallback content:**
+- Edit `src/services/cmsFallbacks.js`. These payloads are intentionally minimal (temporary-unavailable messages) and should NOT contain real editorial content.
+
+---
+
 ## P-109 Content Migration Mapping
 
 Documents how existing hardcoded React pages map to Umbraco content nodes and properties.

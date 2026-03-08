@@ -100,7 +100,7 @@ Product backlog for the Umbraco integration initiative.
       - Test commands are documented in README
 
 ## P-111: Analytics and Consent Parity After CMS Cutover
-- [ ] Verify no regression in analytics + consent behavior on CMS pages
+- [x] Verify no regression in analytics + consent behavior on CMS pages
       tags: analytics, consent, regression  priority: medium  est: 0.5d
       deps: P-104, P-105
       accepts:
@@ -118,7 +118,7 @@ Product backlog for the Umbraco integration initiative.
       - Critical risks and mitigations are tracked in status
 
 ## P-113: Adapter Caching and CMS-Outage Fallbacks
-- [ ] Implement layered cache policy and fallback behavior for `/api/content/*`
+- [x] Implement layered cache policy and fallback behavior for `/api/content/*`
       tags: api, caching, reliability, cms  priority: high  est: 1d
       deps: P-103
       accepts:
@@ -129,7 +129,7 @@ Product backlog for the Umbraco integration initiative.
       - Behavior is covered by tests and runbook notes
 
 ## P-114: Environment Separation and Secret Topology
-- [ ] Implement and document secret/env management model for dev/staging/prod
+- [x] Implement and document secret/env management model for dev/staging/prod
       tags: infra, security, operations, ci  priority: high  est: 1d
       deps: P-107
       accepts:
