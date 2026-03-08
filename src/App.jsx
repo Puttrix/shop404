@@ -13,6 +13,7 @@ import FAQPage from './pages/learn/FAQ.jsx';
 import TestimonialsPage from './pages/learn/Testimonials.jsx';
 import { ArticlesList, ArticleDetail } from './pages/learn/Articles.jsx';
 import ABTestLab from './pages/ABTestLab.jsx';
+import CmsPage from './pages/CmsPage.jsx';
 import ConsentBanner from './components/ConsentBanner.jsx';
 import { CartProvider } from './state/cartState.jsx';
 
@@ -37,7 +38,10 @@ export default function App() {
             <Route path="/learn/faq" element={<FAQPage />} />
             <Route path="/learn/testimonials" element={<TestimonialsPage />} />
             <Route path="/ab-test-lab" element={<ABTestLab />} />
-            <Route path="*" element={<div className='p-8'>Not Found</div>} />
+            {/* CMS catch-all: tries Umbraco content lookup, falls back to 404.
+                Route order guarantees all code-owned routes above match first.
+                See src/config/reservedRoutes.js for the full reserved set. */}
+            <Route path="*" element={<CmsPage />} />
           </Routes>
         </main>
         <Footer />

@@ -1,6 +1,6 @@
 # Status
 
-**Last Updated**: 2026-03-07
+**Last Updated**: 2026-03-08
 
 ---
 
@@ -14,8 +14,8 @@ Primary focus is the Umbraco integration stream: stand up CMS foundations, defin
 
 See `.assistant/plan.md`.
 
-- Now: M-UM-3 CMS-Rendered Pages (P-101/102/103 closed, next: P-104 route integration)
-- Next: M-UM-3 CMS-Rendered Pages + M-UM-4 Deployment Pipeline
+- Now: M-UM-3 CMS-Rendered Pages (P-104 closed, next: P-105 block registry)
+- Next: M-UM-3 remaining (P-105/106/109/115/116) + M-UM-4 Deployment Pipeline
 - Later: M-UM-5 Quality/Parity + M-UM-6 Release Readiness
 
 ---
@@ -23,7 +23,7 @@ See `.assistant/plan.md`.
 ## Risks
 
 - R-UM-1: Adapter contract versioning and DTO drift can cause frontend/backend mismatch if unmanaged. (Medium)
-- R-UM-2: Reserved-route collision handling must be implemented and tested during CMS catch-all rollout. (Medium)
+- R-UM-2: Reserved-route collision handling implemented and tested (P-104). Monitor for new reserved routes being added without updating RESERVED_ROUTES. (Low)
 - R-UM-3: Secret wiring mistakes across environments can cause deployment failures or exposure risk. (Medium)
 - R-UM-4: CMS outage behavior may degrade UX if cache/fallback policy is only partially implemented. (Medium)
 - R-UM-5: Analytics/consent regressions can be introduced during page migration if rendering contracts diverge. (Medium)
@@ -39,6 +39,7 @@ See `.assistant/plan.md`.
 - ADRs: `.assistant/adr/001-gtm-first-architecture.md` .. `.assistant/adr/013-analytics-parity-guardrails-for-cms-migration.md`
 - CMS code: `umbraco-cms/` (`Shop404.Cms.csproj`, Program/appsettings, Umbraco template scaffold, `Controllers/ContentApiController.cs`)
 - Frontend CMS service: `src/services/cmsService.js`, `src/services/cmsService.test.js`
+- CMS routing: `src/pages/CmsPage.jsx`, `src/config/reservedRoutes.js`, `src/config/reservedRoutes.test.js`
 - Product docs and repo context: `README.md`, `docs/ROADMAP.md`, `docs/DESIGN_NOTES.md`
 
 ---
@@ -59,6 +60,7 @@ See `.assistant/plan.md`.
 - 2026-02-20: Started P-102 by adding an idempotent Umbraco startup bootstrapper for BasePage/page types/site settings/block types (`umbraco-cms/Bootstrap/ContentTypeBootstrapper.cs`).
 - 2026-03-07: Closed P-102 (bootstrapper satisfies all acceptance criteria). Started P-103: added `src/services/cmsService.js` (React adapter service for /api/content/* endpoints) and `umbraco-cms/Controllers/ContentApiController.cs` (Umbraco adapter controller mapping published content to stable DTOs).
 - 2026-03-08: Completed P-103: added Vite dev proxy for `/api/content/*` → Umbraco (port 13802), added Vitest + `npm test` script, wrote 20 passing tests covering DTO mapping and all fallback/error cases (`src/services/cmsService.test.js`).
+- 2026-03-08: Completed P-104: added `CmsPage` catch-all component (fetch → render → 404), `reservedRoutes.js` collision boundary, 22 collision guard tests. 42 tests passing, build clean.
 
 ---
 

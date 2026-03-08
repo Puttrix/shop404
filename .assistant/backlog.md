@@ -36,7 +36,7 @@ Product backlog for the Umbraco integration initiative.
       - Mapping from API payload to UI-friendly types is tested
 
 ## P-104: Route Integration for CMS Pages
-- [ ] Render CMS-driven marketing pages in SPA
+- [x] Render CMS-driven marketing pages in SPA
       tags: frontend, routing, cms  priority: high  est: 1.5d
       deps: P-103, P-102
       accepts:
