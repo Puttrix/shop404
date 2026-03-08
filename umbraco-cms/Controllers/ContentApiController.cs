@@ -105,12 +105,18 @@ public class ContentApiController : UmbracoApiController
     {
         var settings = FindSiteSettings();
         if (settings is null)
-            return Ok(new { footerText = "", defaultSeoTitle = "", defaultSeoDescription = "" });
+            return Ok(new { footerText = "", footerLinks = Array.Empty<object>(), defaultSeoTitle = "", defaultSeoDescription = "" });
+
+        var footerLinks = (settings.Value<IEnumerable<IPublishedContent>>("footerLinks", _fallback)
+                           ?? Enumerable.Empty<IPublishedContent>())
+                          .Select(p => new { title = p.Name, url = p.Url() })
+                          .ToArray();
 
         Response.Headers.CacheControl = "public, max-age=300, stale-while-revalidate=60";
         return Ok(new
         {
             footerText = settings.Value<string>("footerText", _fallback) ?? string.Empty,
+            footerLinks,
             defaultSeoTitle = settings.Value<string>("defaultSeoTitle", _fallback) ?? string.Empty,
             defaultSeoDescription = settings.Value<string>("defaultSeoDescription", _fallback) ?? string.Empty,
         });

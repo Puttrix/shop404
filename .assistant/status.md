@@ -14,8 +14,8 @@ Primary focus is the Umbraco integration stream: stand up CMS foundations, defin
 
 See `.assistant/plan.md`.
 
-- Now: M-UM-3 CMS-Rendered Pages (P-105 closed, next: P-106 site settings)
-- Next: M-UM-3 remaining (P-106/109/115/116) + M-UM-4 Deployment Pipeline
+- Now: M-UM-3 CMS-Rendered Pages (P-106 closed, next: P-109 content seeding)
+- Next: M-UM-3 remaining (P-109/115/116) + M-UM-4 Deployment Pipeline
 - Later: M-UM-5 Quality/Parity + M-UM-6 Release Readiness
 
 ---
@@ -41,6 +41,7 @@ See `.assistant/plan.md`.
 - Frontend CMS service: `src/services/cmsService.js`, `src/services/cmsService.test.js`
 - CMS routing: `src/pages/CmsPage.jsx`, `src/config/reservedRoutes.js`, `src/config/reservedRoutes.test.js`
 - CMS blocks: `src/components/cms/blocks/` (HeroBlock, CtaBlock, ProductTeaserBlock), `src/components/cms/BlockRegistry.js`, `src/components/cms/BlockRenderer.jsx`, `src/components/cms/BlockRegistry.test.js`
+- CMS site settings: `src/state/cmsSettingsContext.jsx` (CmsSettingsProvider + useCmsSettings hook)
 - Product docs and repo context: `README.md`, `docs/ROADMAP.md`, `docs/DESIGN_NOTES.md`
 
 ---
@@ -63,6 +64,7 @@ See `.assistant/plan.md`.
 - 2026-03-08: Completed P-103: added Vite dev proxy for `/api/content/*` → Umbraco (port 13802), added Vitest + `npm test` script, wrote 20 passing tests covering DTO mapping and all fallback/error cases (`src/services/cmsService.test.js`).
 - 2026-03-08: Completed P-104: added `CmsPage` catch-all component (fetch → render → 404), `reservedRoutes.js` collision boundary, 22 collision guard tests. 42 tests passing, build clean.
 - 2026-03-08: Completed P-105: block registry (alias → component map), BlockRenderer (unknown alias degrades with console.warn), HeroBlock/CtaBlock/ProductTeaserBlock using existing design system. Controller updated to map BlockListModel → structured JSON. 51 tests passing, build clean.
+- 2026-03-08: Completed P-106: CmsSettingsProvider fetches nav + settings once at boot. Header nav driven by CMS headerNavigation. Footer text/links driven by CMS footerText/footerLinks (static fallback when unconfigured). Controller GetSettings surfaces footerLinks. CmsPage passes defaultSeoTitle fallback to setTitle. Build clean.
 
 ---
 

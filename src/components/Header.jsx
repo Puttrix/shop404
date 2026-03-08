@@ -2,8 +2,10 @@ import { Link, NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useCart } from '../state/cartState.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
+import { useCmsSettings } from '../state/cmsSettingsContext.jsx';
 
 export default function Header() {
+  const { navigation } = useCmsSettings();
   const { state } = useCart();
   const count = state.items.reduce((s,i)=>s+i.qty,0);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -41,11 +43,9 @@ export default function Header() {
             <span className="font-semibold">Shop404</span>
           </Link>
           <nav className="hidden md:flex items-center gap-4 text-sm">
-            <NavLink to="/" onClick={close} className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Home</NavLink>
-            <NavLink to="/products" onClick={close} className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Products</NavLink>
-            <NavLink to="/learn" onClick={close} className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Learn</NavLink>
-            <NavLink to="/ab-test-lab" onClick={close} className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>A/B Lab</NavLink>
-            <NavLink to="/donate" onClick={close} className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Donate</NavLink>
+            {navigation.map(item => (
+              <NavLink key={item.url} to={item.url} onClick={close} className={({isActive})=>`hover:text-brand-700 dark:hover:text-brand-300 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>{item.title}</NavLink>
+            ))}
           </nav>
         </div>
         {/* Desktop actions */}
@@ -80,11 +80,9 @@ export default function Header() {
         <div>
           <div className={`md:hidden absolute inset-x-0 top-16 z-40 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow transform transition-all duration-300 ease-out motion-reduce:transition-none ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`}>
             <nav id="mobile-menu" className="px-4 py-3 space-y-2">
-              <NavLink to="/" onClick={close} className={({isActive})=>`block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Home</NavLink>
-              <NavLink to="/products" onClick={close} className={({isActive})=>`block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Products</NavLink>
-              <NavLink to="/learn" onClick={close} className={({isActive})=>`block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Learn</NavLink>
-              <NavLink to="/ab-test-lab" onClick={close} className={({isActive})=>`block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>A/B Lab</NavLink>
-              <NavLink to="/donate" onClick={close} className={({isActive})=>`block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>Donate</NavLink>
+              {navigation.map(item => (
+                <NavLink key={item.url} to={item.url} onClick={close} className={({isActive})=>`block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 ${isActive?'text-brand-700 dark:text-brand-300':''}`}>{item.title}</NavLink>
+              ))}
               <Link to="/cart" onClick={close} className="block px-2 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700">🛒 Cart ({count})</Link>
             </nav>
           </div>

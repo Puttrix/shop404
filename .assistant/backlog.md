@@ -55,7 +55,7 @@ Product backlog for the Umbraco integration initiative.
       - Block rendering keeps existing design system styling
 
 ## P-106: Global Site Settings from CMS
-- [ ] Drive header/footer/default SEO from Umbraco Site Settings singleton
+- [x] Drive header/footer/default SEO from Umbraco Site Settings singleton
       tags: frontend, seo, cms  priority: medium  est: 1d
       deps: P-103, P-102
       accepts:

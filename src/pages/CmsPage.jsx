@@ -4,11 +4,13 @@ import { getPage } from '../services/cmsService.js';
 import { setTitle } from '../utils/seo.js';
 import { trackPage } from '../utils/analytics.js';
 import BlockRenderer from '../components/cms/BlockRenderer.jsx';
+import { useCmsSettings } from '../state/cmsSettingsContext.jsx';
 
 // Renders a CMS-owned page fetched from the adapter API.
 // Reached only after all reserved code-owned routes have been tried first
 // (React Router matches explicit routes before this catch-all).
 export default function CmsPage() {
+  const { settings } = useCmsSettings();
   const { pathname } = useLocation();
   // undefined = still loading, null = not found / CMS unavailable
   const [page, setPage] = useState(undefined);
@@ -21,7 +23,7 @@ export default function CmsPage() {
   useEffect(() => {
     if (!page) return;
     const title = page.properties?.seoTitle || page.properties?.pageTitle || page.name;
-    setTitle(title);
+    setTitle(title, { fallback: settings?.defaultSeoTitle });
     trackPage(page.properties?.pageTitle || page.name, {
       page_title: title,
       cms_content_type: page.contentType,

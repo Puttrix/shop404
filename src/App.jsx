@@ -16,9 +16,11 @@ import ABTestLab from './pages/ABTestLab.jsx';
 import CmsPage from './pages/CmsPage.jsx';
 import ConsentBanner from './components/ConsentBanner.jsx';
 import { CartProvider } from './state/cartState.jsx';
+import { CmsSettingsProvider } from './state/cmsSettingsContext.jsx';
 
 export default function App() {
   return (
+    <CmsSettingsProvider>
     <CartProvider>
       <div className="min-h-full flex flex-col">
         <Header />
@@ -47,5 +49,6 @@ export default function App() {
         <Footer />
       </div>
     </CartProvider>
+    </CmsSettingsProvider>
   );
 }
