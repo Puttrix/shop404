@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { RESERVED_ROUTES, RESERVED_PREFIXES } from './reservedRoutes.js';
+import { RESERVED_ROUTES, RESERVED_PREFIXES, CMS_PHASE_1_ROUTES } from './reservedRoutes.js';
 
 // These tests act as a collision guard between the CMS catch-all route and
 // code-owned routes. If a reserved route is accidentally removed from the set,
 // or if a CMS phase-1 route collides with a reserved one, these tests fail.
+// See docs/CMS_CONTENT_SCOPE.md for the full ownership boundary.
 
 const EXPECTED_EXACT = [
   '/',
@@ -23,9 +24,6 @@ const EXPECTED_PREFIXES = [
   '/api/',
 ];
 
-// CMS phase-1 routes that must NOT appear in the reserved set.
-const CMS_PHASE_1_ROUTES = ['/about', '/faq', '/terms', '/privacy', '/blog'];
-
 describe('RESERVED_ROUTES', () => {
   it.each(EXPECTED_EXACT)('contains code-owned route %s', route => {
     expect(RESERVED_ROUTES.has(route)).toBe(true);
@@ -38,6 +36,19 @@ describe('RESERVED_PREFIXES', () => {
   });
 });
 
+describe('CMS_PHASE_1_ROUTES', () => {
+  it('exports a non-empty array', () => {
+    expect(Array.isArray(CMS_PHASE_1_ROUTES)).toBe(true);
+    expect(CMS_PHASE_1_ROUTES.length).toBeGreaterThan(0);
+  });
+
+  it('includes all expected phase-1 routes', () => {
+    for (const route of ['/about', '/faq', '/terms', '/privacy', '/blog']) {
+      expect(CMS_PHASE_1_ROUTES).toContain(route);
+    }
+  });
+});
+
 describe('collision guard — CMS phase-1 routes must not be reserved', () => {
   it.each(CMS_PHASE_1_ROUTES)('%s is not in RESERVED_ROUTES', route => {
     expect(RESERVED_ROUTES.has(route)).toBe(false);
@@ -46,5 +57,12 @@ describe('collision guard — CMS phase-1 routes must not be reserved', () => {
   it.each(CMS_PHASE_1_ROUTES)('%s does not start with a reserved prefix', route => {
     const collides = RESERVED_PREFIXES.some(p => route.startsWith(p));
     expect(collides).toBe(false);
+  });
+});
+
+describe('set disjointness — no route appears in both sets', () => {
+  it('RESERVED_ROUTES and CMS_PHASE_1_ROUTES are disjoint', () => {
+    const overlap = CMS_PHASE_1_ROUTES.filter(r => RESERVED_ROUTES.has(r));
+    expect(overlap).toEqual([]);
   });
 });

@@ -7,6 +7,8 @@
 //   1. Reserved exact/prefix routes (below) → code-owned components
 //   2. CmsPage catch-all (path="*")         → Umbraco content lookup
 //   3. 404 rendered by CmsPage              → when CMS returns null
+//
+// See docs/CMS_CONTENT_SCOPE.md for the full phase-1 ownership boundary.
 
 export const RESERVED_ROUTES = new Set([
   '/',
@@ -29,4 +31,15 @@ export const RESERVED_PREFIXES = [
   '/donate/',
   '/learn/',
   '/api/',
+];
+
+// Phase-1 CMS-owned routes. These are served by Umbraco via the CmsPage catch-all.
+// They must never appear in RESERVED_ROUTES or RESERVED_PREFIXES.
+// See docs/CMS_CONTENT_SCOPE.md for the seeding strategy and ownership rules.
+export const CMS_PHASE_1_ROUTES = [
+  '/about',
+  '/faq',
+  '/terms',
+  '/privacy',
+  '/blog',
 ];

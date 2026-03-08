@@ -140,7 +140,7 @@ Product backlog for the Umbraco integration initiative.
       - CI and deployment docs reflect secret boundaries
 
 ## P-115: Phase-1 Content Scope and Seeding Workflow
-- [ ] Implement phase-1 page ownership boundaries and seeding strategy
+- [x] Implement phase-1 page ownership boundaries and seeding strategy
       tags: content, migration, governance  priority: high  est: 1d
       deps: P-102, P-109
       accepts:
