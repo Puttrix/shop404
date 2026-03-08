@@ -6,7 +6,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    host: true
+    host: true,
+    proxy: {
+      // Forward CMS adapter requests to the local Umbraco instance during development.
+      // Override target with CMS_API_URL env var when the CMS runs on a non-default port.
+      '/api/content': {
+        target: process.env.CMS_API_URL || 'http://localhost:13802',
+        changeOrigin: true,
+      },
+    },
   },
   build: {
     outDir: 'dist'

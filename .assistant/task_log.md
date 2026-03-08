@@ -172,3 +172,45 @@
   args: npm run build
   result: succeeded — production build passes; existing warning in src/pages/learn/FAQ.jsx (duplicate onClick) remains unrelated
   artifacts: dist/*
+
+## 2026-03-07
+- tool: write (local)
+  args: create src/services/cmsService.js — React CMS service adapter (P-103)
+  result: succeeded
+  artifacts: src/services/cmsService.js
+- tool: write (local)
+  args: create umbraco-cms/Controllers/ContentApiController.cs — Umbraco adapter controller (P-103)
+  result: succeeded
+  artifacts: umbraco-cms/Controllers/ContentApiController.cs
+- tool: edit (local)
+  args: close P-102 in backlog (bootstrapper satisfies all acceptance criteria)
+  result: succeeded
+  artifacts: .assistant/backlog.md
+- tool: edit (local)
+  args: refresh status.md for P-102 close + P-103 start; update artifacts/changelog
+  result: succeeded
+  artifacts: .assistant/status.md
+- tool: edit (local)
+  args: add Vite dev proxy for /api/content/* → http://localhost:13802 (CMS dev port)
+  result: succeeded
+  artifacts: vite.config.js
+- tool: edit (local)
+  args: add vitest devDependency + npm test / test:watch scripts to package.json
+  result: succeeded
+  artifacts: package.json
+- tool: exec_command (shell)
+  args: npm install --save-dev vitest
+  result: succeeded — vitest 2.1.9 installed
+  artifacts: package-lock.json
+- tool: write (local)
+  args: create src/services/cmsService.test.js — 20 tests covering DTO shape, error fallback, empty-content fallback, CMS_API_URL config, URL encoding
+  result: succeeded
+  artifacts: src/services/cmsService.test.js
+- tool: exec_command (shell)
+  args: npx vitest run src/services/cmsService.test.js
+  result: succeeded — 20/20 tests passing
+  artifacts: none
+- tool: edit (local)
+  args: close P-103 in backlog; update status.md for P-103 completion
+  result: succeeded
+  artifacts: .assistant/backlog.md, .assistant/status.md

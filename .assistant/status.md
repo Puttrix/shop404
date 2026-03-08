@@ -1,6 +1,6 @@
 # Status
 
-**Last Updated**: 2026-02-20
+**Last Updated**: 2026-03-07
 
 ---
 
@@ -14,7 +14,7 @@ Primary focus is the Umbraco integration stream: stand up CMS foundations, defin
 
 See `.assistant/plan.md`.
 
-- Now: M-UM-1 Foundations + M-UM-2 Frontend Adapter Baseline
+- Now: M-UM-3 CMS-Rendered Pages (P-101/102/103 closed, next: P-104 route integration)
 - Next: M-UM-3 CMS-Rendered Pages + M-UM-4 Deployment Pipeline
 - Later: M-UM-5 Quality/Parity + M-UM-6 Release Readiness
 
@@ -37,7 +37,8 @@ See `.assistant/plan.md`.
 - Planning: `.assistant/backlog.md`, `.assistant/plan.md`, `.assistant/history.md`, `.assistant/status.md`
 - Canvas: `.assistant/canvas/vision.md`, `.assistant/canvas/design.md`, `.assistant/canvas/questions.md`
 - ADRs: `.assistant/adr/001-gtm-first-architecture.md` .. `.assistant/adr/013-analytics-parity-guardrails-for-cms-migration.md`
-- CMS code: `umbraco-cms/` (`Shop404.Cms.csproj`, Program/appsettings, Umbraco template scaffold)
+- CMS code: `umbraco-cms/` (`Shop404.Cms.csproj`, Program/appsettings, Umbraco template scaffold, `Controllers/ContentApiController.cs`)
+- Frontend CMS service: `src/services/cmsService.js`, `src/services/cmsService.test.js`
 - Product docs and repo context: `README.md`, `docs/ROADMAP.md`, `docs/DESIGN_NOTES.md`
 
 ---
@@ -56,6 +57,8 @@ See `.assistant/plan.md`.
 - 2026-02-20: Added `docker-compose.cms.yml` for local SQL Server and updated Umbraco quick-start commands in README.
 - 2026-02-20: Completed P-101 (Umbraco scaffold + local SQL container workflow verified).
 - 2026-02-20: Started P-102 by adding an idempotent Umbraco startup bootstrapper for BasePage/page types/site settings/block types (`umbraco-cms/Bootstrap/ContentTypeBootstrapper.cs`).
+- 2026-03-07: Closed P-102 (bootstrapper satisfies all acceptance criteria). Started P-103: added `src/services/cmsService.js` (React adapter service for /api/content/* endpoints) and `umbraco-cms/Controllers/ContentApiController.cs` (Umbraco adapter controller mapping published content to stable DTOs).
+- 2026-03-08: Completed P-103: added Vite dev proxy for `/api/content/*` → Umbraco (port 13802), added Vitest + `npm test` script, wrote 20 passing tests covering DTO mapping and all fallback/error cases (`src/services/cmsService.test.js`).
 
 ---
 

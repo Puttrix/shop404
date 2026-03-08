@@ -15,8 +15,8 @@ Product backlog for the Umbraco integration initiative.
       - Local run succeeds against SQL Server connection string
       - README section documents local startup and prerequisites
 
-## P-102: Define Content Model (BasePage + Page Types) (In Progress)
-- [ ] Implement TRD document types and compositions in Umbraco
+## P-102: Define Content Model (BasePage + Page Types)
+- [x] Implement TRD document types and compositions in Umbraco
       tags: cms, content-model, umbraco  priority: high  est: 1.5d
       deps: P-101
       accepts:
@@ -26,7 +26,7 @@ Product backlog for the Umbraco integration initiative.
       - Site settings singleton type exists
 
 ## P-103: Frontend CMS Service Layer
-- [ ] Add `cmsService` abstraction and DTO mapping in React app
+- [x] Add `cmsService` abstraction and DTO mapping in React app
       tags: frontend, integration, api  priority: high  est: 1d
       deps: P-101
       accepts:
