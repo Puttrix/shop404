@@ -46,7 +46,7 @@ Product backlog for the Umbraco integration initiative.
       - Collision behavior is covered by tests/documentation
 
 ## P-105: Block Renderer Registry
-- [ ] Implement block alias -> React component registry
+- [x] Implement block alias -> React component registry
       tags: frontend, components, cms-blocks  priority: high  est: 1d
       deps: P-103, P-102
       accepts:

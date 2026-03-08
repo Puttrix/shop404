@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { getPage } from '../services/cmsService.js';
 import { setTitle } from '../utils/seo.js';
 import { trackPage } from '../utils/analytics.js';
+import BlockRenderer from '../components/cms/BlockRenderer.jsx';
 
 // Renders a CMS-owned page fetched from the adapter API.
 // Reached only after all reserved code-owned routes have been tried first
@@ -66,6 +67,9 @@ export default function CmsPage() {
       {!properties.bodyContent && properties.introText && (
         <p className="text-gray-700 dark:text-gray-300">{properties.introText}</p>
       )}
+
+      <BlockRenderer blocks={properties.contentBlocks} />
+      <BlockRenderer blocks={properties.featuredProductsSection} />
     </div>
   );
 }

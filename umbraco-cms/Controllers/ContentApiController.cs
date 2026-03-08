@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Web.Common.Controllers;
@@ -137,7 +138,48 @@ public class ContentApiController : UmbracoApiController
             introText = page.Value<string>("introText", _fallback) ?? string.Empty,
             heroHeading = page.Value<string>("heroHeading", _fallback) ?? string.Empty,
             heroText = page.Value<string>("heroText", _fallback) ?? string.Empty,
+            contentBlocks = MapBlockList(page, "contentBlocks"),
+            featuredProductsSection = MapBlockList(page, "featuredProductsSection"),
         },
+    };
+
+    private IEnumerable<object> MapBlockList(IPublishedContent page, string propertyAlias)
+    {
+        var blockList = page.Value<BlockListModel>(propertyAlias, _fallback);
+        if (blockList is null) return Enumerable.Empty<object>();
+
+        return blockList.Items.Select(item => (object)new
+        {
+            alias = item.Content.ContentType.Alias,
+            data = MapBlockData(item.Content),
+        });
+    }
+
+    private static object MapBlockData(IPublishedElement el) => el.ContentType.Alias switch
+    {
+        "heroBlock" => new
+        {
+            heading = el.Value<string>("heading") ?? string.Empty,
+            text = el.Value<string>("text") ?? string.Empty,
+            backgroundImage = el.Value<IPublishedContent>("backgroundImage")?.Url() ?? string.Empty,
+            ctaText = el.Value<string>("ctaText") ?? string.Empty,
+            ctaLink = el.Value<IPublishedContent>("ctaLink")?.Url() ?? string.Empty,
+        },
+        "ctaBlock" => new
+        {
+            title = el.Value<string>("title") ?? string.Empty,
+            description = el.Value<string>("description") ?? string.Empty,
+            buttonText = el.Value<string>("buttonText") ?? string.Empty,
+            buttonUrl = el.Value<string>("buttonUrl") ?? string.Empty,
+        },
+        "productTeaserBlock" => new
+        {
+            productName = el.Value<string>("productName") ?? string.Empty,
+            image = el.Value<IPublishedContent>("image")?.Url() ?? string.Empty,
+            price = el.Value<string>("price") ?? string.Empty,
+            link = el.Value<IPublishedContent>("link")?.Url() ?? string.Empty,
+        },
+        _ => (object)new { },
     };
 
     private static object MapBlogSummary(IPublishedContent post, IPublishedValueFallback fb) => new

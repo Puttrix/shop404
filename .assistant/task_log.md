@@ -242,3 +242,47 @@
   args: close P-104 in backlog; update status.md artifacts/changelog/risks
   result: succeeded
   artifacts: .assistant/backlog.md, .assistant/status.md
+- tool: edit (local)
+  args: update ContentApiController — add MapBlockList/MapBlockData, BlockListModel import, contentBlocks/featuredProductsSection in MapPage (P-105)
+  result: succeeded
+  artifacts: umbraco-cms/Controllers/ContentApiController.cs
+- tool: write (local)
+  args: create src/components/cms/blocks/HeroBlock.jsx
+  result: succeeded
+  artifacts: src/components/cms/blocks/HeroBlock.jsx
+- tool: write (local)
+  args: create src/components/cms/blocks/CtaBlock.jsx
+  result: succeeded
+  artifacts: src/components/cms/blocks/CtaBlock.jsx
+- tool: write (local)
+  args: create src/components/cms/blocks/ProductTeaserBlock.jsx
+  result: succeeded
+  artifacts: src/components/cms/blocks/ProductTeaserBlock.jsx
+- tool: write (local)
+  args: create src/components/cms/BlockRegistry.js — alias → component map
+  result: succeeded
+  artifacts: src/components/cms/BlockRegistry.js
+- tool: write (local)
+  args: create src/components/cms/BlockRenderer.jsx — renders blocks, console.warn for unknown aliases
+  result: succeeded
+  artifacts: src/components/cms/BlockRenderer.jsx
+- tool: edit (local)
+  args: update CmsPage.jsx — import BlockRenderer, render contentBlocks + featuredProductsSection
+  result: succeeded
+  artifacts: src/pages/CmsPage.jsx
+- tool: write (local)
+  args: create src/components/cms/BlockRegistry.test.js — 9 tests: registry lookups + completeness
+  result: succeeded
+  artifacts: src/components/cms/BlockRegistry.test.js
+- tool: exec_command (shell)
+  args: npx vitest run
+  result: succeeded — 51/51 tests passing (3 test files)
+  artifacts: none
+- tool: exec_command (shell)
+  args: npm run build
+  result: succeeded — build clean
+  artifacts: dist/*
+- tool: edit (local)
+  args: close P-105 in backlog; update status.md artifacts/changelog
+  result: succeeded
+  artifacts: .assistant/backlog.md, .assistant/status.md
