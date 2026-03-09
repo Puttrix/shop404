@@ -109,7 +109,7 @@ Product backlog for the Umbraco integration initiative.
       - Parity checks are recorded in status/history
 
 ## P-112: Production Readiness and Rollback
-- [ ] Define readiness checklist and rollback strategy for CMS rollout
+- [x] Define readiness checklist and rollback strategy for CMS rollout
       tags: release, risk, operations  priority: medium  est: 0.5d
       deps: P-106, P-108, P-111
       accepts:
@@ -160,7 +160,7 @@ Product backlog for the Umbraco integration initiative.
       - Audit and rollback ownership is documented
 
 ## P-117: CMS Contract + E2E Validation Pipeline
-- [ ] Implement combined contract and route-level E2E strategy
+- [x] Implement combined contract and route-level E2E strategy
       tags: testing, ci, quality  priority: high  est: 1.5d
       deps: P-103, P-104, P-110
       accepts:

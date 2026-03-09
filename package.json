@@ -10,6 +10,8 @@
     "start": "node server.js",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:cms-smoke": "vitest run --config vitest.e2e.config.js src/services/cmsSmokeE2e.test.js",
+    "test:cms-e2e": "vitest run --config vitest.e2e.config.js src/services/cmsExtendedE2e.test.js",
     "test:analytics": "node scripts/test-analytics.mjs",
     "test:matomo": "node scripts/test-matomo.mjs",
     "images:webp": "node scripts/make-webp.mjs"

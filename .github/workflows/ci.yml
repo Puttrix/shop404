@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+
+  # ── Unit + contract tests ──────────────────────────────────────────────────
+  # Runs on every PR and every push to main.
+  # Covers: cmsContract, cmsService (cache/fallback), reservedRoutes (collision
+  # guard), analytics parity, and BlockRegistry. See docs/TEST_RUNBOOK.md.
+  test:
+    name: Unit + contract tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+  # ── CMS API smoke tests ────────────────────────────────────────────────────
+  # HTTP-level smoke tests against a live Umbraco instance.
+  # Requires the CMS_API_URL Actions variable to be set in the repository
+  # (Settings → Secrets and variables → Variables → New repository variable).
+  # If the variable is absent the job is skipped — no failure.
+  cms-smoke:
+    name: CMS smoke tests
+    runs-on: ubuntu-latest
+    if: vars.CMS_API_URL != ''
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run CMS smoke tests
+        run: npm run test:cms-smoke
+        env:
+          CMS_API_URL: ${{ vars.CMS_API_URL }}

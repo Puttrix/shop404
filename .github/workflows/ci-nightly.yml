@@ -1,0 +1,41 @@
+name: Nightly E2E
+
+on:
+  schedule:
+    # 01:00 UTC every night
+    - cron: '0 1 * * *'
+  # Run on release tags and allow manual trigger
+  push:
+    tags: ['v*']
+  workflow_dispatch: {}
+
+jobs:
+
+  # ── Full test suite + extended CMS E2E ───────────────────────────────────
+  # Runs all unit/contract tests, then extended E2E:
+  #   - All smoke checks (navigation, settings, phase-1 pages, blog, 404)
+  #   - Reserved-route collision guard (transactional routes absent from CMS)
+  #   - Parameterised page property validation
+  # Requires CMS_API_URL Actions variable (Settings → Variables).
+  # If absent, extended E2E tests are skipped via describe.skipIf — no failure.
+  # See docs/TEST_RUNBOOK.md for scope and gating rules.
+  e2e:
+    name: Full test suite + extended CMS E2E
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Unit + contract tests
+        run: npm test
+
+      - name: Extended CMS E2E
+        run: npm run test:cms-e2e
+        env:
+          CMS_API_URL: ${{ vars.CMS_API_URL }}
