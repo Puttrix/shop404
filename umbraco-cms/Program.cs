@@ -6,6 +6,14 @@ builder.CreateUmbracoBuilder()
     .AddComposers()
     .Build();
 
+// OpenIddict (Umbraco 17 backoffice auth) rejects plain HTTP with error ID2083.
+// Disable the transport-security requirement in local development only.
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.PostConfigure<OpenIddict.Server.AspNetCore.OpenIddictServerAspNetCoreOptions>(
+        options => options.DisableTransportSecurityRequirement = true);
+}
+
 // CORS — allow the React SPA origin(s) to call /api/content/* endpoints.
 // Origins are read from Shop404:CorsOrigins (comma-separated).
 // Set via env var Shop404__CorsOrigins or appsettings.

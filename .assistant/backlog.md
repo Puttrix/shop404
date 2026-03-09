@@ -150,7 +150,7 @@ Product backlog for the Umbraco integration initiative.
       - Production content migration process is documented as manual backoffice workflow
 
 ## P-116: Editorial Roles and Approval Workflow
-- [ ] Configure and document role-based publishing controls
+- [x] Configure and document role-based publishing controls
       tags: governance, editorial, compliance  priority: high  est: 1d
       deps: P-109
       accepts:
