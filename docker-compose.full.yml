@@ -58,6 +58,8 @@ services:
       - shop404_cms_media:/app/wwwroot/media
       - shop404_cms_logs:/app/umbraco/Logs
       - shop404_cms_data:/app/umbraco/Data
+      # Persist Data Protection keys so OpenIddict auth codes remain valid across container rebuilds.
+      - shop404_cms_dataprotection:/root/.aspnet/DataProtection-Keys
     networks:
       - shop404-net
     depends_on:
@@ -95,6 +97,7 @@ volumes:
   shop404_cms_media:
   shop404_cms_logs:
   shop404_cms_data:
+  shop404_cms_dataprotection:
 
 networks:
   shop404-net:

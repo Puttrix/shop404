@@ -58,16 +58,19 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
             name: "Base Page",
             description: "Shared page fields used by marketing pages.",
             isElement: true,
-            allowedAsRoot: false);
+            allowedAsRoot: false,
+            out bool isNew);
 
-        EnsureProperty(basePage, "Content", "pageTitle", "Page Title", "Umbraco.TextBox");
-        EnsureProperty(basePage, "Content", "slug", "Slug", "Umbraco.TextBox");
-        EnsureProperty(basePage, "SEO", "seoTitle", "SEO Title", "Umbraco.TextBox");
-        EnsureProperty(basePage, "SEO", "seoDescription", "SEO Description", "Umbraco.TextArea");
-        EnsureProperty(basePage, "SEO", "hideFromNavigation", "Hide From Navigation", "Umbraco.TrueFalse");
-        EnsureProperty(basePage, "SEO", "openGraphImage", "OpenGraph Image", "Umbraco.MediaPicker3");
+        bool changed = false;
+        changed |= EnsureProperty(basePage, "Content", "pageTitle", "Page Title", "Umbraco.TextBox");
+        changed |= EnsureProperty(basePage, "Content", "slug", "Slug", "Umbraco.TextBox");
+        changed |= EnsureProperty(basePage, "SEO", "seoTitle", "SEO Title", "Umbraco.TextBox");
+        changed |= EnsureProperty(basePage, "SEO", "seoDescription", "SEO Description", "Umbraco.TextArea");
+        changed |= EnsureProperty(basePage, "SEO", "hideFromNavigation", "Hide From Navigation", "Umbraco.TrueFalse");
+        changed |= EnsureProperty(basePage, "SEO", "openGraphImage", "OpenGraph Image", "Umbraco.MediaPicker3");
 
-        _contentTypeService.Save(basePage);
+        if (isNew || changed)
+            _contentTypeService.Save(basePage);
     }
 
     private void EnsurePageTypes()
@@ -84,50 +87,58 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
             name: "Home Page",
             description: "Landing page content.",
             isElement: false,
-            allowedAsRoot: true);
-        EnsureComposition(homePage, basePage);
-        EnsureProperty(homePage, "Content", "heroHeading", "Hero Heading", "Umbraco.TextBox");
-        EnsureProperty(homePage, "Content", "heroText", "Hero Text", "Umbraco.TextArea");
-        EnsureProperty(homePage, "Content", "heroImage", "Hero Image", "Umbraco.MediaPicker3");
-        EnsureProperty(homePage, "Content", "featuredProductsSection", "Featured Products Section", "Umbraco.BlockList");
-        EnsureProperty(homePage, "Content", "featuredArticles", "Featured Articles", "Umbraco.ContentPicker");
-        _contentTypeService.Save(homePage);
+            allowedAsRoot: true,
+            out bool homePageIsNew);
+        bool homePageChanged = EnsureComposition(homePage, basePage);
+        homePageChanged |= EnsureProperty(homePage, "Content", "heroHeading", "Hero Heading", "Umbraco.TextBox");
+        homePageChanged |= EnsureProperty(homePage, "Content", "heroText", "Hero Text", "Umbraco.TextArea");
+        homePageChanged |= EnsureProperty(homePage, "Content", "heroImage", "Hero Image", "Umbraco.MediaPicker3");
+        homePageChanged |= EnsureProperty(homePage, "Content", "featuredProductsSection", "Featured Products Section", "Umbraco.BlockList");
+        homePageChanged |= EnsureProperty(homePage, "Content", "featuredArticles", "Featured Articles", "Umbraco.ContentPicker");
+        if (homePageIsNew || homePageChanged)
+            _contentTypeService.Save(homePage);
 
         var standardPage = EnsureContentType(
             alias: "standardPage",
             name: "Standard Page",
             description: "Standard marketing/informational page.",
             isElement: false,
-            allowedAsRoot: false);
-        EnsureComposition(standardPage, basePage);
-        EnsureProperty(standardPage, "Content", "bodyContent", "Body Content", "Umbraco.RichText");
-        EnsureProperty(standardPage, "Content", "contentBlocks", "Content Blocks", "Umbraco.BlockList");
-        _contentTypeService.Save(standardPage);
+            allowedAsRoot: false,
+            out bool standardPageIsNew);
+        bool standardPageChanged = EnsureComposition(standardPage, basePage);
+        standardPageChanged |= EnsureProperty(standardPage, "Content", "bodyContent", "Body Content", "Umbraco.RichText");
+        standardPageChanged |= EnsureProperty(standardPage, "Content", "contentBlocks", "Content Blocks", "Umbraco.BlockList");
+        if (standardPageIsNew || standardPageChanged)
+            _contentTypeService.Save(standardPage);
 
         var blogOverview = EnsureContentType(
             alias: "blogOverview",
             name: "Blog / Knowledge Base Overview",
             description: "Root node for blog and knowledge base entries.",
             isElement: false,
-            allowedAsRoot: false);
-        EnsureComposition(blogOverview, basePage);
-        EnsureProperty(blogOverview, "Content", "introText", "Intro Text", "Umbraco.TextArea");
-        _contentTypeService.Save(blogOverview);
+            allowedAsRoot: false,
+            out bool blogOverviewIsNew);
+        bool blogOverviewChanged = EnsureComposition(blogOverview, basePage);
+        blogOverviewChanged |= EnsureProperty(blogOverview, "Content", "introText", "Intro Text", "Umbraco.TextArea");
+        if (blogOverviewIsNew || blogOverviewChanged)
+            _contentTypeService.Save(blogOverview);
 
         var blogPost = EnsureContentType(
             alias: "blogPost",
             name: "Blog Post",
             description: "Blog article/document page.",
             isElement: false,
-            allowedAsRoot: false);
-        EnsureComposition(blogPost, basePage);
-        EnsureProperty(blogPost, "Content", "publishDate", "Publish Date", "Umbraco.DateTime");
-        EnsureProperty(blogPost, "Content", "author", "Author", "Umbraco.TextBox");
-        EnsureProperty(blogPost, "Content", "summary", "Summary", "Umbraco.TextArea");
-        EnsureProperty(blogPost, "Content", "body", "Body", "Umbraco.RichText");
-        EnsureProperty(blogPost, "Content", "tags", "Tags", "Umbraco.Tags");
-        EnsureProperty(blogPost, "Content", "featuredImage", "Featured Image", "Umbraco.MediaPicker3");
-        _contentTypeService.Save(blogPost);
+            allowedAsRoot: false,
+            out bool blogPostIsNew);
+        bool blogPostChanged = EnsureComposition(blogPost, basePage);
+        blogPostChanged |= EnsureProperty(blogPost, "Content", "publishDate", "Publish Date", "Umbraco.DateTime");
+        blogPostChanged |= EnsureProperty(blogPost, "Content", "author", "Author", "Umbraco.TextBox");
+        blogPostChanged |= EnsureProperty(blogPost, "Content", "summary", "Summary", "Umbraco.TextArea");
+        blogPostChanged |= EnsureProperty(blogPost, "Content", "body", "Body", "Umbraco.RichText");
+        blogPostChanged |= EnsureProperty(blogPost, "Content", "tags", "Tags", "Umbraco.Tags");
+        blogPostChanged |= EnsureProperty(blogPost, "Content", "featuredImage", "Featured Image", "Umbraco.MediaPicker3");
+        if (blogPostIsNew || blogPostChanged)
+            _contentTypeService.Save(blogPost);
     }
 
     private void EnsureSiteSettings()
@@ -137,15 +148,18 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
             name: "Site Settings",
             description: "Singleton global settings for navigation, footer, and default SEO.",
             isElement: false,
-            allowedAsRoot: true);
+            allowedAsRoot: true,
+            out bool isNew);
 
-        EnsureProperty(siteSettings, "Global", "headerNavigation", "Header Navigation", "Umbraco.MultiNodeTreePicker");
-        EnsureProperty(siteSettings, "Global", "footerLinks", "Footer Links", "Umbraco.MultiNodeTreePicker");
-        EnsureProperty(siteSettings, "Global", "footerText", "Footer Text", "Umbraco.TextArea");
-        EnsureProperty(siteSettings, "SEO", "defaultSeoTitle", "Default SEO Title", "Umbraco.TextBox");
-        EnsureProperty(siteSettings, "SEO", "defaultSeoDescription", "Default SEO Description", "Umbraco.TextArea");
+        bool changed = false;
+        changed |= EnsureProperty(siteSettings, "Global", "headerNavigation", "Header Navigation", "Umbraco.MultiNodeTreePicker");
+        changed |= EnsureProperty(siteSettings, "Global", "footerLinks", "Footer Links", "Umbraco.MultiNodeTreePicker");
+        changed |= EnsureProperty(siteSettings, "Global", "footerText", "Footer Text", "Umbraco.TextArea");
+        changed |= EnsureProperty(siteSettings, "SEO", "defaultSeoTitle", "Default SEO Title", "Umbraco.TextBox");
+        changed |= EnsureProperty(siteSettings, "SEO", "defaultSeoDescription", "Default SEO Description", "Umbraco.TextArea");
 
-        _contentTypeService.Save(siteSettings);
+        if (isNew || changed)
+            _contentTypeService.Save(siteSettings);
     }
 
     private void EnsureBlockTypes()
@@ -155,40 +169,49 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
             name: "Hero Block",
             description: "Reusable hero section block.",
             isElement: true,
-            allowedAsRoot: false);
-        EnsureProperty(heroBlock, "Content", "heading", "Heading", "Umbraco.TextBox");
-        EnsureProperty(heroBlock, "Content", "text", "Text", "Umbraco.TextArea");
-        EnsureProperty(heroBlock, "Content", "backgroundImage", "Background Image", "Umbraco.MediaPicker3");
-        EnsureProperty(heroBlock, "Content", "ctaText", "CTA Text", "Umbraco.TextBox");
-        EnsureProperty(heroBlock, "Content", "ctaLink", "CTA Link", "Umbraco.ContentPicker");
-        _contentTypeService.Save(heroBlock);
+            allowedAsRoot: false,
+            out bool heroBlockIsNew);
+        bool heroBlockChanged = false;
+        heroBlockChanged |= EnsureProperty(heroBlock, "Content", "heading", "Heading", "Umbraco.TextBox");
+        heroBlockChanged |= EnsureProperty(heroBlock, "Content", "text", "Text", "Umbraco.TextArea");
+        heroBlockChanged |= EnsureProperty(heroBlock, "Content", "backgroundImage", "Background Image", "Umbraco.MediaPicker3");
+        heroBlockChanged |= EnsureProperty(heroBlock, "Content", "ctaText", "CTA Text", "Umbraco.TextBox");
+        heroBlockChanged |= EnsureProperty(heroBlock, "Content", "ctaLink", "CTA Link", "Umbraco.ContentPicker");
+        if (heroBlockIsNew || heroBlockChanged)
+            _contentTypeService.Save(heroBlock);
 
         var ctaBlock = EnsureContentType(
             alias: "ctaBlock",
             name: "CTA Block",
             description: "Reusable call-to-action block.",
             isElement: true,
-            allowedAsRoot: false);
-        EnsureProperty(ctaBlock, "Content", "title", "Title", "Umbraco.TextBox");
-        EnsureProperty(ctaBlock, "Content", "description", "Description", "Umbraco.TextArea");
-        EnsureProperty(ctaBlock, "Content", "buttonText", "Button Text", "Umbraco.TextBox");
-        EnsureProperty(ctaBlock, "Content", "buttonUrl", "Button URL", "Umbraco.TextBox");
-        _contentTypeService.Save(ctaBlock);
+            allowedAsRoot: false,
+            out bool ctaBlockIsNew);
+        bool ctaBlockChanged = false;
+        ctaBlockChanged |= EnsureProperty(ctaBlock, "Content", "title", "Title", "Umbraco.TextBox");
+        ctaBlockChanged |= EnsureProperty(ctaBlock, "Content", "description", "Description", "Umbraco.TextArea");
+        ctaBlockChanged |= EnsureProperty(ctaBlock, "Content", "buttonText", "Button Text", "Umbraco.TextBox");
+        ctaBlockChanged |= EnsureProperty(ctaBlock, "Content", "buttonUrl", "Button URL", "Umbraco.TextBox");
+        if (ctaBlockIsNew || ctaBlockChanged)
+            _contentTypeService.Save(ctaBlock);
 
         var productTeaserBlock = EnsureContentType(
             alias: "productTeaserBlock",
             name: "Product Teaser Block",
             description: "Reusable product teaser block.",
             isElement: true,
-            allowedAsRoot: false);
-        EnsureProperty(productTeaserBlock, "Content", "productName", "Product Name", "Umbraco.TextBox");
-        EnsureProperty(productTeaserBlock, "Content", "image", "Image", "Umbraco.MediaPicker3");
-        EnsureProperty(productTeaserBlock, "Content", "price", "Price", "Umbraco.TextBox");
-        EnsureProperty(productTeaserBlock, "Content", "link", "Link", "Umbraco.ContentPicker");
-        _contentTypeService.Save(productTeaserBlock);
+            allowedAsRoot: false,
+            out bool productTeaserBlockIsNew);
+        bool productTeaserBlockChanged = false;
+        productTeaserBlockChanged |= EnsureProperty(productTeaserBlock, "Content", "productName", "Product Name", "Umbraco.TextBox");
+        productTeaserBlockChanged |= EnsureProperty(productTeaserBlock, "Content", "image", "Image", "Umbraco.MediaPicker3");
+        productTeaserBlockChanged |= EnsureProperty(productTeaserBlock, "Content", "price", "Price", "Umbraco.TextBox");
+        productTeaserBlockChanged |= EnsureProperty(productTeaserBlock, "Content", "link", "Link", "Umbraco.ContentPicker");
+        if (productTeaserBlockIsNew || productTeaserBlockChanged)
+            _contentTypeService.Save(productTeaserBlock);
     }
 
-    private IContentType EnsureContentType(string alias, string name, string description, bool isElement, bool allowedAsRoot)
+    private IContentType EnsureContentType(string alias, string name, string description, bool isElement, bool allowedAsRoot, out bool isNew)
     {
         var existing = _contentTypeService.Get(alias);
         if (existing is not null)
@@ -197,9 +220,11 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
             existing.Description = description;
             existing.IsElement = isElement;
             existing.AllowedAsRoot = allowedAsRoot;
+            isNew = false;
             return existing;
         }
 
+        isNew = true;
         var contentType = new ContentType(_shortStringHelper, -1)
         {
             Alias = alias,
@@ -214,22 +239,19 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         return contentType;
     }
 
-    private void EnsureComposition(IContentType contentType, IContentType composition)
+    private bool EnsureComposition(IContentType contentType, IContentType composition)
     {
         if (contentType.ContentTypeCompositionExists(composition.Alias))
-        {
-            return;
-        }
+            return false;
 
         contentType.AddContentType(composition);
+        return true;
     }
 
-    private void EnsureProperty(IContentType contentType, string groupName, string alias, string name, string preferredEditorAlias)
+    private bool EnsureProperty(IContentType contentType, string groupName, string alias, string name, string preferredEditorAlias)
     {
         if (contentType.PropertyTypeExists(alias))
-        {
-            return;
-        }
+            return false;
 
         var dataType = ResolveDataType(preferredEditorAlias);
         if (dataType is null)
@@ -239,7 +261,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
                 preferredEditorAlias,
                 alias,
                 contentType.Alias);
-            return;
+            return false;
         }
 
         var groupAlias = _shortStringHelper.CleanStringForSafeAlias(groupName);
@@ -256,6 +278,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
 
         contentType.AddPropertyType(propertyType);
         contentType.MovePropertyType(alias, groupAlias);
+        return true;
     }
 
     private IDataType? ResolveDataType(string preferredEditorAlias)

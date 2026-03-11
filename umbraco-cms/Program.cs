@@ -7,11 +7,21 @@ builder.CreateUmbracoBuilder()
     .Build();
 
 // OpenIddict (Umbraco 17 backoffice auth) rejects plain HTTP with error ID2083.
-// Disable the transport-security requirement in local development only.
+// Also relax cookie Secure/SameSite policy — without this the browser silently
+// drops Secure cookies on HTTP and the login button appears to do nothing.
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.PostConfigure<OpenIddict.Server.AspNetCore.OpenIddictServerAspNetCoreOptions>(
         options => options.DisableTransportSecurityRequirement = true);
+
+    // ConfigureApplicationCookie only covers the default Identity scheme.
+    // PostConfigureAll covers every cookie auth scheme, including Umbraco's
+    // backoffice scheme — needed so the browser stores the session cookie on HTTP.
+    builder.Services.PostConfigureAll<Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationOptions>(options =>
+    {
+        options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.None;
+        options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+    });
 }
 
 // CORS — allow the React SPA origin(s) to call /api/content/* endpoints.
