@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.HttpOverrides;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.CreateUmbracoBuilder()
@@ -6,10 +8,26 @@ builder.CreateUmbracoBuilder()
     .AddComposers()
     .Build();
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto |
+        ForwardedHeaders.XForwardedHost;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 // OpenIddict (Umbraco 17 backoffice auth) rejects plain HTTP with error ID2083.
-// Also relax cookie Secure/SameSite policy — without this the browser silently
-// drops Secure cookies on HTTP and the login button appears to do nothing.
-if (builder.Environment.IsDevelopment())
+// For local HTTP-only setups, allow an explicit opt-in override:
+//   Shop404__AllowInsecureBackofficeAuth=true
+// Prefer HTTPS in all shared/staging/production environments.
+var allowInsecureBackofficeAuth =
+    builder.Environment.IsDevelopment() ||
+    builder.Configuration.GetValue<bool>("Shop404:AllowInsecureBackofficeAuth");
+
+// Also relax cookie Secure/SameSite policy when insecure auth override is enabled.
+if (allowInsecureBackofficeAuth)
 {
     builder.Services.PostConfigure<OpenIddict.Server.AspNetCore.OpenIddictServerAspNetCoreOptions>(
         options => options.DisableTransportSecurityRequirement = true);
@@ -41,6 +59,9 @@ builder.Services.AddCors(options =>
 WebApplication app = builder.Build();
 
 await app.BootUmbracoAsync();
+
+// Respect reverse-proxy TLS/host headers before auth and backoffice endpoints.
+app.UseForwardedHeaders();
 
 // CORS middleware must run before Umbraco's pipeline.
 app.UseCors("Spa");

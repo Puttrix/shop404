@@ -1,12 +1,12 @@
 # Status
 
-**Last Updated**: 2026-03-08
+**Last Updated**: 2026-03-11
 
 ---
 
 ## Focus
 
-Primary focus is the Umbraco integration stream: stand up CMS foundations, define content model, and prepare React adapter integration without breaking existing storefront, donation, analytics, and consent behavior.
+Primary focus is closing P-118 analytics parity snapshot guardrails while keeping the Umbraco adapter/release track stable.
 
 ---
 
@@ -14,20 +14,18 @@ Primary focus is the Umbraco integration stream: stand up CMS foundations, defin
 
 See `.assistant/plan.md`.
 
-- Now: M-UM-3 Content + Editorial (P-109/115/116)
-- Next: M-UM-5 Quality/Parity (P-110/117)
-- Later: M-UM-5 Quality/Parity + M-UM-6 Release Readiness
+- Now: M-UM-5 Quality/Parity final closeout (P-118 open)
+- Next: M-UM-6 release safety rehearsal (staging cutover drill + operational validation)
+- Later: Incremental CMS scope expansion and non-critical enhancements
 
 ---
 
 ## Risks
 
 - R-UM-1: Adapter contract versioning and DTO drift can cause frontend/backend mismatch if unmanaged. (Medium)
-- R-UM-2: Reserved-route collision handling implemented and tested (P-104). Monitor for new reserved routes being added without updating RESERVED_ROUTES. (Low)
-- R-UM-3: Secret wiring mistakes across environments can cause deployment failures or exposure risk. (Medium)
-- R-UM-4: CMS outage behavior may degrade UX if cache/fallback policy is only partially implemented. (Medium)
-- R-UM-5: Analytics/consent regressions can be introduced during page migration if rendering contracts diverge. (Medium)
-- R-UM-6: Workflow friction may delay publish cadence if editorial roles/process are not implemented early. (Medium)
+- R-UM-2: Secret wiring mistakes across environments can cause deployment failures or exposure risk. (Medium)
+- R-UM-3: CMS outage behavior may degrade UX if cache/fallback policy is only partially implemented or stale cache expires. (Medium)
+- R-UM-4: Analytics/consent regressions may reappear if snapshot baselines for P-118 are incomplete or stale. (Medium)
 
 ---
 
@@ -44,6 +42,7 @@ See `.assistant/plan.md`.
 - CMS site settings: `src/state/cmsSettingsContext.jsx` (CmsSettingsProvider + useCmsSettings hook)
 - Docker topology: `umbraco-cms/Dockerfile`, `docker-compose.full.yml`, `.env.example`
 - Product docs and repo context: `README.md`, `docs/ROADMAP.md`, `docs/DESIGN_NOTES.md`
+- MCP capability check (session): `context7` and `playwright` available via direct tools; `github` MCP unavailable in this session
 
 ---
 
@@ -73,6 +72,7 @@ See `.assistant/plan.md`.
 - 2026-03-08: Completed P-110: added `src/services/cmsContract.test.js` — 77 contract tests covering all DTO shapes (page, blog summary, blog detail, settings, navigation, block data for all 3 block types), sparse payload fallbacks, title resolution logic, settings consumer logic, and cross-check that controller block aliases match BlockRegistry. README Testing section updated with `npm test` command and test file table. 128 tests total, all passing.
 - 2026-03-08: Completed P-109: added `umbraco-cms/Bootstrap/ContentSeeder.cs` — idempotent seeder that creates the full content tree (homePage, 4× standardPage for about/faq/terms/privacy, blogOverview, siteSettings) on first run. Uses `IContentService.Save` + `Publish` (Umbraco 17: `SaveAndPublish` removed). Documented migration mapping in `.assistant/canvas/notes.md`. Build clean (0 errors).
 - 2026-03-08: Completed P-108: extended `.github/workflows/publish.yml` with two parallel build jobs (`build-frontend` → `ghcr.io/puttrix/shop404`, `build-cms` → `ghcr.io/puttrix/shop404-cms`) plus a `deploy` job that POSTs to `PORTAINER_WEBHOOK_URL` secret after both images are pushed (skipped gracefully if secret absent). Both images tagged `latest` + commit SHA + semver tag.
+- 2026-03-11: Refreshed assistant state kickoff: reconciled stale plan/status alignment against backlog, confirmed P-101..P-117 complete and P-118 open, and revalidated MCP availability (`context7`, `playwright` callable; `github` unavailable).
 
 ---
 

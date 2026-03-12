@@ -17,6 +17,9 @@ public class Shop404ContentTypesComposer : IComposer
 
 public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoApplicationStartedNotification>
 {
+    private static readonly object BootstrapLock = new();
+    private static bool _bootstrapCompleted;
+
     private readonly IRuntimeState _runtimeState;
     private readonly IContentTypeService _contentTypeService;
     private readonly IDataTypeService _dataTypeService;
@@ -45,10 +48,21 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
             return;
         }
 
-        EnsureBasePageComposition();
-        EnsurePageTypes();
-        EnsureSiteSettings();
-        EnsureBlockTypes();
+        lock (BootstrapLock)
+        {
+            if (_bootstrapCompleted)
+            {
+                _logger.LogInformation("Shop404 content type bootstrap already completed in this process — skipping.");
+                return;
+            }
+
+            EnsureBasePageComposition();
+            EnsurePageTypes();
+            EnsureSiteSettings();
+            EnsureBlockTypes();
+
+            _bootstrapCompleted = true;
+        }
     }
 
     private void EnsureBasePageComposition()
@@ -70,7 +84,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         changed |= EnsureProperty(basePage, "SEO", "openGraphImage", "OpenGraph Image", "Umbraco.MediaPicker3");
 
         if (isNew || changed)
-            _contentTypeService.Save(basePage);
+            SaveContentType(basePage);
     }
 
     private void EnsurePageTypes()
@@ -96,7 +110,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         homePageChanged |= EnsureProperty(homePage, "Content", "featuredProductsSection", "Featured Products Section", "Umbraco.BlockList");
         homePageChanged |= EnsureProperty(homePage, "Content", "featuredArticles", "Featured Articles", "Umbraco.ContentPicker");
         if (homePageIsNew || homePageChanged)
-            _contentTypeService.Save(homePage);
+            SaveContentType(homePage);
 
         var standardPage = EnsureContentType(
             alias: "standardPage",
@@ -109,7 +123,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         standardPageChanged |= EnsureProperty(standardPage, "Content", "bodyContent", "Body Content", "Umbraco.RichText");
         standardPageChanged |= EnsureProperty(standardPage, "Content", "contentBlocks", "Content Blocks", "Umbraco.BlockList");
         if (standardPageIsNew || standardPageChanged)
-            _contentTypeService.Save(standardPage);
+            SaveContentType(standardPage);
 
         var blogOverview = EnsureContentType(
             alias: "blogOverview",
@@ -121,7 +135,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         bool blogOverviewChanged = EnsureComposition(blogOverview, basePage);
         blogOverviewChanged |= EnsureProperty(blogOverview, "Content", "introText", "Intro Text", "Umbraco.TextArea");
         if (blogOverviewIsNew || blogOverviewChanged)
-            _contentTypeService.Save(blogOverview);
+            SaveContentType(blogOverview);
 
         var blogPost = EnsureContentType(
             alias: "blogPost",
@@ -138,7 +152,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         blogPostChanged |= EnsureProperty(blogPost, "Content", "tags", "Tags", "Umbraco.Tags");
         blogPostChanged |= EnsureProperty(blogPost, "Content", "featuredImage", "Featured Image", "Umbraco.MediaPicker3");
         if (blogPostIsNew || blogPostChanged)
-            _contentTypeService.Save(blogPost);
+            SaveContentType(blogPost);
     }
 
     private void EnsureSiteSettings()
@@ -159,7 +173,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         changed |= EnsureProperty(siteSettings, "SEO", "defaultSeoDescription", "Default SEO Description", "Umbraco.TextArea");
 
         if (isNew || changed)
-            _contentTypeService.Save(siteSettings);
+            SaveContentType(siteSettings);
     }
 
     private void EnsureBlockTypes()
@@ -178,7 +192,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         heroBlockChanged |= EnsureProperty(heroBlock, "Content", "ctaText", "CTA Text", "Umbraco.TextBox");
         heroBlockChanged |= EnsureProperty(heroBlock, "Content", "ctaLink", "CTA Link", "Umbraco.ContentPicker");
         if (heroBlockIsNew || heroBlockChanged)
-            _contentTypeService.Save(heroBlock);
+            SaveContentType(heroBlock);
 
         var ctaBlock = EnsureContentType(
             alias: "ctaBlock",
@@ -193,7 +207,7 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         ctaBlockChanged |= EnsureProperty(ctaBlock, "Content", "buttonText", "Button Text", "Umbraco.TextBox");
         ctaBlockChanged |= EnsureProperty(ctaBlock, "Content", "buttonUrl", "Button URL", "Umbraco.TextBox");
         if (ctaBlockIsNew || ctaBlockChanged)
-            _contentTypeService.Save(ctaBlock);
+            SaveContentType(ctaBlock);
 
         var productTeaserBlock = EnsureContentType(
             alias: "productTeaserBlock",
@@ -208,7 +222,29 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
         productTeaserBlockChanged |= EnsureProperty(productTeaserBlock, "Content", "price", "Price", "Umbraco.TextBox");
         productTeaserBlockChanged |= EnsureProperty(productTeaserBlock, "Content", "link", "Link", "Umbraco.ContentPicker");
         if (productTeaserBlockIsNew || productTeaserBlockChanged)
-            _contentTypeService.Save(productTeaserBlock);
+            SaveContentType(productTeaserBlock);
+
+    }
+
+    private void SaveContentType(IContentType contentType)
+    {
+        EnsureUniquePropertyKeys(contentType);
+        _contentTypeService.Save(contentType);
+    }
+
+    private static void EnsureUniquePropertyKeys(IContentType contentType)
+    {
+        var seen = new HashSet<Guid>();
+
+        foreach (var propertyType in contentType.PropertyTypes)
+        {
+            if (propertyType.Key == Guid.Empty || seen.Contains(propertyType.Key))
+            {
+                propertyType.Key = Guid.NewGuid();
+            }
+
+            seen.Add(propertyType.Key);
+        }
     }
 
     private IContentType EnsureContentType(string alias, string name, string description, bool isElement, bool allowedAsRoot, out bool isNew)
@@ -236,7 +272,9 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
             AllowedAsRoot = allowedAsRoot
         };
 
-        return contentType;
+        // Persist the shell first. Subsequent property additions are saved via update path.
+        _contentTypeService.Save(contentType);
+        return _contentTypeService.Get(alias) ?? contentType;
     }
 
     private bool EnsureComposition(IContentType contentType, IContentType composition)
@@ -270,10 +308,10 @@ public class Shop404ContentTypesBootstrapper : INotificationHandler<UmbracoAppli
             contentType.AddPropertyGroup(groupAlias, groupName);
         }
 
-        var propertyType = new PropertyType(_shortStringHelper, dataType)
+        var propertyType = new PropertyType(_shortStringHelper, dataType.EditorAlias, dataType.DatabaseType, alias)
         {
-            Alias = alias,
-            Name = name
+            Name = name,
+            DataTypeKey = dataType.Key
         };
 
         contentType.AddPropertyType(propertyType);

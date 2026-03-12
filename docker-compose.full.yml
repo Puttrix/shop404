@@ -43,6 +43,8 @@ services:
       - "${CMS_PUBLISH_PORT:-13802}:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      # Respect X-Forwarded-* headers when running behind reverse proxies/tunnels.
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       # SQL connection string — references sql service by its compose service name.
       - ConnectionStrings__umbracoDbDSN=Server=shop404-sql,1433;Database=${MSSQL_DATABASE:-Shop404Cms};User Id=sa;Password=${MSSQL_SA_PASSWORD:?};TrustServerCertificate=True;
       # Unattended install — creates admin account on first run only.
@@ -50,6 +52,9 @@ services:
       - Umbraco__CMS__Unattended__UnattendedUserName=${UMBRACO_ADMIN_NAME:-Shop404 Admin}
       - Umbraco__CMS__Unattended__UnattendedUserEmail=${UMBRACO_ADMIN_EMAIL:-admin@shop404.local}
       - Umbraco__CMS__Unattended__UnattendedUserPassword=${UMBRACO_ADMIN_PASSWORD:?UMBRACO_ADMIN_PASSWORD is required — see .env.example}
+      # Optional HTTP-only override for local/non-TLS backoffice troubleshooting.
+      # Prefer HTTPS and keep this false outside local development.
+      - Shop404__AllowInsecureBackofficeAuth=${CMS_ALLOW_INSECURE_BACKOFFICE_AUTH:-false}
       # CORS — comma-separated list of SPA origins allowed to call /api/content/*.
       # Set CMS_CORS_ORIGINS in .env or Portainer stack env vars.
       - Shop404__CorsOrigins=${CMS_CORS_ORIGINS:-http://localhost:8080}
